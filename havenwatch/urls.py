@@ -14,10 +14,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# main/urls.py
+# main/urls.py
 from django.contrib import admin
-from django.urls import include,path
+from django.urls import include, path
 
 urlpatterns = [
-    path("",include("app2.urls")),
-    path('admin/', admin.site.urls),
+    #path('', include('havenwatch.urls')),  # Havenwatch for the root path
+    #path('admin/', admin.site.urls),  # Admin path
+    #path('app2/', include('app2.urls')),  # Add app2 with its own path prefix
+    
+]
+
+
+urlpatterns = [
+    path('admin/', admin.site.urls),  # Admin path
+    path('app2/', include('app2.urls')),  # Add app2 with its own path prefix
+    path('havenwatch/', include('havenwatch.urls')), # Havenwatch for the root path
 ]
