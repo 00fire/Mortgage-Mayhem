@@ -1,9 +1,0 @@
-pip freeze > requirements.txt #do while in virtual enviorment
-
-git clone <repo-url>#clone the repro
-
-python -m venv venv
-venv\Scripts\Activate  # Windows ##run trhis in the teminal
-
-
-pip install -r requirements.txt# install all dependencies
