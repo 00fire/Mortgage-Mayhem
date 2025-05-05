@@ -6,10 +6,13 @@ from .forms import UserProfileForm
 
 # Create your views here.
 
+def index_(request):
+    return render(request,'home.html')
 
-def index(request):
-    template= loader.get_template('home.html')
-    return HttpResponse(template.render())
+
+# def index(request):
+#     template= loader.get_template('home.html')
+#     return HttpResponse(template.render())
 
 def user_profile(request):
     if request.method =='POST':
