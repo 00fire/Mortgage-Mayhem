@@ -1,21 +1,18 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="{% static 'main.css' %}">
-    <script src="{% static 'main.js' %}"></script>
+    <title>Create User</title>
 </head>
 <body>
-    <h1>HELLLLLLLLOOOOOOOOOOOO</h1>
-    <p>hej hej, hur mar du, du er katt!</p>
+    <h1>Create a New User</h1>
 
-    <form method="post">
+    <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form.as_p }}  <!-- Render form fields here -->
         <button type="submit">Submit</button>
     </form>
+
 </body>
 </html>

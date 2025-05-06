@@ -7,3 +7,7 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.username
+    
+class User2(models.Model):
+    username = models.CharField(max_length=255)
+    password = models.CharField(max_length=255)

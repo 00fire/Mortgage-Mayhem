@@ -18,8 +18,7 @@ Including another URLconf
 # main/urls.py
 from django.contrib import admin
 from django.urls import include, path
-from app2.urls import views  # Correct import
-
+from app2.urls import views # Correct import
 # urlpatterns = [
 #     #path('', include('havenwatch.urls')),  # Havenwatch for the root path
 #     #path('admin/', admin.site.urls),  # Admin path
@@ -31,6 +30,9 @@ from app2.urls import views  # Correct import
 urlpatterns = [
     path('admin/', admin.site.urls),  # Admin path
     path('app2/', include('app2.urls')),
-    path('', views.index_,name='index_'),  # Add app2 with its own path prefix
+    #path('', views.index_,name='index_'),
+    path("/register", views.register, name="register"),
+    path('', include("havenwatch.urls")),
+        # Add app2 with its own path prefix
     # Havenwatch for the root path THIS IS THE FUCKING ISSUE
 ]
