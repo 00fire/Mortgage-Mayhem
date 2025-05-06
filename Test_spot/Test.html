@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Responsive NavBar with Search and Filter</title>
+  <link rel="stylesheet" href="Test.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">MySite</div>
+
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Search..." />
+      <button id="filterToggle">⚙️ Filter</button>
+    </div>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+    </ul>
+
+    <div class="hamburger" id="hamburger">☰</div>
+  </nav>
+
+  <!-- Filter Modal -->
+  <div class="filter-modal" id="filterModal">
+    <h3>Filters</h3>
+    <div class="filter-section">
+      <label><input type="checkbox" /> Option A</label>
+      <label><input type="checkbox" /> Option B</label>
+      <label><input type="checkbox" /> Option C</label>
+    </div>
+    <div class="filter-section">
+      <label>Range: <span id="rangeValue">50</span></label>
+      <input type="range" min="0" max="100" value="50" id="rangeSlider" />
+    </div>
+    <button id="closeFilter">Close</button>
+  </div>
+
+  <script src="Test.js"></script>
+</body>
+</html>
