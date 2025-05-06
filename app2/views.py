@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login,authenticate
-from .forms import UserPForm
+from app2.forms import UserPForm
 
 # Create your views here.
 
@@ -11,16 +11,22 @@ def index_(request):
     return render(request,'home.html')
 
 def register(response):
-    return render()
+    form= UserCreationForm()
+    return render(response, "register/register.html",{"form":form})
 
 def user_profile(request):
     if request.method == 'POST':
         form = UserPForm(request.POST)  # Initialize form with POST data
         if form.is_valid():
             form.save()  # Save the form data to the database
+            print("FROM IS VALID")
+            print("Request method: ", request.method)
+            print("form data: ", request.POST)
             return redirect('success')  # Redirect after saving
         else:
             print(form.errors)  # Print form validation errors to the console
+            print("Request method: ", request.method)
+            print("form data: ", request.POST)
     else:
         form = UserPForm()  # Initialize an empty form for GET request
 

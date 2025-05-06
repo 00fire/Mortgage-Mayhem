@@ -30,9 +30,9 @@ from app2.urls import views # Correct import
 urlpatterns = [
     path('admin/', admin.site.urls),  # Admin path
     path('app2/', include('app2.urls')),
-    #path('', views.index_,name='index_'),
-    path("/register", views.register, name="register"),
-    path('', include("havenwatch.urls")),
+    path('', views.index_,name='index_'),
+    #path("/register", views.register, name="register"),
+    #path('', include("havenwatch.urls")),
         # Add app2 with its own path prefix
     # Havenwatch for the root path THIS IS THE FUCKING ISSUE
 ]

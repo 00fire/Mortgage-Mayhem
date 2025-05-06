@@ -3,8 +3,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("user-profile/", views.user_profile, name="user_profile"),  # Define your own app routes
+    path('user-profile/', views.user_profile, name='user_profile'), 
+    #path("user-profile/", views.user_profile, name="user_profile"),  # Define your own app routes
     path('success/', views.success, name='success'),
+    #path('register/', views.register, name='register'),
 ]
 
 from django.urls import path
