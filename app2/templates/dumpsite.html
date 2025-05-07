@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    <script src="{% static 'main.js' %}"></script>
+</head>
+<body>
+    <h1>HELLLLLLLLOOOOOOOOOOOO</h1>
+    <p>hej hej, hur mar du, du er katt!</p>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Username field -->
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <!-- Password field -->
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Submit</button>
+
+
+
+    </form>
+
+    <form class="form-group" action="home.html" method="post">
+        {{ form }}
+        <input type="submit" value="Signup">
+    </form>
+    <!-- Display form errors -->
+    {% if form.errors %}
+        <ul>
+            {% for field, errors in form.errors.items %}
+                <li>{{ field }}: {{ errors }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <!-- Display a success message if provided -->
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+</body>
+</html>

@@ -65,7 +65,57 @@ def user_profile(request):
     return render(request, 'home.html', {'form': form})  # Pass form to template
 
 
-# @login_required
+
+def success(request):
+    return render(request, 'success.html')  # Display success message
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#@login_required
 # def user_profile(request):
 #     if request.method == 'POST':
 #         form = UserPForm(request.POST)  # Initialize form with POST data
@@ -85,8 +135,7 @@ def user_profile(request):
 #     return render(request, 'home.html', {'form': form})  # Pass form to template
 
 # Success page after creating a user profile
-def success(request):
-    return render(request, 'success.html')  # Display success message
+
 
 
 # def login_view(request):
