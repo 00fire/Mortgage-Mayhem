@@ -5,7 +5,12 @@ from app2.forms import UserPForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 # Create your views here.
+@login_required
+def homepage(request):
+    return render(request, 'homepage.html')
 
+def property_detail(request):
+    return render(request, 'property_detail.html')
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -15,7 +20,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('user_profile')
+                return redirect('homepage')
             else:
                 form.add_error(None, 'Invalid username or password')
     else:
@@ -40,7 +45,7 @@ def register(request):
 # The @login_required decorator ensures that the user must be logged in to access this view
 
 
-@login_required
+#@login_required
 def user_profile(request):
     if request.method == 'POST':
         form = UserPForm(request.POST)  # Initialize form with POST data
@@ -234,5 +239,6 @@ def success(request):
 
 #     return render(request, 'home.html', {'form': user_form})
 
-def success(request):
-    return render(request,'success.html')
+# # 
+# def success(request):
+#     return render(request,'success.html')
