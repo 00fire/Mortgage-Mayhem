@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--DELETE THIS LATER, ONLY FOR TESTING, WILL GO LATER INTO A CSS FILE-->
+    <style>
+        div.fixed {
+          position: fixed;
+          top: 0;
+          right: 0;
+          width: 100px;
+          border: 3px solid #ffb20c;
+        }
+        </style>
+
+
+    <title>homepage</title>
+</head>
+<body>
+    <h1>Property homepage</h1>
+    <p>
+        Eichenwalde: <a href="{% url 'property_detail' %}">
+            <img alt="Eichenwalde" src="Eichenwalde.png" width="150" height="150">
+        </a>
+    </p>
+
+    <div class="fixed">  hello there: <a href="{% url 'profile_info' %}">
+        <img alt="profile_picture" src="lifeweavermog.png" width="75" height="100">
+    </a> </div>
+
+</body>
+</html>
