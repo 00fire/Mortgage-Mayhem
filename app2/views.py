@@ -15,13 +15,13 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('user_profile')  # After successful login, go to user profile
+                return redirect('user_profile')
             else:
                 form.add_error(None, 'Invalid username or password')
     else:
         form = AuthenticationForm()
 
-    return render(request, 'home.html', {'form': form})
+    return render(request, 'login.html', {'form': form})
 
 def index_(request):
     if not request.user.is_authenticated:

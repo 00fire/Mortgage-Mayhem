@@ -31,7 +31,9 @@ urlpatterns = [
     
     path('admin/', admin.site.urls),  # Admin path
     path('app2/', include('app2.urls')),
+    path('accounts/login/', views.login_view, name='login'), 
     path('', views.index_,name='index_'),
+    
     #path('', views.index_,name='index_'),
     #path("/register", views.register, name="register"),
     #path('', include("havenwatch.urls")),

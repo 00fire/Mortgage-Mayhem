@@ -10,8 +10,7 @@
 
     <form method="POST" action="{% url 'login' %}">
         {% csrf_token %}
-        {{ form.as_p }}  <!-- Render the form fields here -->
-        
+        {{ form.as_p }}  <!-- This will display the form fields -->
         <button type="submit">Login</button>
     </form>
 
