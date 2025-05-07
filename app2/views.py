@@ -9,8 +9,15 @@ from django.contrib.auth.models import User
 def homepage(request):
     return render(request, 'homepage.html')
 
+
+def profile_info(request):
+    return render(request,'profile_info.html')
+
+
+
 def property_detail(request):
     return render(request, 'property_detail.html')
+
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)

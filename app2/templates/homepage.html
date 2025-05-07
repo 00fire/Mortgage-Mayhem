@@ -17,17 +17,18 @@
 
 
     <title>homepage</title>
+    {% load static %}
 </head>
 <body>
     <h1>Property homepage</h1>
     <p>
         Eichenwalde: <a href="{% url 'property_detail' %}">
-            <img alt="Eichenwalde" src="Eichenwalde.png" width="150" height="150">
+            <img alt="Eichenwalde" src="{% static 'Eichenwalde.png' %}" width="150" height="150">
         </a>
     </p>
 
     <div class="fixed">  hello there: <a href="{% url 'profile_info' %}">
-        <img alt="profile_picture" src="lifeweavermog.png" width="75" height="100">
+        <img alt="profile_picture" src="{% static 'Lifeweavermog.png' %}" width="75" height="100">
     </a> </div>
 
 </body>

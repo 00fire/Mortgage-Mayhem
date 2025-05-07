@@ -25,6 +25,14 @@ from app2.urls import views # Correct import
 #     #path('app2/', include('app2.urls')),  # Add app2 with its own path prefix
     
 # ]
+# urls.py
+from django.conf import settings
+from django.conf.urls.static import static
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+# Add this to serve static and media files in development mode
 
 
 urlpatterns = [
@@ -40,3 +48,7 @@ urlpatterns = [
         # Add app2 with its own path prefix
     # Havenwatch for the root path THIS IS THE FUCKING ISSUE
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)
