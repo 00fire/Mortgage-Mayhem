@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, authenticate
 from app2.forms import UserPForm
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.models import User
 # Create your views here.
 
 def login_view(request):
@@ -38,15 +38,22 @@ def register(request):
     return render(request, "register/register.html", {"form": form})
 
 # The @login_required decorator ensures that the user must be logged in to access this view
+
+
 @login_required
 def user_profile(request):
     if request.method == 'POST':
         form = UserPForm(request.POST)  # Initialize form with POST data
         if form.is_valid():
-            form.save()  # Save the form data to the database
-            print("FORM IS VALID")
-            print("Request method: ", request.method)
-            print("Form data: ", request.POST)
+            username=form.cleaned_data.get('username')
+
+            if User.objects.filter(username=username).exists():
+                form.add_error('username','this username is already taken.')
+            else:
+                form.save()  # Save the form data to the database
+                print("FORM IS VALID")
+                print("Request method: ", request.method)
+                print("Form data: ", request.POST)
             return redirect('success')  # Redirect after saving to a success page
         else:
             print(form.errors)  # Print form validation errors to the console
@@ -56,6 +63,26 @@ def user_profile(request):
         form = UserPForm()  # Initialize an empty form for GET request
 
     return render(request, 'home.html', {'form': form})  # Pass form to template
+
+
+# @login_required
+# def user_profile(request):
+#     if request.method == 'POST':
+#         form = UserPForm(request.POST)  # Initialize form with POST data
+#         if form.is_valid():
+#             form.save()  # Save the form data to the database
+#             print("FORM IS VALID")
+#             print("Request method: ", request.method)
+#             print("Form data: ", request.POST)
+#             return redirect('success')  # Redirect after saving to a success page
+#         else:
+#             print(form.errors)  # Print form validation errors to the console
+#             print("Request method: ", request.method)
+#             print("Form data: ", request.POST)
+#     else:
+#         form = UserPForm()  # Initialize an empty form for GET request
+
+#     return render(request, 'home.html', {'form': form})  # Pass form to template
 
 # Success page after creating a user profile
 def success(request):
