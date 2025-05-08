@@ -5,16 +5,18 @@ from app2.forms import UserPForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 # Create your views here.
-@login_required
+
+
+@login_required#this renders the homepage
 def homepage(request):
     return render(request, 'homepage.html')
 
-
+#this renders the profile info html
 def profile_info(request):
     return render(request,'profile_info.html')
 
 
-
+#renders property detail page
 def property_detail(request):
     return render(request, 'property_detail.html')
 
