@@ -1,22 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+  <link rel="icon" href="app2/templet/assets/img/6b194fdd-d349-4467-9934-3a44287c51b9.jpg" type="image/x-icon">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login or Signup</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'main.css' %}">
 </head>
 <body>
-    <h1>Login or signup</h1>
+  <div class="container">
+    <div class="logo">
+      <img src="../assets/img/6b194fdd-d349-4467-9934-3a44287c51b9.jpg" alt="HavenWatch Logo">
+    </div>
 
-    <form method="POST" action="{% url 'login' %}">
+    <div class="login-box">
+      <p class="subtext">Please enter your details</p>
+      <h2>Login or Signup</h2>
+      
+      <!-- Login Form -->
+      <form method="POST" action="{% url 'login' %}">
         {% csrf_token %}
-        {{ form.as_p }}  <!-- This will display the form fields -->
+        {{ form.as_p }} <!-- This renders the form fields for login -->
+        <div class="options">
+          <label><input type="checkbox"> Remember for 30 days</label>
+          <a href="#">Forgot password?</a>
+        </div>
         <button type="submit">Login</button>
-    </form>
-    <form method="POST" action="{% url 'user_profile' %}">
+      </form>
+      
+      <!-- Sign Up Form (Toggle to show this in a different section or link) -->
+      <form method="POST" action="{% url 'user_profile' %}">
         {% csrf_token %}
-        {{ form.as_p }}  <!-- Render form fields here -->
+        {{ form.as_p }} <!-- Render fields for user signup -->
         <button type="submit">Submit</button>
-    </form>
+      </form>
+
+      <p class="signup-text">Don't have an account? <a href="#">Sign up here</a></p>
+
+    </div>
+
+    <footer>
+      <div class="footer-columns">
+        <div>
+          <p>About Us<br>Contact Us<br>FAQ / Help Center<br>Careers</p>
+        </div>
+        <div class="footer-logo">
+          <img src="../assets/img/6b194fdd-d349-4467-9934-3a44287c51b9.jpg" alt="HavenWatch Logo Small">
+        </div>
+        <div>
+          <p>Facebook<br>Twitter (X)<br>Instagram<br>LinkedIn</p>
+        </div>
+      </div>
+      <div class="footer-info">
+        <p>HavenWatch Financial<br>260445-1239</p>
+        <p>&copy; 2025 HavenWatch Financial. All rights reserved. +354 511 1234</p>
+        <p>contact@havenwatchfinancial.com</p>
+        <p>Borgartún 25, 105 Reykjavík, Iceland</p>
+        <p>
+          Privacy Policy · Terms of Service · Cookie Policy · Accessibility Statement<br>
+          HavenWatch Financial™ and the HavenWatch logo are trademarks of HavenWatch Financial, Inc.<br>
+          Unauthorized use or reproduction of any content, images, or branding is strictly prohibited.
+        </p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="../templet/js/login.js"></script>
 </body>
 </html>

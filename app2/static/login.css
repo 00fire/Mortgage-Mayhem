@@ -1,0 +1,110 @@
+body {
+    margin: 0;
+    background-color: #121212;
+    color: #fff;
+    font-family: Arial, sans-serif;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+  }
+  
+  .logo img {
+    width: 100px;
+    margin-top: 1rem;
+    border-radius: 50%;
+    justify-content: center; /* horizontal */
+    display: flex;
+  }
+  
+  .login-box {
+    background-color: #1f1f1f;
+    border: 1px solid orange;
+    border-radius: 8px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    margin: 2rem auto;
+  }
+  
+  .login-box h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .login-box input[type="email"],
+  .login-box input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: none;
+    border-radius: 5px;
+    background: #ccc;
+  }
+  
+  .options {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  
+  button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #0f74af;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .signup-text {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .signup-text a {
+    color: #3b8efc;
+    text-decoration: none;
+  }
+  
+  footer {
+    background-color: #1f1f1f;
+    color: #ccc;
+    padding: 2rem 1rem;
+    font-size: 0.8rem;
+    width: 100%;
+    margin-top: 3rem;
+  }
+  
+  .footer-columns {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .footer-logo {
+    text-align: center;
+  }
+
+  .footer-logo img {
+    width: 60px;
+    margin: auto;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center; /* horizontal */
+    max-width: 100px; /* or any size you want */
+    height: auto;
+    display: inline-block;
+  }
+  
+  .footer-info {
+    text-align: center;
+    line-height: 1.5;
+  }
