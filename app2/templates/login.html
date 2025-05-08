@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" href="app2/templet/assets/img/6b194fdd-d349-4467-9934-3a44287c51b9.jpg" type="image/x-icon">
+  {% load static %}
+  <link rel="icon" href="{% static 'profile_diddy.png' %}" type="image/x-icon">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login or Signup</title>
-  {% load static %}
+  
   <link rel="stylesheet" href="{% static 'main.css' %}">
 </head>
 <body>
   <div class="container">
     <div class="logo">
-      <img src="../assets/img/6b194fdd-d349-4467-9934-3a44287c51b9.jpg" alt="HavenWatch Logo">
+      <img src="{% static 'havenwatch_logo.png' %}" alt="HavenWatch Logo">
     </div>
 
     <div class="login-box">
@@ -46,7 +47,7 @@
           <p>About Us<br>Contact Us<br>FAQ / Help Center<br>Careers</p>
         </div>
         <div class="footer-logo">
-          <img src="../assets/img/6b194fdd-d349-4467-9934-3a44287c51b9.jpg" alt="HavenWatch Logo Small">
+          <img src="{% static 'havenwatch_logo_shield.png' %}" alt="HavenWatch Logo Small">
         </div>
         <div>
           <p>Facebook<br>Twitter (X)<br>Instagram<br>LinkedIn</p>
