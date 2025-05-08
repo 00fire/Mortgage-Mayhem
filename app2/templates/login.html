@@ -6,13 +6,17 @@
     <title>Login</title>
 </head>
 <body>
-    <h1>Login</h1>
+    <h1>Login or signup</h1>
 
     <form method="POST" action="{% url 'login' %}">
         {% csrf_token %}
         {{ form.as_p }}  <!-- This will display the form fields -->
         <button type="submit">Login</button>
     </form>
-
+    <form method="POST" action="{% url 'user_profile' %}">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Render form fields here -->
+        <button type="submit">Submit</button>
+    </form>
 </body>
 </html>
