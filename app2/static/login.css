@@ -1,110 +1,155 @@
+/* General styling */
 body {
     margin: 0;
-    background-color: #121212;
+    background-color: #121212; /* Dark background */
     color: #fff;
     font-family: Arial, sans-serif;
-  }
-  
-  .container {
+}
+
+/* Main container */
+.container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center; /* Vertically center */
+    height: 100vh; /* Full viewport height */
     padding: 2rem;
-  }
-  
-  .logo img {
-    width: 100px;
+}
+
+/* Logo section */
+.logo img {
+    width: 120px; /* Logo size */
     margin-top: 1rem;
     border-radius: 50%;
-    justify-content: center; /* horizontal */
-    display: flex;
-  }
-  
-  .login-box {
-    background-color: #1f1f1f;
-    border: 1px solid orange;
+    display: block; /* Centering */
+    margin-bottom: 2rem;
+}
+
+/* Login box container */
+.login-box {
+    background-color: #1f1f1f; /* Dark background for the form */
+    border: 1px solid #ffb20c; /* Goldish border */
     border-radius: 8px;
     padding: 2rem;
     width: 100%;
-    max-width: 400px;
+    max-width: 380px; /* Set max width for form */
     margin: 2rem auto;
-  }
-  
-  .login-box h2 {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Add subtle shadow */
+}
+
+/* Heading */
+.login-box h2 {
     margin-top: 0;
     margin-bottom: 1rem;
-  }
-  
-  .login-box input[type="email"],
-  .login-box input[type="password"] {
+    text-align: center;
+    font-size: 24px;
+    color: #fff;
+}
+
+/* Input fields */
+.login-box input[type="email"],
+.login-box input[type="password"] {
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1rem;
     border: none;
     border-radius: 5px;
-    background: #ccc;
-  }
-  
-  .options {
+    background: #333; /* Dark background for inputs */
+    color: white;
+    font-size: 1rem;
+}
+
+/* Options for remember me and forgot password */
+.options {
     display: flex;
     justify-content: space-between;
     font-size: 0.9rem;
     margin-bottom: 1rem;
-  }
-  
-  button {
+}
+
+/* Button styling */
+button {
     width: 100%;
     padding: 0.75rem;
-    background-color: #0f74af;
+    background-color: #ffb20c; /* Gold button color */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-  }
-  
-  .signup-text {
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect on buttons */
+button:hover {
+    background-color: #d99700; /* Darker gold for hover */
+}
+
+/* Sign up text and link */
+.signup-text {
     text-align: center;
     margin-top: 1rem;
     font-size: 0.9rem;
-  }
-  
-  .signup-text a {
-    color: #3b8efc;
+}
+
+.signup-text a {
+    color: #ffb20c;
     text-decoration: none;
-  }
-  
-  footer {
-    background-color: #1f1f1f;
-    color: #ccc;
+    font-weight: bold;
+}
+
+.signup-text a:hover {
+    text-decoration: underline;
+}
+
+/* Footer styling */
+footer {
+    background-color: #1f1f1f; /* Footer background */
+    color: #ccc; /* Light grey text */
     padding: 2rem 1rem;
     font-size: 0.8rem;
     width: 100%;
     margin-top: 3rem;
-  }
-  
-  .footer-columns {
+    text-align: center;
+}
+
+/* Footer columns */
+.footer-columns {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     margin-bottom: 2rem;
-  }
+}
 
-  .footer-logo {
+/* Footer logo */
+.footer-logo {
     text-align: center;
-  }
+}
 
-  .footer-logo img {
+.footer-logo img {
     width: 60px;
     margin: auto;
     border-radius: 50%;
     display: flex;
-    justify-content: center; /* horizontal */
-    max-width: 100px; /* or any size you want */
+    justify-content: center;
+    max-width: 100px;
     height: auto;
-    display: inline-block;
-  }
-  
-  .footer-info {
+}
+
+/* Footer information section */
+.footer-info {
     text-align: center;
     line-height: 1.5;
-  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .login-box {
+        max-width: 100%;
+        padding: 1rem;
+    }
+    .footer-columns {
+        flex-direction: column;
+        align-items: center;
+    }
+}

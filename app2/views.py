@@ -15,7 +15,8 @@ def homepage(request):
 def profile_info(request):
     return render(request,'profile_info.html')
 
-
+def buyer_offer(request):
+    return render(request,'buyer_offer.html')
 #renders property detail page
 def property_detail(request):
     return render(request, 'property_detail.html')
