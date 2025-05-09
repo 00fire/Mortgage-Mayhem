@@ -25,4 +25,11 @@ class Properties(models.Model):
     property_square_meters_size = models.DecimalField(max_digits=10,decimal_places=3)
     property_sold_status = models.BooleanField()
     
- 
+    property_image=models.ImageField(upload_to='propert_images/',blank=True,null=True)
+    #property_available_from=models.DateField()
+    #property_available_to= models.DateField()
+    #property_owner=models.ForeignKey(User,on_delete)
+    #property_
+    
+    def __str__(self):
+            return f"{self.property_street}, {self.property_city}, {self.property_country}"

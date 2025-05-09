@@ -5,11 +5,12 @@ from app2.forms import UserPForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 # Create your views here.
-
-
+from .forms import PropertyForm
+from app2.models import Properties
 @login_required#this renders the homepage
 def homepage(request):
-    return render(request, 'homepage.html')
+    properties=Properties.objects.all()
+    return render(request, 'homepage.html',{'properties': properties})
 
 #this renders the profile info html
 def profile_info(request):
@@ -85,9 +86,15 @@ def success(request):
     return render(request, 'success.html')  # Display success message
 
 
-
-
-
+def add_property(request):
+    if request.method=='POST':
+        form=PropertyForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('homepage')
+        else:
+            form=PropertyForm
+    return render(request,'add_property.html',{'form':form})
 
 
 

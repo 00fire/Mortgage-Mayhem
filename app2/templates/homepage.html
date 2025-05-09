@@ -25,14 +25,16 @@
 <body>
     <h1>homepage</h1>
     <p>
-        Eichenwalde: <a href="{% url 'property_detail' %}">
-            <img alt="Eichenwalde" src="{% static 'Eichenwalde.png' %}" width="150" height="150">
-        </a>
-    </p>
-
-    <div class="fixed">  hello there: <a href="{% url 'profile_info' %}">
-        <img alt="profile_picture" src="{% static 'Lifeweavermog.png' %}" width="75" height="100">
-    </a> </div>
-
+        <div class="properties">
+        {% for property in properties %}
+            <div class="property">
+                <h2>{{ property.property_city }}</h2>
+                <img src="{{ property.property_image.url }}" alt="{{ property.property_city }}" width="150" height="150">
+                <p>{{ property.property_description }}</p>
+                <a href="{% url 'property_detail' property.id %}">View Details</a>
+            </div>
+        {% endfor %}
+        </div>
+        
 </body>
 </html>
