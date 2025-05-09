@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, authenticate
 from app2.forms import UserPForm
@@ -97,7 +97,9 @@ def add_property(request):
     return render(request,'add_property.html',{'form':form})
 
 
-
+def property_detail(request, id):
+    property=get_object_or_404(Properties, id=id)
+    return render(request, 'property_detail.html', {'property': property})
 
 
 
