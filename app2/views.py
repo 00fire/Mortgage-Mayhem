@@ -7,6 +7,14 @@ from django.contrib.auth.models import User
 # Create your views here.
 from .forms import PropertyForm
 from app2.models import Properties
+
+
+
+
+
+
+from app2.models import UserProfile
+from app2.forms import UserProfileForm
 @login_required#this renders the homepage
 def homepage(request):
     properties=Properties.objects.all()
@@ -104,7 +112,20 @@ def property_detail(request, id):
 
 
 
+@login_required
+def profile_info(request):
+    # Get the current user's profile or create a new one if it doesn't exist
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
 
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile_info')  # Redirect to the same profile page after saving
+    else:
+        form = UserProfileForm(instance=profile)
+    
+    return render(request, 'profile_info.html', {'form': form})
 
 
 

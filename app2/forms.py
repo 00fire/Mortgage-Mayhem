@@ -7,6 +7,14 @@ class UserPForm(forms.ModelForm):
         model=UserProfile
         fields =['username', 'password']
 
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['bio', 'profile_picture']
+
+
 class PropertyForm(forms.ModelForm):
     class Meta:
         model=Properties

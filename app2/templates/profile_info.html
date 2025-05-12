@@ -1,11 +1,24 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Profile Information</title>
 </head>
 <body>
-    <p>This is the profile info page, it is a work in progress</p>
+    <h1>Your Profile</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update Profile</button>
+    </form>
+
+    <h2>Current Profile Picture</h2>
+    <img src="{{ form.instance.profile_picture.url }}" alt="Profile Picture" width="150" height="150">
+    
+    <p><strong>Bio:</strong> {{ form.instance.bio }}</p>
+
+    <a href="{% url 'homepage' %}">Back to Homepage</a>
 </body>
 </html>

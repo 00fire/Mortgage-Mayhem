@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
-    <link rel="stylesheet" href="{% static 'main.css' %}">
+    <link rel="stylesheet" href="{% static 'homepage.css' %}">
     <!--DELETE THIS LATER, ONLY FOR TESTING, WILL GO LATER INTO A CSS FILE-->
     <style>
         
@@ -24,6 +24,9 @@
 </head>
 <body>
     <h1>homepage</h1>
+    <a href="{% url 'profile_info' %}">
+        <img class="profile-icon" src="{% static 'path_to_profile_image.png' %}" alt="Profile">
+    </a>
     <p>
         <div class="properties">
         {% for property in properties %}
