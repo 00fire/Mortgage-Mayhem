@@ -9,7 +9,7 @@
 <body>
     <h1>Create a New User</h1>
 
-    <form method="POST" action="{% url 'user_profile' %}">
+    <form method="POST" action="{% url 'signup' %}">
         {% csrf_token %}
         {{ form.as_p }}  <!-- Render form fields here -->
         <button type="submit">Submit</button>

@@ -18,7 +18,7 @@ Including another URLconf
 # main/urls.py
 from django.contrib import admin
 from django.urls import include, path
-from app2.urls import views # Correct import
+
 # urlpatterns = [
 #     #path('', include('havenwatch.urls')),  # Havenwatch for the root path
 #     #path('admin/', admin.site.urls),  # Admin path
@@ -38,9 +38,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     
     path('admin/', admin.site.urls),  # Admin path
-    path('app2/', include('app2.urls')),
-    path('accounts/login/', views.login_view, name='login'), 
-    path('', views.index_,name='index_'),
+    path('', include('app2.urls')),
+    
     
     #path('', views.index_,name='index_'),
     #path("/register", views.register, name="register"),

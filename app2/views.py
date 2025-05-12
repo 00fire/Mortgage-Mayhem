@@ -1,20 +1,24 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, authenticate
-from app2.forms import UserPForm
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 # Create your views here.
 from .forms import PropertyForm
 from app2.models import Properties
 
-
-
+from django.contrib import messages
+from .forms import SignUpForm, ProfileForm, ProfileEditForm
 
 
 
 from app2.models import UserProfile
 from app2.forms import UserProfileForm
+
+
+def root_redirect(request):
+    return redirect("login")
 @login_required#this renders the homepage
 def homepage(request):
     properties=Properties.objects.all()
@@ -52,43 +56,56 @@ def index_(request):
         return redirect('login')  # Redirect to login if not authenticated
     return render(request, 'login.html')
 
-def register(request):
-    form = UserCreationForm()
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')  # After registration, go to login page
-    return render(request, "register/register.html", {"form": form})
+# def register(request):
+#     form = UserCreationForm()
+#     if request.method == 'POST':
+#         form = UserCreationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('login')  # After registration, go to login page
+#     return render(request, "register/register.html", {"form": form})
+
+
+
+
 
 # The @login_required decorator ensures that the user must be logged in to access this view
 
 
 #@login_required
-def user_profile(request):
-    if request.method == 'POST':
-        form = UserPForm(request.POST)  # Initialize form with POST data
-        if form.is_valid():
-            username=form.cleaned_data.get('username')
+# def user_profile(request):
+#     if request.method == 'POST':
+#         form = UserPForm(request.POST)  # Initialize form with POST data
+#         if form.is_valid():
+#             username=form.cleaned_data.get('username')
 
-            if User.objects.filter(username=username).exists():
-                form.add_error('username','this username is already taken.')
-            else:
-                form.save()  # Save the form data to the database
-                print("FORM IS VALID")
-                print("Request method: ", request.method)
-                print("Form data: ", request.POST)
-            return redirect('success')  # Redirect after saving to a success page
-        else:
-            print(form.errors)  # Print form validation errors to the console
-            print("Request method: ", request.method)
-            print("Form data: ", request.POST)
-    else:
-        form = UserPForm()  # Initialize an empty form for GET request
+#             if User.objects.filter(username=username).exists():
+#                 form.add_error('username','this username is already taken.')
+#             else:
+#                 form.save()  # Save the form data to the database
+#                 print("FORM IS VALID")
+#                 print("Request method: ", request.method)
+#                 print("Form data: ", request.POST)
+#             return redirect('success')  # Redirect after saving to a success page
+#         else:
+#             print(form.errors)  # Print form validation errors to the console
+#             print("Request method: ", request.method)
+#             print("Form data: ", request.POST)
+#     else:
+#         form = UserPForm()  # Initialize an empty form for GET request
 
-    return render(request, 'home.html', {'form': form})  # Pass form to template
+#     return render(request, 'home.html', {'form': form})  # Pass form to template
 
+@login_required
+def edit_profile(request):
+    form = ProfileEditForm(request.POST or None,
+                           request.FILES or None,
+                           instance=request.user.profile)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        return redirect("profile_info")
 
+    return render(request, "profile/edit_profile.html", {"form": form})
 
 def success(request):
     return render(request, 'success.html')  # Display success message
@@ -110,7 +127,44 @@ def property_detail(request, id):
     return render(request, 'property_detail.html', {'property': property})
 
 
+def login_view(request):
+    login_form = AuthenticationForm(request, data=request.POST or None)
 
+    if request.method == "POST" and login_form.is_valid():
+        login(request, login_form.get_user())
+        return redirect("homepage")
+
+    return render(request, "login.html", {"login_form": login_form})
+
+def signup_view(request):
+    if request.method == "POST":
+        user_form    = SignUpForm(request.POST)
+        profile_form = ProfileForm(request.POST, request.FILES)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            # 1) create the user
+            user = user_form.save(commit=False)
+            user.is_active = True
+            user.save()
+
+            # 2) create / attach profile
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            profile.save()
+
+            # 3) log them straight in
+            login(request, user)
+            messages.success(request, "Welcome, your account was created.")
+            return redirect("homepage")               # <- url‑name for /home/
+    else:
+        user_form    = SignUpForm()
+        profile_form = ProfileForm()
+
+    return render(
+        request,
+        "signup.html",                               # template you showed
+        {"user_form": user_form, "profile_form": profile_form},
+    )
 
 @login_required
 def profile_info(request):
