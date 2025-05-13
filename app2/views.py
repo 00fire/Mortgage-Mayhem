@@ -144,9 +144,9 @@ def signup_view(request):
         profile_form = ProfileForm()
 
     return render(
-        request,
-        {"user_form": user_form, "profile_form": profile_form},
-    )
+    request,
+    "signup.html",
+    {"user_form": user_form, "profile_form": profile_form},)
 
 @login_required
 def profile_info(request):
