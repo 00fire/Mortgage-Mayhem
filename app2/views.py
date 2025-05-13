@@ -18,6 +18,10 @@ from app2.forms import UserProfileForm
 from .decorators import seller_required
 from .decorators import buyer_required
 
+
+
+
+
 def root_redirect(request):
     return redirect("login")
 @login_required#this renders the homepage
@@ -131,24 +135,49 @@ def signup_view(request):
 
 @login_required
 def profile_info(request):
-    # Get the current user's profile or create a new one if it doesn't exist
+    # -- 1) Profile edit form --
     profile, created = UserProfile.objects.get_or_create(user=request.user)
-
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect('profile_info')  # Redirect to the same profile page after saving
+            return redirect('profile_info')
     else:
         form = UserProfileForm(instance=profile)
-    
-    return render(request, 'profile_info.html', {'form': form})
+
+    # 2 Seller dashboard bits
+    # All properties this user has listed
+    my_listings = Properties.objects.filter(seller=request.user)
+
+    # All offers other people have made against my listings
+    incoming_offers = PurchaseOffer.objects.filter(
+        property__seller=request.user,
+        status='pending'
+    ).order_by('-created_at')
+
+    # -- 3) Buyer dashboard bits --
+    # All offers I’ve made
+    my_offers = PurchaseOffer.objects.filter(buyer=request.user)
+
+    # All properties I’ve successfully purchased (accepted offers)
+    purchased_properties = Properties.objects.filter(
+        offers__buyer=request.user,
+        offers__status='accepted'
+    ).distinct()
+
+    return render(request, 'profile_info.html', {
+        'form': form,
+        'my_listings': my_listings,
+        'incoming_offers': incoming_offers,
+        'my_offers': my_offers,
+        'purchased_properties': purchased_properties,
+    })
 
 
 
 
 
-@seller_required
+@login_required
 def add_property(request):
     if request.method=='POST':
         form=PropertyForm(request.POST,request.FILES)
@@ -196,7 +225,10 @@ def make_offer(request, property_id):
         "property": prop,
     })
 
-
+@login_required
+def seller_dashboard(request):
+    incoming=PurchaseOffer.objects.filter(property__seller=request.user).order_by("-created_at")
+    return render(request,"seller_dashboard.html",{"incoming_offers":incoming,})
 
 
 

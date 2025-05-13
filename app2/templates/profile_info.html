@@ -2,23 +2,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Information</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Your Profile</title>
+  <link rel="stylesheet" href="{% static 'profile_info.css' %}">
 </head>
 <body>
-    <h1>Your Profile</h1>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Update Profile</button>
-    </form>
+  <h1>Your Profile</h1>
 
-    <h2>Current Profile Picture</h2>
-    <img src="{{ form.instance.profile_picture.url }}" alt="Profile Picture" width="150" height="150">
-    
-    <p><strong>Bio:</strong> {{ form.instance.bio }}</p>
+  {# —————————————————————————————— #}
+  {# 1 Edit‐profile form (unchanged)   #}
+  {# —————————————————————————————— #}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Update Profile</button>
+  </form>
 
-    <a href="{% url 'homepage' %}">Back to Homepage</a>
+  <h2>Current Profile Picture</h2>
+  <img
+    src="{{ form.instance.profile_picture.url }}"
+    alt="Profile Picture"
+    width="150" height="150"
+  >
+  <p><strong>Bio:</strong> {{ form.instance.bio }}</p>
+
+  <hr>
+
+  {# —————————————————————————————— #}
+  {# 2 Seller: My Listings             #}
+  {# —————————————————————————————— #}
+  <h2>Properties I’m Selling</h2>
+  {% if my_listings %}
+    <ul>
+      {% for prop in my_listings %}
+        <li>
+          <a href="{% url 'property_detail' prop.id %}">
+            {{ prop.property_city }} — ${{ prop.property_price }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You aren’t selling any properties. <a href="{% url 'add_property' %}">Add one now</a>.</p>
+  {% endif %}
+
+  <h3>Incoming Offers</h3>
+  {% if incoming_offers %}
+    <ul>
+      {% for offer in incoming_offers %}
+        <li>
+          {{ offer.buyer.username }} offered ${{ offer.offer_price }}
+          on <a href="{% url 'property_detail' offer.property.id %}">
+            {{ offer.property.property_city }}
+          </a>
+          (<a href="{% url 'respond_offer' offer.id %}">Respond</a>)
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No pending offers on your listings.</p>
+  {% endif %}
+
+  <hr>
+
+  {# —————————————————————————————— #}
+  {# 3 Buyer: My Offers                #}
+  {# —————————————————————————————— #}
+  <h2>My Offers</h2>
+  {% if my_offers %}
+    <ul>
+      {% for offer in my_offers %}
+        <li>
+          On <a href="{% url 'property_detail' offer.property.id %}">
+            {{ offer.property.property_city }}
+          </a> you offered ${{ offer.offer_price }} —
+          {{ offer.status|capfirst }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You haven’t made any offers yet.</p>
+  {% endif %}
+
+  <hr>
+
+  {# —————————————————————————————— #}
+  {# 4 Buyer: Purchased Properties     #}
+  {# —————————————————————————————— #}
+  <h2>Purchased Properties</h2>
+  {% if purchased_properties %}
+    <ul>
+      {% for prop in purchased_properties %}
+        <li>
+          <a href="{% url 'property_detail' prop.id %}">
+            {{ prop.property_city }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You haven’t completed any purchases yet.</p>
+  {% endif %}
+
+  <hr>
+
+  <p><a href="{% url 'homepage' %}">← Back to Homepage</a></p>
 </body>
 </html>

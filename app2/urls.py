@@ -19,6 +19,7 @@ urlpatterns = [
     path('add_property/',views.add_property, name='add_property'),
     path("property/<int:property_id>/offer/",views.make_offer,name="make_offer",),
     path('property_detail/<int:id>/', views.property_detail, name='property_detail'),
+    path("seller/dashboard/",views.seller_dashboard,name="seller_dashboard"),
     path('success/', views.success, name='success'),
     #path('register/', views.register, name='register'),
     
