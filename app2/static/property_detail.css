@@ -1,0 +1,32 @@
+.property-detail-wrapper {
+  position: relative;  /* so absolute children are positioned inside this */
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+
+
+/* Container that holds the offer button */
+.offer-btn-container {
+  position: absolute;
+  bottom: 2rem;    /* distance from bottom of wrapper */
+  right: 2rem;     /* distance from right edge */
+}
+
+/* Style your button */
+.make-offer-btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: #ffb20c;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: background-color .2s ease;
+}
+
+.make-offer-btn:hover {
+  background-color: #e0a700;
+}

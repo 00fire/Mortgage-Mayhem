@@ -12,10 +12,11 @@ from django.contrib import messages
 from .forms import SignUpForm, ProfileForm, ProfileEditForm
 
 
-
-from app2.models import UserProfile
+from .forms import PurchaseOfferForm
+from app2.models import UserProfile,PurchaseOffer
 from app2.forms import UserProfileForm
-
+from .decorators import seller_required
+from .decorators import buyer_required
 
 def root_redirect(request):
     return redirect("login")
@@ -56,45 +57,7 @@ def index_(request):
         return redirect('login')  # Redirect to login if not authenticated
     return render(request, 'login.html')
 
-# def register(request):
-#     form = UserCreationForm()
-#     if request.method == 'POST':
-#         form = UserCreationForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('login')  # After registration, go to login page
-#     return render(request, "register/register.html", {"form": form})
 
-
-
-
-
-# The @login_required decorator ensures that the user must be logged in to access this view
-
-
-#@login_required
-# def user_profile(request):
-#     if request.method == 'POST':
-#         form = UserPForm(request.POST)  # Initialize form with POST data
-#         if form.is_valid():
-#             username=form.cleaned_data.get('username')
-
-#             if User.objects.filter(username=username).exists():
-#                 form.add_error('username','this username is already taken.')
-#             else:
-#                 form.save()  # Save the form data to the database
-#                 print("FORM IS VALID")
-#                 print("Request method: ", request.method)
-#                 print("Form data: ", request.POST)
-#             return redirect('success')  # Redirect after saving to a success page
-#         else:
-#             print(form.errors)  # Print form validation errors to the console
-#             print("Request method: ", request.method)
-#             print("Form data: ", request.POST)
-#     else:
-#         form = UserPForm()  # Initialize an empty form for GET request
-
-#     return render(request, 'home.html', {'form': form})  # Pass form to template
 
 @login_required
 def edit_profile(request):
@@ -185,6 +148,53 @@ def profile_info(request):
 
 
 
+@seller_required
+def add_property(request):
+    if request.method=='POST':
+        form=PropertyForm(request.POST,request.FILES)
+        if form.is_valid():
+            prop=form.save(commit=False)
+            prop.seller=request.user
+            prop.save()
+            return redirect('homepage')
+        else:
+            form=PropertyForm()
+        return render(request, "add_property.html",{"form":form})
+
+@buyer_required
+def make_offer(request, property_id):
+    # 1) fetch the property if it’s still unsold
+    prop = get_object_or_404(
+        Properties,
+        pk=property_id,
+        property_sold_status=False
+    )
+
+    # 2) look up any existing offer (but do NOT create one yet)
+    existing = PurchaseOffer.objects.filter(
+        property=prop,
+        buyer=request.user
+    ).first()
+
+    if request.method == "POST":
+        # 3a) bind POST data to a form — reusing existing instance if there is one
+        form = PurchaseOfferForm(request.POST, instance=existing)
+        if form.is_valid():
+            offer = form.save(commit=False)
+            offer.property = prop
+            offer.buyer   = request.user
+            offer.status  = "pending"
+            offer.save()
+            messages.success(request, "Your offer has been submitted.")
+            return redirect("property_detail", id=property_id)
+    else:
+        # 3b) just display the empty (or pre-filled) form
+        form = PurchaseOfferForm(instance=existing)
+
+    return render(request, "offer_form.html", {
+        "form": form,
+        "property": prop,
+    })
 
 
 
@@ -197,11 +207,45 @@ def profile_info(request):
 
 
 
+# def register(request):
+#     form = UserCreationForm()
+#     if request.method == 'POST':
+#         form = UserCreationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('login')  # After registration, go to login page
+#     return render(request, "register/register.html", {"form": form})
 
 
 
 
 
+# The @login_required decorator ensures that the user must be logged in to access this view
+
+
+#@login_required
+# def user_profile(request):
+#     if request.method == 'POST':
+#         form = UserPForm(request.POST)  # Initialize form with POST data
+#         if form.is_valid():
+#             username=form.cleaned_data.get('username')
+
+#             if User.objects.filter(username=username).exists():
+#                 form.add_error('username','this username is already taken.')
+#             else:
+#                 form.save()  # Save the form data to the database
+#                 print("FORM IS VALID")
+#                 print("Request method: ", request.method)
+#                 print("Form data: ", request.POST)
+#             return redirect('success')  # Redirect after saving to a success page
+#         else:
+#             print(form.errors)  # Print form validation errors to the console
+#             print("Request method: ", request.method)
+#             print("Form data: ", request.POST)
+#     else:
+#         form = UserPForm()  # Initialize an empty form for GET request
+
+#     return render(request, 'home.html', {'form': form})  # Pass form to template
 
 
 

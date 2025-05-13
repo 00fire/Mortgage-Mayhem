@@ -1,9 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
-# Create your models here.
+from django.conf import settings
+
 from .utils.uploads import upload_to_profile, upload_to_property
+
+
+
 class UserProfile(models.Model):
+    ROLE_CHOICES=(('buyer','Buyer'),('seller','Seller'))
+
     user= models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    role=models.CharField(max_length=10,choices=ROLE_CHOICES,default='buyer')
     bio=models.TextField(max_length=500, blank=True,null=True)
     profile_picture = models.ImageField(
         upload_to=upload_to_profile,
@@ -59,15 +66,27 @@ class PropertyImage(models.Model):
 
 
 class PurchaseOffer(models.Model):
-    property = models.ForeignKey(Properties, on_delete=models.CASCADE)
-    buyer = models.ForeignKey('UserProfile', on_delete=models.CASCADE, limit_choices_to={'role': 'buyer'})
-    offerprice = models.IntegerField()
+    STATUS_CHOICES=[('pending',   'Pending'),
+        ('accepted',  'Accepted'),
+        ('rejected',  'Rejected'),
+        ('contingent','Contingent'),
+        ('finalized', 'Finalized'),]
+    property = models.ForeignKey(Properties, on_delete=models.CASCADE,related_name='offers')
+    buyer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='offers_made',
+        limit_choices_to={'profile__role': 'buyer'}
+    )
+    offer_price = models.DecimalField(max_digits=12,decimal_places=2)
     expiration_date = models.DateField()
-    status = models.TextField()  # pending/accepted/rejected/contingent
-    create_at_time = models.DateTimeField()
-
+    status = models.CharField(max_length=10,choices=STATUS_CHOICES,default='pending')  
+    created_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        unique_together = (('property', 'buyer'),)
+        ordering = ['-created_at']
     def __str__(self):
-        return f"{self.property}, {self.buyer}, {self.offerprice}, {self.status}"
+        return f"{self.buyer.username} → {self.property.title} @ {self.offer_price}"
 
 
 class FinalizedOffer(models.Model):
