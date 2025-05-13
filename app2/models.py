@@ -5,6 +5,14 @@ class UserProfile(models.Model):
     user= models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     bio=models.TextField(max_length=500, blank=True,null=True)
     profile_picture= models.ImageField(upload_to='profile_pics/',default='default.jpg')
+
+    role = models.CharField(max_length=255) # e.g. Buyer/Seller
+
+    acc_made_time = models.DateTimeField(auto_now_add=True)
+    street = models.CharField(max_length=255, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
+    postal = models.CharField(max_length=20, null=True, blank=True)
+    logo = models.ImageField(upload_to='sellers/logos/', null=True, blank=True)
     
     def __str__(self):
         return self.user.username
@@ -34,3 +42,45 @@ class Properties(models.Model):
     
     def __str__(self):
             return f"{self.property_street}, {self.property_city}, {self.property_country}"
+
+
+class PropertyImage(models.Model):
+    property = models.ForeignKey(Properties, related_name='images', on_delete=models.CASCADE)
+    image_url = models.TextField()
+    position = models.IntegerField()
+
+    def __str__(self):
+            return f"{self.property}, {self.image_url}"
+
+
+
+class PurchaseOffer(models.Model):
+    property = models.ForeignKey(Properties, on_delete=models.CASCADE)
+    buyer = models.ForeignKey('UserProfile', on_delete=models.CASCADE, limit_choices_to={'role': 'buyer'})
+    offerprice = models.IntegerField()
+    expiration_date = models.DateField()
+    status = models.TextField()  # pending/accepted/rejected/contingent
+    create_at_time = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.property}, {self.buyer}, {self.offerprice}, {self.status}"
+
+
+class FinalizedOffer(models.Model):
+    purchase_offer = models.ForeignKey(PurchaseOffer, on_delete=models.CASCADE)
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    postal = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
+    national_pid = models.CharField(max_length=255)
+    pay_method = models.TextField()  # credit/banktransfer/mortgage
+    card_name = models.TextField()
+    card_num = models.IntegerField()
+    expiration_date_card = models.TextField()
+    cvc = models.IntegerField(max_length=3)
+    bank_acc = models.TextField()
+    mortgage_prov = models.TextField()
+    confirm_time = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.purchase_offer}, {self.card_name}, {self.national_pid}, {self.street}"
