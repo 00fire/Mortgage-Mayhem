@@ -77,7 +77,7 @@ class FinalizedOffer(models.Model):
     card_name = models.TextField()
     card_num = models.IntegerField()
     expiration_date_card = models.TextField()
-    cvc = models.IntegerField(max_length=3)
+    cvc = models.IntegerField()
     bank_acc = models.TextField()
     mortgage_prov = models.TextField()
     confirm_time = models.DateTimeField()
