@@ -6,17 +6,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'homepage.css' %}">
     <!--DELETE THIS LATER, ONLY FOR TESTING, WILL GO LATER INTO A CSS FILE-->
-    <style>
-        
-        div.fixed {
-          position: fixed;
-          top: 0;
-          right: 0;
-          width: 100px;
-          border: 3px solid #ffb20c;
-        }
-        </style>
-
+   
 
     <title>homepage</title>
     
@@ -24,9 +14,13 @@
 </head>
 <body>
     <h1>homepage</h1>
-    <a href="{% url 'profile_info' %}">
-        <img class="profile-icon" src="{% static 'path_to_profile_image.png' %}" alt="Profile">
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'profile_info' %}" class="fixed">
+      <img class="profile-icon"
+           src="{{ request.user.profile.profile_picture.url }}"
+           alt="{{ request.user.username }}">
     </a>
+{% endif %}
     <p>
         <div class="properties">
         {% for property in properties %}

@@ -1,10 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
+from .utils.uploads import upload_to_profile, upload_to_property
 class UserProfile(models.Model):
     user= models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     bio=models.TextField(max_length=500, blank=True,null=True)
-    profile_picture= models.ImageField(upload_to='profile_pics/',default='default.jpg')
+    profile_picture = models.ImageField(
+        upload_to=upload_to_profile,
+        default="profile_pics/default.jpg",
+        blank=True,)
 
     role = models.CharField(max_length=255) # e.g. Buyer/Seller
 
