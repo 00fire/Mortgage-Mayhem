@@ -20,6 +20,9 @@ urlpatterns = [
     path("property/<int:property_id>/offer/",views.make_offer,name="make_offer",),
     path('property_detail/<int:id>/', views.property_detail, name='property_detail'),
     path("seller/dashboard/",views.seller_dashboard,name="seller_dashboard"),
+    path('seller/listings/',views.seller_listings,name='seller_listings'),
+    path('seller/offer/<int:offer_id>/', views.respond_offer, name='respond_offer'),
+    path("seller/offers/",views.incoming_offers,name="incoming_offers"),
     path('success/', views.success, name='success'),
     #path('register/', views.register, name='register'),
     

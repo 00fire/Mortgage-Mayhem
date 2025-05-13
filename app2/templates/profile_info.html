@@ -10,9 +10,12 @@
 <body>
   <h1>Your Profile</h1>
 
-  {# —————————————————————————————— #}
-  {# 1 Edit‐profile form (unchanged)   #}
-  {# —————————————————————————————— #}
+    <a href="{% url 'incoming_offers' %}">
+        Incoming Offers
+        {% if incoming_count %}
+            <span class="badge">{{ incoming_count }}</span>
+        {% endif %}
+    </a>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
@@ -29,9 +32,7 @@
 
   <hr>
 
-  {# —————————————————————————————— #}
-  {# 2 Seller: My Listings             #}
-  {# —————————————————————————————— #}
+ 
   <h2>Properties I’m Selling</h2>
   {% if my_listings %}
     <ul>
@@ -43,6 +44,9 @@
         </li>
       {% endfor %}
     </ul>
+    <p>
+        <a href="{% url 'add_property' %}" class="btn">+ Add another listing</a>
+    </p>
   {% else %}
     <p>You aren’t selling any properties. <a href="{% url 'add_property' %}">Add one now</a>.</p>
   {% endif %}
@@ -66,9 +70,7 @@
 
   <hr>
 
-  {# —————————————————————————————— #}
-  {# 3 Buyer: My Offers                #}
-  {# —————————————————————————————— #}
+ 
   <h2>My Offers</h2>
   {% if my_offers %}
     <ul>
@@ -87,9 +89,7 @@
 
   <hr>
 
-  {# —————————————————————————————— #}
-  {# 4 Buyer: Purchased Properties     #}
-  {# —————————————————————————————— #}
+
   <h2>Purchased Properties</h2>
   {% if purchased_properties %}
     <ul>

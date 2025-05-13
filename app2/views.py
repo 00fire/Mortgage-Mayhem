@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 # Create your views here.
 from .forms import PropertyForm
 from app2.models import Properties
-
+from django.http import HttpResponseForbidden
 from django.contrib import messages
 from .forms import SignUpForm, ProfileForm, ProfileEditForm
 
@@ -18,7 +18,7 @@ from app2.forms import UserProfileForm
 from .decorators import seller_required
 from .decorators import buyer_required
 
-
+from django.utils import timezone
 
 
 
@@ -76,17 +76,33 @@ def edit_profile(request):
 
 def success(request):
     return render(request, 'success.html')  # Display success message
+from django.shortcuts import render, redirect
+from django.http import HttpResponseForbidden
+@login_required
 
 
 def add_property(request):
-    if request.method=='POST':
-        form=PropertyForm(request.POST,request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('homepage')
-        else:
-            form=PropertyForm
-    return render(request,'add_property.html',{'form':form})
+    # only sellers may list
+    #if request.user.profile.role != "seller":
+        return HttpResponseForbidden("Only sellers may list properties.")
+
+    # # handle form POST
+    # if request.method == "POST":
+    #     form = PropertyForm(request.POST, request.FILES)
+    #     if form.is_valid():
+    #         prop = form.save(commit=False)
+    #         prop.seller = request.user
+    #         prop.save()
+    #         return redirect("homepage")
+    #     # if form is invalid, we’ll fall through and re-render with errors
+
+    # else:
+    #     # GET: show empty form
+    #     form = PropertyForm()
+
+    # # GET _or_ invalid POST both end up here
+    
+    # return render(request, "add_property.html", {"form": form})
 
 
 def property_detail(request, id):
@@ -122,20 +138,19 @@ def signup_view(request):
             # 3) log them straight in
             login(request, user)
             messages.success(request, "Welcome, your account was created.")
-            return redirect("homepage")               # <- url‑name for /home/
+            return redirect("homepage")               
     else:
         user_form    = SignUpForm()
         profile_form = ProfileForm()
 
     return render(
         request,
-        "signup.html",                               # template you showed
         {"user_form": user_form, "profile_form": profile_form},
     )
 
 @login_required
 def profile_info(request):
-    # -- 1) Profile edit form --
+    
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
@@ -145,31 +160,27 @@ def profile_info(request):
     else:
         form = UserProfileForm(instance=profile)
 
-    # 2 Seller dashboard bits
-    # All properties this user has listed
+    
     my_listings = Properties.objects.filter(seller=request.user)
-
-    # All offers other people have made against my listings
     incoming_offers = PurchaseOffer.objects.filter(
         property__seller=request.user,
         status='pending'
     ).order_by('-created_at')
+    incoming_count = incoming_offers.count()
 
-    # -- 3) Buyer dashboard bits --
-    # All offers I’ve made
+    # Buyer dashboard bits
     my_offers = PurchaseOffer.objects.filter(buyer=request.user)
-
-    # All properties I’ve successfully purchased (accepted offers)
     purchased_properties = Properties.objects.filter(
         offers__buyer=request.user,
         offers__status='accepted'
     ).distinct()
-
+    incoming_count = incoming_offers.count()
     return render(request, 'profile_info.html', {
-        'form': form,
-        'my_listings': my_listings,
-        'incoming_offers': incoming_offers,
-        'my_offers': my_offers,
+        'form':               form,
+        'my_listings':        my_listings,
+        'incoming_offers':    incoming_offers,
+        'incoming_count':     incoming_count,      # <–– add this
+        'my_offers':          my_offers,
         'purchased_properties': purchased_properties,
     })
 
@@ -179,6 +190,8 @@ def profile_info(request):
 
 @login_required
 def add_property(request):
+    if request.user.profile.role !='seller':
+        return HttpResponseForbidden("Only sellers can list properties")
     if request.method=='POST':
         form=PropertyForm(request.POST,request.FILES)
         if form.is_valid():
@@ -186,9 +199,9 @@ def add_property(request):
             prop.seller=request.user
             prop.save()
             return redirect('homepage')
-        else:
+    else:
             form=PropertyForm()
-        return render(request, "add_property.html",{"form":form})
+    return render(request, "add_property.html",{"form":form})
 
 @buyer_required
 def make_offer(request, property_id):
@@ -229,6 +242,61 @@ def make_offer(request, property_id):
 def seller_dashboard(request):
     incoming=PurchaseOffer.objects.filter(property__seller=request.user).order_by("-created_at")
     return render(request,"seller_dashboard.html",{"incoming_offers":incoming,})
+
+
+def seller_listings(request):
+    if request.user.profile.role !='seller':
+        return HttpResponseForbidden()
+    my_listings=Properties.objects.filter(seller=request.user)
+    incoming=PurchaseOffer.objects.filter(property__seller=request.user,status='pending').order_by('-created_at')
+    return render(request,'seller_listings.html',{'listings':my_listings,'incoming_offers':incoming,})
+
+
+@login_required
+def respond_offer(request,offer_id):
+    offer=get_object_or_404(PurchaseOffer,pk=offer_id)
+    if request.user != offer.property.seller:
+        return HttpResponseForbidden()
+    
+    if request.method=='POST':
+        action=request.POST.get('action')
+        if action=='accept':
+            offer.status='accepted'
+            offer.property.property_sold_status=True
+            offer.property.save()
+            messages.success(request,f"Offer #{offer.id} accepted.")
+        else:
+            offer.status='rejected'
+            messages.info(request,f"Offer #{offer.id} rejected")
+        offer.save()
+        return redirect('seller_listings')
+    return render(request,'respond_offer.html',{'offer':offer})
+
+
+@login_required
+def incoming_offers(request):
+    if request.user.profile.role !='seller':
+        return HttpResponseForbidden()
+    offers=PurchaseOffer.objects.filter(property__seller=request.user,status='pending').select_related('buyer','property')
+    return render(request,"seller_incoming_offers.html",{"offers":offers})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
