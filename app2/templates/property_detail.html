@@ -6,8 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ property.property_city }} – Property Details</title>
   <link rel="stylesheet" href="{% static 'property_detail.css' %}">
+  <link rel="stylesheet" href="{% static 'css/messages.css' %}">
 </head>
 <body>
+  {% include "_messages.html" %}
   <div class="property-detail-wrapper">
     <h1>{{ property.property_city }} – Property Details</h1>
 

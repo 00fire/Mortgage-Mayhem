@@ -17,6 +17,7 @@ from app2.models import UserProfile,PurchaseOffer
 from app2.forms import UserProfileForm
 from .decorators import seller_required
 from .decorators import buyer_required
+from django.contrib import messages
 
 from django.utils import timezone
 
@@ -213,21 +214,12 @@ def add_property(request):
 
 @buyer_required
 def make_offer(request, property_id):
-    # 1) fetch the property if it’s still unsold
-    prop = get_object_or_404(
-        Properties,
-        pk=property_id,
-        property_sold_status=False
-    )
-
-    # 2) look up any existing offer (but do NOT create one yet)
-    existing = PurchaseOffer.objects.filter(
-        property=prop,
-        buyer=request.user
-    ).first()
+    
+    prop = get_object_or_404(Properties,pk=property_id,property_sold_status=False)
+    existing = PurchaseOffer.objects.filter(property=prop,buyer=request.user).first()
 
     if request.method == "POST":
-        # 3a) bind POST data to a form — reusing existing instance if there is one
+        
         form = PurchaseOfferForm(request.POST, instance=existing)
         if form.is_valid():
             offer = form.save(commit=False)
