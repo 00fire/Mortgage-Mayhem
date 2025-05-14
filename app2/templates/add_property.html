@@ -1,31 +1,16 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Add a New Property</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Property</title>
 </head>
 <body>
-  <h1>Add a New Property</h1>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-
-    <h2>Additional Photos</h2>
-    {{ formset.management_form }}
-    <ul style="list-style:none; padding:0;">
-      {% for imgf in formset %}
-        <li>
-          {{ imgf.image.label_tag }} {{ imgf.image }}
-          {% if imgf.DELETE %}
-            {{ imgf.DELETE }} <label>Remove?</label>
-          {% endif %}
-        </li>
-      {% endfor %}
-    </ul>
-
-    <button type="submit">Add Property</button>
-  </form>
-  <p><a href="{% url 'profile_info' %}">← Back to My Profile</a></p>
+    <h1>Add a New Property</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Property</button>
+    </form>
 </body>
 </html>

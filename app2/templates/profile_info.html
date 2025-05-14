@@ -2,120 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Your Profile</title>
-  <link rel="stylesheet" href="{% static 'profile_info.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Information</title>
 </head>
 <body>
-  <div class="profile-container">
-
-    <header class="profile-header">
-      <h1>Your Profile</h1>
-      {% if form.instance.profile_picture %}
-        <img class="avatar" src="{{ form.instance.profile_picture.url }}" 
-             alt="{{ request.user.username }}">
-      {% endif %}
-    </header>
-
-    {# --------- PROFILE FORM --------- #}
-    <section class="profile-edit">
-      <h2>Edit your info</h2>
-      <form method="post" enctype="multipart/form-data" class="edit-form">
+    <h1>Your Profile</h1>
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn-primary">Update Profile</button>
-      </form>
-    </section>
+        <button type="submit">Update Profile</button>
+    </form>
 
-    {# --------- SELLER SECTIONS --------- #}
-    {% if request.user.profile.role == "seller" %}
-    <section class="seller-panel">
-      <h2>Properties I’m Selling</h2>
-      {% if my_listings %}
-        <ul class="listing-list">
-          {% for prop in my_listings %}
-          <li>
-            <a href="{% url 'property_detail' prop.id %}">
-              {{ prop.property_city }} — ${{ prop.property_price }}
-            </a>
-          </li>
-          {% endfor %}
-        </ul>
-        <p><a class="btn-secondary" href="{% url 'add_property' %}">+ Add another listing</a></p>
-      {% else %}
-        <p>You don’t have any active listings. <a href="{% url 'add_property' %}">Create one now</a>.</p>
-      {% endif %}
+    <h2>Current Profile Picture</h2>
+    <img src="{{ form.instance.profile_picture.url }}" alt="Profile Picture" width="150" height="150">
+    
+    <p><strong>Bio:</strong> {{ form.instance.bio }}</p>
 
-      <h2>Incoming Offers <small>{% if incoming_count %}<span class="badge">{{ incoming_count }}</span>{% endif %}</small></h2>
-      {% if incoming_offers %}
-        <ul class="offer-list">
-          {% for offer in incoming_offers %}
-          <li>
-            <strong>{{ offer.buyer.username }}</strong> offered 
-            <em>${{ offer.offer_price }}</em> on 
-            <a href="{% url 'property_detail' offer.property.id %}">
-              {{ offer.property.property_city }}
-            </a>
-            <a class="btn-action" href="{% url 'respond_offer' offer.id %}">Respond</a>
-          </li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <p>No pending offers on your listings.</p>
-      {% endif %}
-    </section>
-    {% endif %}
-
-    {# --------- BUYER SECTIONS --------- #}
-    {% if request.user.profile.role == "buyer" %}
-    <section class="buyer-panel">
-      <h2>My Offers</h2>
-      {% if my_offers %}
-        <ul class="offer-list">
-          {% for offer in my_offers %}
-          <li>
-            On 
-            <a href="{% url 'property_detail' offer.property.id %}">
-              {{ offer.property.property_city }}
-            </a> you offered 
-            <em>${{ offer.offer_price }}</em> — 
-            {{ offer.status|capfirst }}
-          </li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <p>You haven’t made any offers yet.</p>
-      {% endif %}
-    </section>
-    {% endif %}
-
-    {# --------- OWNED PROPERTIES --------- #}
-    <section class="owned-panel">
-      <h2>Properties I Own</h2>
-      {% if my_owned %}
-        <ul class="listing-list">
-          {% for prop in my_owned %}
-          <li>
-            <a href="{% url 'property_detail' prop.id %}">
-              {{ prop.property_city }}
-            </a>
-            {% if prop.property_sold_status %}
-              <span class="badge sold">Sold</span>
-            {% else %}
-              <span class="badge for-sale">For Sale</span>
-            {% endif %}
-          </li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <p>You don’t own any properties yet.</p>
-      {% endif %}
-    </section>
-
-    <footer class="profile-footer">
-      <a href="{% url 'homepage' %}">&larr; Back to Homepage</a>
-    </footer>
-  </div>
+    <a href="{% url 'homepage' %}">Back to Homepage</a>
 </body>
 </html>
