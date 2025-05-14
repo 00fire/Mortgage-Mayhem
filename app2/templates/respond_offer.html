@@ -1,5 +1,11 @@
-{% extends "base.html" %}
-{% block content %}
+{# app2/templates/respond_offer.html #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Respond to Offer #{{ offer.id }}</title>
+</head>
+<body>
   <h1>Respond to Offer #{{ offer.id }}</h1>
 
   <p>
@@ -19,4 +25,5 @@
   </form>
 
   <p><a href="{% url 'seller_listings' %}">&larr; Back to Listings</a></p>
-{% endblock %}
+</body>
+</html>

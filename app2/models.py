@@ -44,12 +44,9 @@ class Properties(models.Model):
     property_bathrooms = models.IntegerField()
     property_square_meters_size = models.DecimalField(max_digits=10,decimal_places=3)
     property_sold_status = models.BooleanField(default=False)
-    seller=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="listings")
+    seller = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="listings")
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="owned_properties",null=True,blank=True,)
     property_image=models.ImageField(upload_to='propert_images/',blank=True,null=True)
-    #property_available_from=models.DateField()
-    #property_available_to= models.DateField()
-    #property_owner=models.ForeignKey(User,on_delete)
-    #property_
     
     def __str__(self):
             return f"{self.property_street}, {self.property_city}, {self.property_country}"
