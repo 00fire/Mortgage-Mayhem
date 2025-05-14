@@ -150,8 +150,8 @@ def signup_view(request):
 
 @login_required
 def profile_info(request):
-    
-    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    # — Profile form handling (unchanged) —
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
@@ -160,28 +160,35 @@ def profile_info(request):
     else:
         form = UserProfileForm(instance=profile)
 
-    
-    my_listings = Properties.objects.filter(seller=request.user)
-    incoming_offers = PurchaseOffer.objects.filter(
-        property__seller=request.user,
-        status='pending'
-    ).order_by('-created_at')
-    incoming_count = incoming_offers.count()
+    # — Seller dashboard bits (only if role == 'seller') —
+    if request.user.profile.role == 'seller':
+        my_listings = Properties.objects.filter(
+            seller=request.user,
+            property_sold_status=False
+        )
+        incoming_offers = PurchaseOffer.objects.filter(
+            property__seller=request.user,
+            status='pending'
+        ).order_by('-created_at')
+        incoming_count = incoming_offers.count()
+    else:
+        my_listings = Properties.objects.none()
+        incoming_offers = Properties.objects.none()
+        incoming_count = 0
 
-    # Buyer dashboard bits
+    # — Buyer dashboard bits —
     my_offers = PurchaseOffer.objects.filter(buyer=request.user)
-    purchased_properties = Properties.objects.filter(
-        offers__buyer=request.user,
-        offers__status='accepted'
-    ).distinct()
-    incoming_count = incoming_offers.count()
+
+    # — Everything I own (regardless of role) —
+    my_owned = Properties.objects.filter(owner=request.user)
+
     return render(request, 'profile_info.html', {
-        'form':               form,
-        'my_listings':        my_listings,
-        'incoming_offers':    incoming_offers,
-        'incoming_count':     incoming_count,      # <–– add this
-        'my_offers':          my_offers,
-        'purchased_properties': purchased_properties,
+        'form':             form,
+        'incoming_offers':  incoming_offers,
+        'incoming_count':   incoming_count,
+        'my_listings':      my_listings,
+        'my_offers':        my_offers,
+        'my_owned':         my_owned,
     })
 
 
@@ -197,6 +204,7 @@ def add_property(request):
         if form.is_valid():
             prop=form.save(commit=False)
             prop.seller=request.user
+            prop.owner=request.user
             prop.save()
             return redirect('homepage')
     else:
@@ -253,24 +261,36 @@ def seller_listings(request):
 
 
 @login_required
-def respond_offer(request,offer_id):
-    offer=get_object_or_404(PurchaseOffer,pk=offer_id)
+def respond_offer(request, offer_id):
+    offer = get_object_or_404(PurchaseOffer, pk=offer_id)
     if request.user != offer.property.seller:
         return HttpResponseForbidden()
-    
-    if request.method=='POST':
-        action=request.POST.get('action')
-        if action=='accept':
-            offer.status='accepted'
-            offer.property.property_sold_status=True
-            offer.property.save()
-            messages.success(request,f"Offer #{offer.id} accepted.")
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'accept':
+            #  mark the offer accepted
+            offer.status = 'accepted'
+            offer.save()
+
+           #transfer ownership & mark sold
+            prop = offer.property
+            prop.property_sold_status = True
+            prop.owner = offer.buyer
+            prop.save()
+
+            messages.success(request, f"Offer #{offer.id} accepted and ownership transferred.")
         else:
-            offer.status='rejected'
-            messages.info(request,f"Offer #{offer.id} rejected")
-        offer.save()
-        return redirect('seller_listings')
-    return render(request,'respond_offer.html',{'offer':offer})
+            offer.status = 'rejected'
+            offer.save()
+            messages.info(request, f"Offer #{offer.id} rejected.")
+
+        # redirect back to _your_ profile dashboard
+        return redirect('profile_info')
+
+    # GET: show the “accept / reject” form
+    return render(request, 'respond_offer.html', {'offer': offer})
+
 
 
 @login_required
