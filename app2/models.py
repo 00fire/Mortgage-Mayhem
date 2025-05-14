@@ -5,6 +5,15 @@ from django.conf import settings
 from .utils.uploads import upload_to_profile, upload_to_property
 
 
+PROPERTY_TYPE_CHOICES = [
+    ('villa',     'Villa'),
+    ('house',     'House'),
+    ('townhouse', 'Townhouse'),
+    ('apartment', 'Apartment'),
+    ('castle',    'Castle'),
+]
+
+
 
 class UserProfile(models.Model):
     ROLE_CHOICES=(('buyer','Buyer'),('seller','Seller'))
@@ -39,6 +48,7 @@ class Properties(models.Model):
     property_postal = models.CharField(max_length=255)
     property_price = models.DecimalField(max_digits=20,decimal_places=2)
     property_description = models.TextField()
+    property_type=models.CharField(max_length=20,choices=PROPERTY_TYPE_CHOICES,default='house',help_text="most fitting description.")
     property_rooms = models.IntegerField()
     property_bedrooms = models.IntegerField()
     property_bathrooms = models.IntegerField()
@@ -47,6 +57,7 @@ class Properties(models.Model):
     seller = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="listings")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="owned_properties",null=True,blank=True,)
     property_image=models.ImageField(upload_to='propert_images/',blank=True,null=True)
+    listed_at=models.DateField(auto_now_add=True)
     
     def __str__(self):
             return f"{self.property_street}, {self.property_city}, {self.property_country}"

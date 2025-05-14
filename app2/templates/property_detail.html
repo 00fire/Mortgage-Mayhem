@@ -5,16 +5,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ property.property_city }} – Property Details</title>
+  <!-- messages.css just handles your flash‐message styling -->
   <link rel="stylesheet" href="{% static 'css/messages.css' %}">
+  <!-- your own detail page styles -->
   <link rel="stylesheet" href="{% static 'property_detail.css' %}">
 </head>
 <body>
+
+  {# — include a tiny partial that loops django messages into styled alerts — #}
   {% include "_messages.html" %}
 
   <div class="property-detail-wrapper">
     <h1>{{ property.property_city }} – Property Details</h1>
 
-    {# — Cover Image: prefer first extra image, else fallback to property_image, else default.png — #}
+    {# — Cover image: first extra upload, else main image, else default — #}
     {% with cover=property.images.first %}
       {% if cover %}
         <img src="{{ cover.image.url }}"
@@ -31,7 +35,7 @@
       {% endif %}
     {% endwith %}
 
-    {# — Gallery of all extra images — #}
+    {# — Gallery of all extra images (thumbnails, lightbox, etc) — #}
     {% if property.images.exists %}
       <div class="gallery">
         {% for img in property.images.all %}
@@ -51,12 +55,17 @@
       <p><strong>Bedrooms:</strong> {{ property.property_bedrooms }}</p>
       <p><strong>Bathrooms:</strong> {{ property.property_bathrooms }}</p>
       <p><strong>Size:</strong> {{ property.property_square_meters_size }} m²</p>
+      <p><strong>Listed on:</strong> {{ property.listed_at|date:"F j, Y" }}</p>
+      {% if property.property_sold_status %}
+        <p class="sold-flag">⚑ Sold</p>
+      {% endif %}
     </div>
 
     <p><a href="{% url 'homepage' %}">← Back to Homepage</a></p>
+
     <p>User: {{ request.user.username }} (role={{ request.user.profile.role }})</p>
 
-    {# buyer-only “Make an Offer” button #}
+    {# — buyer-only “Make an Offer” button — #}
     {% if request.user.is_authenticated and request.user.profile.role == "buyer" and not property.property_sold_status and property.seller != request.user %}
       <div class="offer-btn-container">
         <a href="{% url 'make_offer' property.id %}"
@@ -66,5 +75,6 @@
       </div>
     {% endif %}
   </div>
+
 </body>
 </html>

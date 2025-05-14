@@ -32,7 +32,7 @@ class PropertyForm(forms.ModelForm):
         model=Properties
         fields=['property_country', 'property_street', 'property_city', 'property_postal', 
                   'property_price', 'property_description', 'property_rooms', 'property_bedrooms', 
-                  'property_bathrooms', 'property_square_meters_size', 'property_sold_status', 'property_image']
+                  'property_bathrooms', 'property_square_meters_size', 'property_sold_status', 'property_image','property_type']
 
 
 class SignUpForm(UserCreationForm):
