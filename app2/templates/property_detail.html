@@ -7,6 +7,7 @@
     <title>{{ property.property_city }} - Property Details</title>
 </head>
 <body>
+    {% include "components/header.html" %}
     <h1>{{ property.property_city }} - Property Details</h1>
 
     <div class="property-detail">
@@ -25,5 +26,6 @@
 
         <a href="{% url 'homepage' %}">Back to Homepage</a>
     </div>
+    {% include "components/footer.html" %}
 </body>
 </html>

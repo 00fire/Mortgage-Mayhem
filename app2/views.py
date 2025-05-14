@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, authenticate
 
+from app2.models import Properties
+from django.db.models import Q
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 # Create your views here.
@@ -180,6 +183,63 @@ def profile_info(request):
         form = UserProfileForm(instance=profile)
     
     return render(request, 'profile_info.html', {'form': form})
+
+
+def search_properties(request):
+    """
+    View function to handle property search queries.
+
+    Allows users to search for properties based on partial matches in
+    the street, city, or country fields of the Properties model.
+
+    Accepts:
+        - GET parameter 'q': the search query string
+
+    Returns:
+        - Rendered HTML page ('search_page.html') with a context variable
+          'properties' containing the filtered queryset.
+    """
+    
+    # Retrieve the value of the search query from the GET request
+    query = request.GET.get('q')
+    city = request.GET.getlist('city')  # multiple cities via checkbox
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    rooms = request.GET.getlist('rooms')  # filter by room count
+
+    # Get all properties initially
+    properties = Properties.objects.all()
+
+    if query:
+         # Q objects allow combining filters using | (OR), & (AND), and ~ (NOT)
+        # __icontains performs a case-insensitive partial string match
+        properties = properties.filter(
+            Q(property_street__icontains=query) |
+            Q(property_city__icontains=query) |
+            Q(property_country__icontains=query)
+        )
+
+    if city:
+        properties = properties.filter(property_city__in=city)
+
+    if rooms:
+        properties = properties.filter(property_rooms__in=rooms)
+
+    if min_price:
+        properties = properties.filter(property_price__gte=min_price)
+    if max_price:
+        properties = properties.filter(property_price__lte=max_price)
+
+    all_cities = Properties.objects.values_list('property_city', flat=True).distinct()
+    all_rooms = Properties.objects.values_list('property_rooms', flat=True).distinct()
+
+    # Render the search results in the 'search_page.html' template
+    return render(request, 'search_page.html', {
+        'properties': properties,
+        'all_cities': all_cities,
+        'all_rooms': all_rooms,
+    })
+
 
 
 

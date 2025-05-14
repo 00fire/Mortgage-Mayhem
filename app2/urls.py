@@ -19,6 +19,7 @@ urlpatterns = [
     path('property_detail/<int:id>/', views.property_detail, name='property_detail'),
     path('success/', views.success, name='success'),
     #path('register/', views.register, name='register'),
+    path('search/', views.search_properties, name='search_properties'),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
