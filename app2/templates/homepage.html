@@ -1,43 +1,78 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'homepage.css' %}">
-    <!--DELETE THIS LATER, ONLY FOR TESTING, WILL GO LATER INTO A CSS FILE-->
-    <style>
-        
-        div.fixed {
-          position: fixed;
-          top: 0;
-          right: 0;
-          width: 100px;
-          border: 3px solid #ffb20c;
-        }
-        </style>
-
-
-    <title>homepage</title>
-    
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage</title>
+  <link rel="stylesheet" href="{% static 'homepage.css' %}">
 </head>
 <body>
-    <h1>homepage</h1>
-    <a href="{% url 'profile_info' %}">
-        <img class="profile-icon" src="{% static 'path_to_profile_image.png' %}" alt="Profile">
+
+  <h1>Homepage</h1>
+
+  {% if request.user.is_authenticated %}
+    <a href="{% url 'profile_info' %}" class="fixed">
+      <img class="profile-icon"
+           src="{{ request.user.profile.profile_picture.url }}"
+           alt="{{ request.user.username }}">
     </a>
-    <p>
-        <div class="properties">
-        {% for property in properties %}
-            <div class="property">
-                <h2>{{ property.property_city }}</h2>
-                <img src="{{ property.property_image.url }}" alt="{{ property.property_city }}" width="150" height="150">
-                <p>{{ property.property_description }}</p>
-                <a href="{% url 'property_detail' property.id %}">View Details</a>
-            </div>
-        {% endfor %}
+  {% endif %}
+
+  <div class="property-container">
+    {% for property in properties %}
+      <div class="property-item">
+
+        {# — CARD HEADER: title + listing date — #}
+        <div class="property-header">
+          <h2>{{ property.property_city }}</h2>
+          <p class="listed-date">
+            Listed: {{ property.listed_at|date:"M j, Y" }}
+          </p>
         </div>
-        
+
+        <div class="property-contents">
+
+          {# — THUMBNAIL: first extra image or fallback — #}
+          {% with thumb=property.images.first %}
+            {% if thumb %}
+              <a href="{% url 'property_detail' property.id %}">
+                <img src="{{ thumb.image.url }}"
+                     alt="{{ property.property_city }}"
+                     class="card-img">
+              </a>
+            {% elif property.property_image %}
+              <a href="{% url 'property_detail' property.id %}">
+                <img src="{{ property.property_image.url }}"
+                     alt="{{ property.property_city }}"
+                     class="card-img">
+              </a>
+            {% else %}
+              <a href="{% url 'property_detail' property.id %}">
+                <img src="{% static 'images/default-thumb.png' %}"
+                     alt="No image"
+                     class="card-img">
+              </a>
+            {% endif %}
+          {% endwith %}
+
+          {# — SOLD RIBBON overlay — #}
+          {% if property.property_sold_status %}
+            <div class="sold-ribbon">Sold</div>
+          {% endif %}
+
+          {# — CARD BODY — #}
+          <div class="property-text-box">
+            <p class="property-text">${{ property.property_price }}</p>
+            <a href="{% url 'property_detail' property.id %}" class="btn">
+              View Details
+            </a>
+          </div>
+
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
 </body>
 </html>
