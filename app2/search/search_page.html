@@ -1,0 +1,10 @@
+<form method="get">
+  <input type="text" name="q" placeholder="Search location..." value="{{ request.GET.q }}">
+  <button type="submit">Search</button>
+</form>
+
+<ul>
+  {% for prop in properties %}
+    <li>{{ prop.property_street }} - {{ prop.property_city }} - {{ prop.property_price }}</li>
+  {% endfor %}
+</ul>

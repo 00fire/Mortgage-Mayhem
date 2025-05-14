@@ -1,80 +1,31 @@
-{% load static %}
+<!-- property_detail.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ property.property_city }} – Property Details</title>
-  <!-- messages.css just handles your flash‐message styling -->
-  <link rel="stylesheet" href="{% static 'css/messages.css' %}">
-  <!-- your own detail page styles -->
-  <link rel="stylesheet" href="{% static 'property_detail.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ property.property_city }} - Property Details</title>
 </head>
 <body>
+    {% include "components/header.html" %}
+    <h1>{{ property.property_city }} - Property Details</h1>
 
-  {# — include a tiny partial that loops django messages into styled alerts — #}
-  {% include "_messages.html" %}
+    <div class="property-detail">
+        <img src="{{ property.property_image.url }}" alt="{{ property.property_city }}" width="300" height="200">
+        
+        <p><strong>City:</strong> {{ property.property_city }}</p>
+        <p><strong>Street:</strong> {{ property.property_street }}</p>
+        <p><strong>Description:</strong> {{ property.property_description }}</p>
+        <p><strong>Price:</strong> ${{ property.property_price }}</p>
+        <p><strong>Rooms:</strong> {{ property.property_rooms }}</p>
+        <p><strong>Bedrooms:</strong> {{ property.property_bedrooms }}</p>
+        <p><strong>Bathrooms:</strong> {{ property.property_bathrooms }}</p>
+        <p><strong>Square Meters:</strong> {{ property.property_square_meters_size }} m²</p>
 
-  <div class="property-detail-wrapper">
-    <h1>{{ property.property_city }} – Property Details</h1>
+        <!-- Add more details as necessary -->
 
-    {# — Cover image: first extra upload, else main image, else default — #}
-    {% with cover=property.images.first %}
-      {% if cover %}
-        <img src="{{ cover.image.url }}"
-             alt="{{ property.property_city }} cover"
-             class="cover-image">
-      {% elif property.property_image %}
-        <img src="{{ property.property_image.url }}"
-             alt="{{ property.property_city }} cover"
-             class="cover-image">
-      {% else %}
-        <img src="{% static 'images/default-thumb.png' %}"
-             alt="No image available"
-             class="cover-image">
-      {% endif %}
-    {% endwith %}
-
-    {# — Gallery of all extra images (thumbnails, lightbox, etc) — #}
-    {% if property.images.exists %}
-      <div class="gallery">
-        {% for img in property.images.all %}
-          <img src="{{ img.image.url }}"
-               alt="Photo {{ forloop.counter }}"
-               class="gallery-image">
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    <div class="property-details">
-      <p><strong>City:</strong> {{ property.property_city }}</p>
-      <p><strong>Street:</strong> {{ property.property_street }}</p>
-      <p><strong>Description:</strong> {{ property.property_description }}</p>
-      <p><strong>Price:</strong> ${{ property.property_price }}</p>
-      <p><strong>Rooms:</strong> {{ property.property_rooms }}</p>
-      <p><strong>Bedrooms:</strong> {{ property.property_bedrooms }}</p>
-      <p><strong>Bathrooms:</strong> {{ property.property_bathrooms }}</p>
-      <p><strong>Size:</strong> {{ property.property_square_meters_size }} m²</p>
-      <p><strong>Listed on:</strong> {{ property.listed_at|date:"F j, Y" }}</p>
-      {% if property.property_sold_status %}
-        <p class="sold-flag">⚑ Sold</p>
-      {% endif %}
+        <a href="{% url 'homepage' %}">Back to Homepage</a>
     </div>
-
-    <p><a href="{% url 'homepage' %}">← Back to Homepage</a></p>
-
-    <p>User: {{ request.user.username }} (role={{ request.user.profile.role }})</p>
-
-    {# — buyer-only “Make an Offer” button — #}
-    {% if request.user.is_authenticated and request.user.profile.role == "buyer" and not property.property_sold_status and property.seller != request.user %}
-      <div class="offer-btn-container">
-        <a href="{% url 'make_offer' property.id %}"
-           class="btn make-offer-btn">
-          Make an Offer
-        </a>
-      </div>
-    {% endif %}
-  </div>
-
+    {% include "components/footer.html" %}
 </body>
 </html>
