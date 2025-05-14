@@ -54,11 +54,13 @@ class Properties(models.Model):
 
 class PropertyImage(models.Model):
     property = models.ForeignKey(Properties, related_name='images', on_delete=models.CASCADE)
-    image_url = models.TextField()
-    position = models.IntegerField()
+    image = models.ImageField(upload_to="property_images/")
+    position    = models.PositiveSmallIntegerField(default=0,help_text="Sort order: lower numbers come first.")
+    class Meta:
+        ordering = ["position", "pk"]
 
     def __str__(self):
-            return f"{self.property}, {self.image_url}"
+        return f"{self.property} — img#{self.pk}"
 
 
 

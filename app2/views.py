@@ -22,7 +22,8 @@ from django.contrib import messages
 from django.utils import timezone
 
 
-
+from .forms import PropertyForm, PropertyImageFormSet
+from .models import Properties, PropertyImage
 def root_redirect(request):
     return redirect("login")
 @login_required#this renders the homepage
@@ -82,28 +83,7 @@ from django.http import HttpResponseForbidden
 @login_required
 
 
-def add_property(request):
-    # only sellers may list
-    #if request.user.profile.role != "seller":
-        return HttpResponseForbidden("Only sellers may list properties.")
 
-    # # handle form POST
-    # if request.method == "POST":
-    #     form = PropertyForm(request.POST, request.FILES)
-    #     if form.is_valid():
-    #         prop = form.save(commit=False)
-    #         prop.seller = request.user
-    #         prop.save()
-    #         return redirect("homepage")
-    #     # if form is invalid, we’ll fall through and re-render with errors
-
-    # else:
-    #     # GET: show empty form
-    #     form = PropertyForm()
-
-    # # GET _or_ invalid POST both end up here
-    
-    # return render(request, "add_property.html", {"form": form})
 
 
 def property_detail(request, id):
@@ -200,17 +180,25 @@ def profile_info(request):
 def add_property(request):
     if request.user.profile.role !='seller':
         return HttpResponseForbidden("Only sellers can list properties")
+    
     if request.method=='POST':
-        form=PropertyForm(request.POST,request.FILES)
-        if form.is_valid():
-            prop=form.save(commit=False)
+        prop_form=PropertyForm(request.POST,request.FILES)
+        img_formset=PropertyImageFormSet(request.POST,request.FILES,queryset=PropertyImage.objects.none())
+        #form=PropertyForm(request.POST,request.FILES)
+        
+        if prop_form.is_valid() and img_formset.is_valid():
+            prop=prop_form.save(commit=False)
             prop.seller=request.user
             prop.owner=request.user
             prop.save()
-            return redirect('homepage')
+            for form in img_formset:
+                if form.cleaned_data.get('image'):
+                    PropertyImage.objects.create(property=prop,image=form.cleaned_data['image'])
+            return redirect('profile_info')
     else:
-            form=PropertyForm()
-    return render(request, "add_property.html",{"form":form})
+            prop_form=PropertyForm()
+            img_formset=PropertyImageFormSet(queryset=PropertyImage.objects.none())
+    return render(request, "add_property.html",{"form":prop_form,'formset':img_formset,})
 
 @buyer_required
 def make_offer(request, property_id):
@@ -310,7 +298,28 @@ def incoming_offers(request):
 
 
 
+#def add_property(request):
+    # only sellers may list
+    #if request.user.profile.role != "seller":
+        #return HttpResponseForbidden("Only sellers may list properties.")
 
+    # # handle form POST
+    # if request.method == "POST":
+    #     form = PropertyForm(request.POST, request.FILES)
+    #     if form.is_valid():
+    #         prop = form.save(commit=False)
+    #         prop.seller = request.user
+    #         prop.save()
+    #         return redirect("homepage")
+    #     # if form is invalid, we’ll fall through and re-render with errors
+
+    # else:
+    #     # GET: show empty form
+    #     form = PropertyForm()
+
+    # # GET _or_ invalid POST both end up here
+    
+    # return render(request, "add_property.html", {"form": form})
 
 
 
