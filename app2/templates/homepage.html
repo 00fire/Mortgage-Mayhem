@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +7,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'homepage.css' %}">
     <title>homepage</title>
+    
 </head>
 <body>
     <h1>homepage</h1>
@@ -18,19 +20,24 @@
       </a>
     {% endif %}
 
-    <div class="properties">
+    <div class="property-container">
       {% for property in properties %}
-        <div class="property">
+        <div class="property-item">
           <h2>{{ property.property_city }}</h2>
+          <div class="property-contents">
 
           {% if property.property_image %}
-            <img src="{{ property.property_image.url }}"
-                 alt="{{ property.property_city }}"
-                 width="150" height="150">
+            <a href="{% url 'property_detail' property.id %}">
+                <img src="{{ property.property_image.url }}"
+                    alt="{{ property.property_city }}"
+                    width="150" height="150">
+            </a>
           {% endif %}
-
-          <p>{{ property.property_description }}</p>
-          <a href="{% url 'property_detail' property.id %}">View Details</a>
+                <div class="property-text-box">
+                    <p class="property-text">{{ property.property_price }} $</p>
+                    <a href="{% url 'property_detail' property.id %}">View Details</a>
+                </div>
+            </div>
         </div>
       {% endfor %}
     </div>
