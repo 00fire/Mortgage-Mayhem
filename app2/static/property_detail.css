@@ -1,8 +1,22 @@
+body {
+  font-family: sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background: #121212;
+  color: #ffffff;
+}
+
+
 .property-detail-wrapper {
   position: relative;  /* so absolute children are positioned inside this */
   padding: 2rem;
   max-width: 800px;
-  margin: 0 auto;
+  margin: 2rem auto;
+  color: rgb(255, 255, 255);
+  background-color: #3d3d3d;
+  border: 7px solid #FF8C00;
+  border-radius: 6px;
 }
 
 
@@ -18,17 +32,16 @@
 .make-offer-btn {
   display: inline-block;
   padding: 0.75rem 1.5rem;
-  background-color: #ffb20c;
+  background-color: #0ca3c9;
   color: #fff;
   text-decoration: none;
   border-radius: 4px;
   font-size: 1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   transition: background-color .2s ease;
 }
 
 .make-offer-btn:hover {
-  background-color: #e0a700;
+  background-color: #0a7e9b;
 }
 
 
@@ -37,7 +50,7 @@
   max-width: 100%;
   height: auto;
   margin-bottom: 1rem;
-  border: 7px solid #ffb20c;
+  border: 7px solid #FF8C00;
   border-radius: 6px;
 }
 
@@ -54,5 +67,14 @@
   object-fit: cover;
   border-radius: 4px;
   cursor: pointer;
+  border: 3px solid #FF8C00;
   /* optionally add a lightbox onclick behavior later */
+}
+
+.sold-flag{
+  display: inline-block;
+  padding: 0.75rem 1rem;
+  background-color: #e02e2e;
+  border: 3px solid #8d1d1d;
+  border-radius: 4px;
 }
