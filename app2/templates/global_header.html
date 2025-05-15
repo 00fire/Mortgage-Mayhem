@@ -10,10 +10,13 @@
     <!-- Center: Search Form -->
     <div class="header-center">
       <form method="get" action="{% url 'homepage' %}" class="search-form">
-        <!-- Quick Search -->
-        <input type="text" name="q" placeholder="Search city, country..." value="{{ current_query }}">
 
-        <!-- Filters -->
+        <!-- Standalone Wide Search Bar -->
+        <div class="search-main">
+          <input type="text" name="q" placeholder="Search city, country..." value="{{ current_query }}" class="search-field">
+        </div>
+
+        <!-- Filters Row -->
         <div class="filters">
           <input type="text" name="street_name" placeholder="Street name" value="{{ street_name }}">
           <input type="text" name="postal_code" placeholder="Postal code" value="{{ postal_code }}">
@@ -27,10 +30,11 @@
             <option value="price" {% if order_by == 'price' %}selected{% endif %}>Price</option>
             <option value="name" {% if order_by == 'name' %}selected{% endif %}>Name</option>
           </select>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn">Search</button>
         </div>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn">Search</button>
       </form>
     </div>
 
