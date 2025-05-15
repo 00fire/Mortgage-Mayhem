@@ -33,18 +33,17 @@
         {% endif %}
       </li>
 
-      {% with method=payment_info.pay_method|default:payment_info.payment_option %}
-        {% if method == "credit_card" %}
-          <li>Cardholder: {{ payment_info.cardholder_name }}</li>
-          <li>Card Number: **** **** **** {{ payment_info.card_num|slice:"-4:" }}</li>
-          <li>Expiry: {{ payment_info.expiration_date_card }}</li>
-          <li>CVC: •••</li>
-        {% elif method == "bank_transfer" %}
-          <li>Bank Account: {{ payment_info.bank_acc }}</li>
-        {% elif method == "mortgage" %}
-          <li>Mortgage Provider: {{ payment_info.mortgage_prov }}</li>
-        {% endif %}
-      {% endwith %}
+      {% if payment_info.pay_method %}
+        {% with method=payment_info.pay_method %}
+          {% include "components/_render_payment_method.html" %}
+        {% endwith %}
+      {% elif payment_info.payment_option %}
+        {% with method=payment_info.payment_option %}
+          {% include "components/_render_payment_method.html" %}
+        {% endwith %}
+      {% else %}
+        <li>No payment method data available.</li>
+      {% endif %}
     </ul>
 
     <form method="post" class="centered-box">
