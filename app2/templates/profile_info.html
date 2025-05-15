@@ -18,7 +18,6 @@
       {% endif %}
     </header>
 
-    {# --------- PROFILE FORM --------- #}
     <section class="profile-edit">
       <h2>Edit your info</h2>
       <form method="post" enctype="multipart/form-data" class="edit-form">
@@ -48,7 +47,6 @@
       </form>
     </section>
 
-    {# --------- SELLER SECTIONS --------- #}
     {% if request.user.profile.role == "seller" %}
     <section class="seller-panel">
       <h2>Properties I’m Selling</h2>
@@ -87,7 +85,6 @@
     </section>
     {% endif %}
 
-    {# --------- BUYER SECTIONS --------- #}
     {% if request.user.profile.role == "buyer" %}
     <section class="buyer-panel">
       <h2>My Offers</h2>
@@ -101,6 +98,13 @@
             </a> you offered 
             <em>${{ offer.offer_price }}</em> — 
             {{ offer.status|capfirst }}
+            {% if offer.status|lower == "accepted" or offer.status|lower == "contingent" %}
+              {% if offer.finalized %}
+                <span class="badge done">✔ Finalized</span>
+              {% else %}
+                <a class="btn-action" href="{% url 'contact_info' offer.property.id %}">Finalize Purchase</a>
+              {% endif %}
+            {% endif %}
           </li>
           {% endfor %}
         </ul>
@@ -110,7 +114,6 @@
     </section>
     {% endif %}
 
-    {# --------- OWNED PROPERTIES --------- #}
     <section class="owned-panel">
       <h2>Properties I Own</h2>
       {% if my_owned %}

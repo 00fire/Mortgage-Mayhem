@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Confirmation</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+
+  <h1>Purchase Confirmed!</h1>
+  <p>Thank you for finalizing your purchase. The property is now marked as sold and assigned to your account.</p>
+
+  <a href="{% url 'homepage' %}">← Back to Homepage</a>
+
+</body>
+</html>

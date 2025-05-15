@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Review and Confirm</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+
+  <h1>Review Your Information</h1>
+
+  <h2>Contact Information</h2>
+  <ul>
+    <li>Street: {{ contact_info.street_name }}</li>
+    <li>City: {{ contact_info.city }}</li>
+    <li>Postal Code: {{ contact_info.postal_code }}</li>
+    <li>Country: {{ contact_info.country }}</li>
+    <li>National ID: {{ contact_info.national_pid }}</li>
+  </ul>
+
+  <h2>Payment Information</h2>
+  <ul>
+    <li>
+      Method:
+      {% if payment_info.pay_method %}
+        {{ payment_info.pay_method }}
+      {% elif payment_info.payment_option %}
+        {{ payment_info.payment_option }}
+      {% else %}
+        Unknown
+      {% endif %}
+    </li>
+
+    {% if payment_info.pay_method %}
+      {% with method=payment_info.pay_method %}
+        {% if method == "credit_card" %}
+          <li>Cardholder: {{ payment_info.cardholder_name }}</li>
+          <li>Card Number: **** **** **** {{ payment_info.card_num|slice:"-4:" }}</li>
+          <li>Expiry: {{ payment_info.expiration_date_card }}</li>
+          <li>CVC: •••</li>
+        {% elif method == "bank_transfer" %}
+          <li>Bank Account: {{ payment_info.bank_acc }}</li>
+        {% elif method == "mortgage" %}
+          <li>Mortgage Provider: {{ payment_info.mortgage_prov }}</li>
+        {% endif %}
+      {% endwith %}
+    {% elif payment_info.payment_option %}
+      {% with method=payment_info.payment_option %}
+        {% if method == "credit_card" %}
+          <li>Cardholder: {{ payment_info.cardholder_name }}</li>
+          <li>Card Number: **** **** **** {{ payment_info.card_num|slice:"-4:" }}</li>
+          <li>Expiry: {{ payment_info.expiration_date_card }}</li>
+          <li>CVC: •••</li>
+        {% elif method == "bank_transfer" %}
+          <li>Bank Account: {{ payment_info.bank_acc }}</li>
+        {% elif method == "mortgage" %}
+          <li>Mortgage Provider: {{ payment_info.mortgage_prov }}</li>
+        {% endif %}
+      {% endwith %}
+    {% endif %}
+  </ul>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirm and Finalize</button>
+  </form>
+
+  <p><a href="{% url 'payment' property.id %}">&larr; Back to Payment</a></p>
+
+</body>
+</html>

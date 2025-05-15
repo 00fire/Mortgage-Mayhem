@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 # Create your views here.
 from .forms import PropertyForm
 from app2.models import Properties
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden,HttpResponse
 from django.contrib import messages
 from .forms import SignUpForm, ProfileForm, ProfileEditForm
 
@@ -29,6 +29,15 @@ from django.utils import timezone
 
 from .forms import PropertyForm, PropertyImageFormSet
 from .models import Properties, PropertyImage
+
+
+from .forms import ContactInfoForm, PaymentForm
+from .models import Properties, FinalizedOffer
+
+
+
+
+
 def root_redirect(request):
     return redirect("login")
 
@@ -186,7 +195,8 @@ def profile_info(request):
 
     # — Buyer dashboard bits —
     my_offers = PurchaseOffer.objects.filter(buyer=request.user)
-
+    for offer in my_offers:
+        offer.finalized = FinalizedOffer.objects.filter(purchase_offer=offer).exists()
     # — Everything I own (regardless of role) —
     my_owned = Properties.objects.filter(owner=request.user)
 
@@ -414,10 +424,10 @@ def respond_offer(request, offer_id):
             offer.save()
 
            #transfer ownership & mark sold
-            prop = offer.property
-            prop.property_sold_status = True
-            prop.owner = offer.buyer
-            prop.save()
+            # prop = offer.property
+            # prop.property_sold_status = True
+            # prop.owner = offer.buyer
+            # prop.save()
 
             messages.success(request, f"Offer #{offer.id} accepted and ownership transferred.")
         else:
@@ -479,5 +489,77 @@ def add_property(request):
     return render(request, "add_property.html",{"form":prop_form,'formset':img_formset,})
 
 
+def contact_info(request, property_id):
+    if request.method == 'POST':
+        form = ContactInfoForm(request.POST)
+        if form.is_valid():
+            print("POST received in contact_info")
+            request.session['contact_info'] = form.cleaned_data
+            return redirect('payment', property_id=property_id)
+    else:
+        form = ContactInfoForm(initial=request.session.get('contact_info', {}))
+
+    return render(request, 'contact_info.html', {'form': form})
 
 
+
+    
+def payment(request,property_id):
+    if request.method=='POST':
+        form=PaymentForm(request.POST)
+        if form.is_valid():
+            request.session['payment_info']=form.cleaned_data
+            return redirect('review',property_id=property_id)
+    else:
+        form=PaymentForm(initial=request.session.get('payment_info',{}))
+    return render(request,'payment.html',{'form':form})
+
+def review(request, property_id):
+    contact_info = request.session.get('contact_info', {}).copy()
+    payment_info = request.session.get('payment_info', {}).copy()
+    property = get_object_or_404(Properties, pk=property_id)
+
+    if 'payment_option' in payment_info:
+        payment_info['pay_method'] = payment_info.pop('payment_option')
+
+    if request.method == 'POST':
+        # Fetch the related offer first
+        offer = PurchaseOffer.objects.filter(
+            buyer=request.user,
+            property=property,
+            status__iexact='accepted'
+        ).first()
+
+        if not offer:
+            return HttpResponse("No matching accepted offer found", status=400)
+
+        # Create and save finalized offer all at once
+        finalized = FinalizedOffer.objects.create(
+            user=request.user,
+            property=property,
+            purchase_offer=offer,
+            **contact_info,
+            **payment_info
+        )
+
+        # Transfer ownership
+        property.owner = request.user
+        property.property_sold_status = True
+        property.save()
+
+        # Clean up
+        request.session.pop('contact_info', None)
+        request.session.pop('payment_info', None)
+
+        return redirect('confirmation')
+
+    return render(request, 'review.html', {
+        'contact_info': contact_info,
+        'payment_info': payment_info,
+        'property': property
+    })
+
+
+    
+def confirmation(request):
+    return render(request,'confirmation.html')

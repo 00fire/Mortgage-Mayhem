@@ -22,6 +22,16 @@ urlpatterns = [
     path("seller/offers/",views.incoming_offers,name="incoming_offers"),
     path('seller/<int:user_id>/', views.seller_profile, name='seller_profile'),
     path('success/', views.success, name='success'),
+    path('property/<int:property_id>/finalize/contact/', views.contact_info, name='contact_info'),
+    path('property/<int:property_id>/finalize/payment/', views.payment, name='payment'),
+    path('property/finalize/confirmation/', views.confirmation, name='confirmation'),
+    path('property/<int:property_id>/finalize/contact/', views.contact_info, name='contact_info'),
+    path('property/<int:property_id>/finalize/review/', views.review, name='review'),
+
+    
+
+
+
     
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

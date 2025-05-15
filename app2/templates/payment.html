@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Details</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentOption = document.getElementById('id_payment_option');
+
+            function togglePaymentFields() {
+                const option = paymentOption.value;
+                document.getElementById('credit_card_fields').style.display = option === 'credit_card' ? 'block' : 'none';
+                document.getElementById('bank_transfer_fields').style.display = option === 'bank_transfer' ? 'block' : 'none';
+                document.getElementById('mortgage_fields').style.display = option === 'mortgage' ? 'block' : 'none';
+            }
+
+            paymentOption.addEventListener('change', togglePaymentFields);
+
+            // Initialize on page load
+            togglePaymentFields();
+        });
+    </script>
+</head>
+<body>
+
+    <h2>Payment Details</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div>
+            <label for="id_payment_option">Payment Option:</label>
+            {{ form.payment_option }}
+        </div>
+
+        <div>
+            <label for="id_cardholder_name">Cardholder Name:</label>
+            {{ form.cardholder_name }}
+            {{ form.cardholder_name.errors }}
+        </div>
+
+        <div>
+            <label for="id_card_num">Credit Card Number:</label>
+            {{ form.card_num }}
+            {{ form.card_num.errors }}
+        </div>
+
+        <div>
+            <label for="id_expiration_date_card">Expiry Date (MM/YY):</label>
+            {{ form.expiration_date_card }}
+            {{ form.expiration_date_card.errors }}
+        </div>
+
+        <div>
+            <label for="id_cvc">CVC:</label>
+            {{ form.cvc }}
+            {{ form.cvc.errors }}
+        </div>
+
+        <div>
+            <label for="id_bank_acc">Bank Account:</label>
+            {{ form.bank_acc }}
+            {{ form.bank_acc.errors }}
+        </div>
+
+        <div>
+            <label for="id_mortgage_prov">Mortgage Provider:</label>
+            {{ form.mortgage_prov }}
+            {{ form.mortgage_prov.errors }}
+        </div>
+
+        <button type="submit">Next: Review Details</button>
+        </form>
+
+
+</body>
+</html>
