@@ -129,14 +129,19 @@ body {
 }
 
 /* Property Card Hover Image Zoom */
+.img-wrapper {
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
 .card-img {
-    display: block;
-    width: 20%;
-    height: auto;
-    max-height: 80px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
-    border-radius: 6px;
 }
 
 .property-card:hover .card-img {
