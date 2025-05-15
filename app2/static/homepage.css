@@ -18,20 +18,48 @@ body {
     font-family: Arial, sans-serif;
 }
 
+/* Header Layout */
+.site-header {
+    padding: 1rem 2rem;
+    background-color: var(--bg-darker);
+    border-bottom: 1px solid #333;
+}
+
+.header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.header-left h1 {
+    font-size: 1.5rem;
+    color: var(--accent-orange);
+    margin: 0;
+}
+
+.header-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 /* Search Form */
 .search-form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 1000px;
     width: 100%;
+    max-width: 1000px;
 }
 
 .filters {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    justify-content: space-between;
+    justify-content: center;
     width: 100%;
     margin-top: 1rem;
 }
@@ -39,7 +67,7 @@ body {
 .search-form input,
 .search-form select {
     flex: 1 1 280px;
-    padding: 0.35rem 0.6rem;
+    padding: 0.3rem 0.6rem;
     font-size: 0.9rem;
     border-radius: 6px;
     border: 1px solid var(--accent-glow);
@@ -86,7 +114,7 @@ body {
 .card-img {
     display: block;
     width: 100%;
-    height: 120px; /* smaller default height */
+    max-height: 100px; /* adjusted image height */
     object-fit: cover;
     transition: transform 0.3s ease;
     border-radius: 6px;
@@ -135,4 +163,17 @@ body {
     font-weight: bold;
     font-size: 0.85rem;
     pointer-events: none;
+}
+
+/* Responsive Header Fix */
+@media (max-width: 768px) {
+    .header-bar {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .filters {
+        flex-direction: column;
+        align-items: center;
+    }
 }
