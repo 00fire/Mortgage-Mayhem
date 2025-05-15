@@ -1,21 +1,58 @@
-<!-- app2/templates/signup.html -->
 {% load static %}
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8">
+<head>
+  <meta charset="utf-8">
   <link rel="stylesheet" href="{% static 'main.css' %}">
-  <title>Sign up • HavenWatch</title>
+  <title>Sign Up</title>
 </head>
 <body>
-  <h2>Create an account</h2>
-
+  <h1>Create an account</h1>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ user_form.as_p }}
-    {{ profile_form.as_p }}
-    <button type="submit">Sign up</button>
-  </form>
 
-  <p>Already registered? <a href="{% url 'login' %}">Log in</a></p>
+    {{ user_form.non_field_errors }}
+    <p>
+      {{ user_form.username.label_tag }}<br>
+      {{ user_form.username }}<br>
+      {{ user_form.username.errors }}
+    </p>
+    <p>
+      {{ user_form.password1.label_tag }}<br>
+      {{ user_form.password1 }}<br>
+      {{ user_form.password1.errors }}
+    </p>
+    <p>
+      {{ user_form.password2.label_tag }}<br>
+      {{ user_form.password2 }}<br>
+      {{ user_form.password2.errors }}
+    </p>
+
+    <fieldset>
+      <legend>{{ user_form.role.label }}</legend>
+      {{ user_form.role }}<br>
+      {{ user_form.role.errors }}
+    </fieldset>
+
+    <hr>
+
+    {{ profile_form.non_field_errors }}
+    <p>
+      {{ profile_form.bio.label_tag }}<br>
+      {{ profile_form.bio }}<br>
+      {{ profile_form.bio.errors }}
+    </p>
+    <p>
+      {{ profile_form.profile_picture.label_tag }}<br>
+      {{ profile_form.profile_picture }}<br>
+      {{ profile_form.profile_picture.errors }}
+    </p>
+
+    <button type="submit">Sign Up</button>
+  </form>
+  <p>
+    Already have an account?
+    <a href="{% url 'login' %}">Log in here</a>.
+  </p>
 </body>
 </html>

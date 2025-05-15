@@ -3,22 +3,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ property.property_city }} – Property Details</title>
-  <!-- messages.css just handles your flash‐message styling -->
   <link rel="stylesheet" href="{% static 'css/messages.css' %}">
-  <!-- your own detail page styles -->
   <link rel="stylesheet" href="{% static 'property_detail.css' %}">
 </head>
 <body>
 
-  {# — include a tiny partial that loops django messages into styled alerts — #}
   {% include "_messages.html" %}
 
   <div class="property-detail-wrapper">
     <h1>{{ property.property_city }} – Property Details</h1>
 
-    {# — Cover image: first extra upload, else main image, else default — #}
+    {# — Cover image — #}
     {% with cover=property.images.first %}
       {% if cover %}
         <img src="{{ cover.image.url }}"
@@ -30,12 +27,12 @@
              class="cover-image">
       {% else %}
         <img src="{% static 'images/default-thumb.png' %}"
-             alt="No image available"
+             alt="No image"
              class="cover-image">
       {% endif %}
     {% endwith %}
 
-    
+    {# — Gallery — #}
     {% if property.images.exists %}
       <div class="gallery">
         {% for img in property.images.all %}
@@ -47,34 +44,62 @@
     {% endif %}
 
     <div class="property-details">
-      <p><strong>City:</strong> {{ property.property_city }}</p>
       <p><strong>Street:</strong> {{ property.property_street }}</p>
+      <p><strong>City:</strong> {{ property.property_city }}</p>
+      <p><strong>Postal:</strong> {{ property.property_postal }}</p>
       <p><strong>Description:</strong> {{ property.property_description }}</p>
+      <p><strong>Type:</strong> {{ property.property_type }}</p>
       <p><strong>Price:</strong> ${{ property.property_price }}</p>
       <p><strong>Rooms:</strong> {{ property.property_rooms }}</p>
       <p><strong>Bedrooms:</strong> {{ property.property_bedrooms }}</p>
       <p><strong>Bathrooms:</strong> {{ property.property_bathrooms }}</p>
-      <p><strong>Type:</strong> {{ property.property_type }}</p>
       <p><strong>Size:</strong> {{ property.property_square_meters_size }} m²</p>
       <p><strong>Listed on:</strong> {{ property.listed_at|date:"F j, Y" }}</p>
+
+      {# — Show Seller if unsold; otherwise show only Owner — #}
+      {% if property.owner %}
+        <p>
+          <strong>Owner:</strong>
+          <a href="{% url 'seller_profile' property.owner.id %}">
+            {{ property.owner.username }}
+          </a>
+        </p>
+      {% else %}
+        <p>
+          <strong>Seller:</strong>
+          <a href="{% url 'seller_profile' property.seller.id %}">
+            {{ property.seller.username }}
+          </a>
+        </p>
+      {% endif %}
+
+      {# — Sold flag — #}
       {% if property.property_sold_status %}
         <p class="sold-flag">⚑ Sold</p>
       {% endif %}
     </div>
 
-    <p><a href="{% url 'homepage' %}">← Back to Homepage</a></p>
+    <hr>
 
-    <p>User: {{ request.user.username }} (role={{ request.user.profile.role }})</p>
-
-    {# — buyer-only “Make an Offer” button — #}
-    {% if request.user.is_authenticated and request.user.profile.role == "buyer" and not property.property_sold_status and property.seller != request.user %}
-      <div class="offer-btn-container">
-        <a href="{% url 'make_offer' property.id %}"
-           class="btn make-offer-btn">
-          Make an Offer
-        </a>
+    {# — Offer form only if unsold and user ≠ seller — #}
+    {% if offer_form %}
+      <div class="offer-form-wrapper">
+        <h2>
+          {% if existing_offer %}Update Your Offer{% else %}Make an Offer{% endif %}
+        </h2>
+        <form method="post">
+          {% csrf_token %}
+          {{ offer_form.as_p }}
+          <button type="submit">
+            {% if existing_offer %}Update Offer{% else %}Submit Offer{% endif %}
+          </button>
+        </form>
       </div>
+      <hr>
     {% endif %}
+
+    <p><a href="{% url 'homepage' %}">← Back to Homepage</a></p>
+    <p>User: {{ request.user.username }} (role={{ request.user.profile.role }})</p>
   </div>
 
 </body>

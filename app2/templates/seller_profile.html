@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ seller.username }} – Seller Profile</title>
+  <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+</head>
+<body>
+  <h1>{{ seller.username }}</h1>
+
+  {# Profile picture + logo #}
+  {% if profile.profile_picture %}
+    <img src="{{ profile.profile_picture.url }}"
+         alt="{{ seller.username }}’s picture"
+         class="profile-pic">
+  {% endif %}
+  {% if profile.logo %}
+    <img src="{{ profile.logo.url }}"
+         alt="{{ seller.username }}’s logo"
+         class="seller-logo">
+  {% endif %}
+
+  {# Bio #}
+  {% if profile.bio %}
+    <section class="bio">
+      <h2>About {{ seller.username }}</h2>
+      <p>{{ profile.bio }}</p>
+    </section>
+  {% endif %}
+
+  {# If this is an agency, show address fields #}
+  {% if profile.role == 'seller' and profile.street %}
+    <section class="agency-address">
+      <h3>Office Address</h3>
+      <p>
+        {{ profile.street }}<br>
+        {{ profile.city }}, {{ profile.postal }}
+      </p>
+    </section>
+  {% endif %}
+
+  {# Their active listings #}
+  <section class="seller-listings">
+    <h2>Properties for Sale by {{ seller.username }}</h2>
+    {% if listings %}
+      <ul class="listings-grid">
+        {% for prop in listings %}
+          <li>
+            <a href="{% url 'property_detail' prop.id %}">
+              {% if prop.property_image %}
+                <img src="{{ prop.property_image.url }}"
+                     alt="{{ prop.property_city }} thumbnail"
+                     width="150">
+              {% endif %}
+              <div class="listing-info">
+                <strong>{{ prop.property_city }}</strong><br>
+                ${{ prop.property_price|floatformat:2 }}
+              </div>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p><em>No active listings.</em></p>
+    {% endif %}
+  </section>
+
+  <p><a href="{% url 'homepage' %}">← Back to homepage</a></p>
+</body>
+</html>

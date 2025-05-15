@@ -21,10 +21,7 @@ class UserProfile(models.Model):
     user= models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     role=models.CharField(max_length=10,choices=ROLE_CHOICES,default='buyer')
     bio=models.TextField(max_length=500, blank=True,null=True)
-    profile_picture = models.ImageField(
-        upload_to=upload_to_profile,
-        default="profile_pics/default.jpg",
-        blank=True,)
+    profile_picture = models.ImageField(upload_to=upload_to_profile,default="profile_pics/default.jpg",blank=True,)
 
     role = models.CharField(max_length=255) # e.g. Buyer/Seller
 

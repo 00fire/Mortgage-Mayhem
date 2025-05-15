@@ -18,11 +18,12 @@ urlpatterns = [
     #path("user-profile/", views.user_profile, name="user_profile"),  # Define your own app routes
     path('add_property/',views.add_property, name='add_property'),
     path("property/<int:property_id>/offer/",views.make_offer,name="make_offer",),
-    path('property_detail/<int:id>/', views.property_detail, name='property_detail'),
+    path("property_detail/<int:pk>/", views.property_detail, name="property_detail"),
     path("seller/dashboard/",views.seller_dashboard,name="seller_dashboard"),
     path('seller/listings/',views.seller_listings,name='seller_listings'),
     path('seller/offer/<int:offer_id>/', views.respond_offer, name='respond_offer'),
     path("seller/offers/",views.incoming_offers,name="incoming_offers"),
+    path('seller/<int:user_id>/', views.seller_profile, name='seller_profile'),
     path('success/', views.success, name='success'),
     #path('register/', views.register, name='register'),
     

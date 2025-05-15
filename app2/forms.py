@@ -36,9 +36,10 @@ class PropertyForm(forms.ModelForm):
 
 
 class SignUpForm(UserCreationForm):
+    role=forms.ChoiceField(choices=UserProfile.ROLE_CHOICES,widget=forms.RadioSelect,label="I am signing up as a: ")
     class Meta:
         model  = User
-        fields = ("username", "password1", "password2")
+        fields = ("username", "password1", "password2","role")
 
     
 class ProfileForm(forms.ModelForm):
