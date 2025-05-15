@@ -131,8 +131,8 @@ body {
 /* Property Card Hover Image Zoom */
 .card-img {
     display: block;
-    width: 100%;
-    height: 80px;
+    width: 20%;
+    height: auto;
     max-height: 80px;
     object-fit: cover;
     transition: transform 0.3s ease;
