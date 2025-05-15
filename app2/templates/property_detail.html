@@ -90,7 +90,7 @@
         <form method="post">
           {% csrf_token %}
           {{ offer_form.as_p }}
-          <button type="submit">
+          <button class="make-offer-btn" type="submit">
             {% if existing_offer %}Update Offer{% else %}Submit Offer{% endif %}
           </button>
         </form>
