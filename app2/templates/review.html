@@ -35,11 +35,11 @@
 
       {% if payment_info.pay_method %}
         {% with method=payment_info.pay_method %}
-          {% include "components/_render_payment_method.html" %}
+          {% include "_render_payment_method.html" %}
         {% endwith %}
       {% elif payment_info.payment_option %}
         {% with method=payment_info.payment_option %}
-          {% include "components/_render_payment_method.html" %}
+          {% include "_render_payment_method.html" %}
         {% endwith %}
       {% else %}
         <li>No payment method data available.</li>
