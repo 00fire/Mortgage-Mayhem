@@ -74,33 +74,61 @@ class ContactInfoForm(forms.Form):
     national_pid = forms.CharField(label="National ID (Kennitala)")
 
 
-PAYMENT_CHOICES=[('credit_card','Credit Card'),('bank_transfer', 'Bank Transfer'),('mortgage', ' Mortgage')]
+
+
+import re
+from django import forms
+
+PAYMENT_CHOICES = [
+    ('credit_card', 'Credit Card'),
+    ('bank_transfer', 'Bank Transfer'),
+    ('mortgage', 'Mortgage'),
+]
+
 class PaymentForm(forms.Form):
-    
     payment_option = forms.ChoiceField(choices=PAYMENT_CHOICES)
+    cardholder_name = forms.CharField(required=False)
+    card_num = forms.CharField(required=False, max_length=16)
+    expiration_date_card = forms.CharField(required=False)
+    cvc = forms.CharField(required=False, max_length=3)
+    bank_acc = forms.CharField(required=False)
+    mortgage_prov = forms.CharField(required=False)
 
-    cardholder_name=forms.CharField(required=False,max_length=255)
-    card_num=forms.CharField(required=False,max_length=16,validators=[RegexValidator(r'^\d{13,16}$', message="Card number must be 13 to 16 digits (no spaces or letters).")])
-    expiration_date_card=forms.CharField(required=False,
-        validators=[RegexValidator(r'^(0[1-9]|1[0-2])\/\d{2}$', message="Format must be DD/MM/YY")])
-    cvc = forms.CharField(max_length=3,min_length=3,required=False,validators=[RegexValidator(r'^\d{3}$', 'Enter a valid 3-digit CVC')])
-
-    bank_acc=forms.CharField(required=False,max_length=25)
-    mortgage_prov=forms.CharField(required=False,max_length=25)
     def clean(self):
-        Cleaned_data=super().clean()
-        method=Cleaned_data.get('payment_option')
-        if method == 'credit_card' or 'Credit Card':
-            required = ['cardholder_name', 'card_num', 'expiration_date_card', 'cvc']
-        elif method == 'bank_transfer' or 'Bank Transfer':
-            required = ['bank_acc']
-        elif method == 'mortgage' or 'Mortgage':
-            required = ['mortgage_prov']
-        else:
-            required = []
+        cleaned = super().clean()
+        method = cleaned.get('payment_option')
 
-        for field in required:
-            if not Cleaned_data.get(field):
-                self.add_error(field, 'This field is required.')
+        if method == 'credit_card':
+            # Card number
+            card_num = cleaned.get('card_num')
+            if not card_num:
+                self.add_error('card_num', 'Card number is required.')
+            elif not card_num.isdigit() or not (13 <= len(card_num) <= 16):
+                self.add_error('card_num', 'Card number must be 13–16 digits.')
 
-        return Cleaned_data
+            # Expiration date
+            expiry = cleaned.get('expiration_date_card')
+            if not expiry:
+                self.add_error('expiration_date_card', 'Expiry date is required.')
+            elif not re.match(r'^(0[1-9]|1[0-2])/\d{2}$', expiry):
+                self.add_error('expiration_date_card', 'Expiry must be in MM/YY format (e.g. 09/25).')
+
+            # CVC
+            cvc = cleaned.get('cvc')
+            if not cvc:
+                self.add_error('cvc', 'CVC is required.')
+            elif not cvc.isdigit() or len(cvc) != 3:
+                self.add_error('cvc', 'CVC must be 3 digits.')
+
+        elif method == 'bank_transfer':
+            bank_acc = cleaned.get('bank_acc')
+            if not bank_acc:
+                self.add_error('bank_acc', 'Bank account is required.')
+            elif not bank_acc.isdigit():
+                self.add_error('bank_acc', 'Bank account must be numeric.')
+
+        elif method == 'mortgage':
+            if not cleaned.get('mortgage_prov'):
+                self.add_error('mortgage_prov', 'Mortgage provider is required.')
+
+        return cleaned
