@@ -2,6 +2,10 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, authenticate
 
+from app2.models import Properties
+from django.db.models import Q
+
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 # Create your views here.
@@ -17,13 +21,17 @@ from app2.models import UserProfile,PurchaseOffer
 from app2.forms import UserProfileForm
 from .decorators import seller_required
 from .decorators import buyer_required
+from django.contrib import messages
 
 from django.utils import timezone
 
 
-
+from .forms import PropertyForm, PropertyImageFormSet
+from .models import Properties, PropertyImage
 def root_redirect(request):
     return redirect("login")
+
+
 @login_required#this renders the homepage
 def homepage(request):
     properties=Properties.objects.all()
@@ -80,34 +88,35 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseForbidden
 @login_required
 
+def property_detail(request, pk):
+    prop = get_object_or_404(Properties, pk=pk)
+    existing = None
+    offer_form = None
 
-def add_property(request):
-    # only sellers may list
-    #if request.user.profile.role != "seller":
-        return HttpResponseForbidden("Only sellers may list properties.")
+    # only for buyers who can make an offer
+    if request.user.is_authenticated \
+       and request.user.profile.role == "buyer" \
+       and prop.seller != request.user \
+       and not prop.property_sold_status:
 
-    # # handle form POST
-    # if request.method == "POST":
-    #     form = PropertyForm(request.POST, request.FILES)
-    #     if form.is_valid():
-    #         prop = form.save(commit=False)
-    #         prop.seller = request.user
-    #         prop.save()
-    #         return redirect("homepage")
-    #     # if form is invalid, we’ll fall through and re-render with errors
+        existing = prop.offers.filter(buyer=request.user).first()
+        offer_form = PurchaseOfferForm(request.POST or None, instance=existing)
 
-    # else:
-    #     # GET: show empty form
-    #     form = PropertyForm()
+        if request.method=="POST" and offer_form.is_valid():
+            off = offer_form.save(commit=False)
+            off.property = prop
+            off.buyer = request.user
+            off.status = "pending"
+            off.save()
+            messages.success(request, "Your offer has been submitted.")
+            return redirect("property_detail", pk=prop.pk)
 
-    # # GET _or_ invalid POST both end up here
-    
-    # return render(request, "add_property.html", {"form": form})
+    return render(request, "property_detail.html", {
+        "property": prop,
+        "offer_form": offer_form,
+        "existing_offer": existing,
+    })
 
-
-def property_detail(request, id):
-    property=get_object_or_404(Properties, id=id)
-    return render(request, 'property_detail.html', {'property': property})
 
 
 def login_view(request):
@@ -125,28 +134,26 @@ def signup_view(request):
         profile_form = ProfileForm(request.POST, request.FILES)
 
         if user_form.is_valid() and profile_form.is_valid():
-            # 1) create the user
+            
             user = user_form.save(commit=False)
             user.is_active = True
             user.save()
-
-            # 2) create / attach profile
             profile = profile_form.save(commit=False)
             profile.user = user
+            profile.role = user_form.cleaned_data["role"]
             profile.save()
-
-            # 3) log them straight in
             login(request, user)
             messages.success(request, "Welcome, your account was created.")
-            return redirect("homepage")               
+            return redirect("homepage")
+
     else:
         user_form    = SignUpForm()
         profile_form = ProfileForm()
 
-    return render(
-    request,
-    "signup.html",
-    {"user_form": user_form, "profile_form": profile_form},)
+    return render(request, "signup.html", {
+        "user_form":    user_form,
+        "profile_form": profile_form,
+    })
 
 @login_required
 def profile_info(request):
@@ -195,39 +202,80 @@ def profile_info(request):
 
 
 
-@login_required
-def add_property(request):
-    if request.user.profile.role !='seller':
-        return HttpResponseForbidden("Only sellers can list properties")
-    if request.method=='POST':
-        form=PropertyForm(request.POST,request.FILES)
-        if form.is_valid():
-            prop=form.save(commit=False)
-            prop.seller=request.user
-            prop.owner=request.user
-            prop.save()
-            return redirect('homepage')
-    else:
-            form=PropertyForm()
-    return render(request, "add_property.html",{"form":form})
 
+
+
+
+
+
+
+
+
+
+def search_properties(request):
+    """
+    View function to handle property search queries.
+
+    Allows users to search for properties based on partial matches in
+    the street, city, or country fields of the Properties model.
+
+    Accepts:
+        - GET parameter 'q': the search query string
+
+    Returns:
+        - Rendered HTML page ('search_page.html') with a context variable
+          'properties' containing the filtered queryset.
+    """
+    
+    # Retrieve the value of the search query from the GET request
+    query = request.GET.get('q')
+    city = request.GET.getlist('city')  # multiple cities via checkbox
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    rooms = request.GET.getlist('rooms')  # filter by room count
+
+    # Get all properties initially
+    properties = Properties.objects.all()
+
+    if query:
+         # Q objects allow combining filters using | (OR), & (AND), and ~ (NOT)
+        # __icontains performs a case-insensitive partial string match
+        properties = properties.filter(
+            Q(property_street__icontains=query) |
+            Q(property_city__icontains=query) |
+            Q(property_country__icontains=query)
+        )
+
+    if city:
+        properties = properties.filter(property_city__in=city)
+
+    if rooms:
+        properties = properties.filter(property_rooms__in=rooms)
+
+    if min_price:
+        properties = properties.filter(property_price__gte=min_price)
+    if max_price:
+        properties = properties.filter(property_price__lte=max_price)
+
+    all_cities = Properties.objects.values_list('property_city', flat=True).distinct()
+    all_rooms = Properties.objects.values_list('property_rooms', flat=True).distinct()
+
+    # Render the search results in the 'search_page.html' template
+    return render(request, 'search_page.html', {
+        'properties': properties,
+        'all_cities': all_cities,
+        'all_rooms': all_rooms,
+    })
+
+############### buyer related
 @buyer_required
 def make_offer(request, property_id):
-    # 1) fetch the property if it’s still unsold
-    prop = get_object_or_404(
-        Properties,
-        pk=property_id,
-        property_sold_status=False
-    )
-
-    # 2) look up any existing offer (but do NOT create one yet)
-    existing = PurchaseOffer.objects.filter(
-        property=prop,
-        buyer=request.user
-    ).first()
+    
+    prop = get_object_or_404(Properties,pk=property_id,property_sold_status=False)
+    existing = PurchaseOffer.objects.filter(property=prop,buyer=request.user).first()
 
     if request.method == "POST":
-        # 3a) bind POST data to a form — reusing existing instance if there is one
+        
         form = PurchaseOfferForm(request.POST, instance=existing)
         if form.is_valid():
             offer = form.save(commit=False)
@@ -246,18 +294,46 @@ def make_offer(request, property_id):
         "property": prop,
     })
 
+
+
+
+
+
+
+
+
+
+
+
+
+################ seller related
+
+
+
+
+def seller_profile(request,user_id):
+    seller=get_object_or_404(User,pk=user_id)
+    profile=seller.profile
+    listings=Properties.objects.filter(seller=seller,property_sold_status=False)
+
+    return render(request,'seller_profile.html',{'seller':seller,'profile':profile,'listings':listings,})
+
+
+
+
+
+
+
 @login_required
-def seller_dashboard(request):
-    incoming=PurchaseOffer.objects.filter(property__seller=request.user).order_by("-created_at")
-    return render(request,"seller_dashboard.html",{"incoming_offers":incoming,})
-
-
-def seller_listings(request):
+def incoming_offers(request):
     if request.user.profile.role !='seller':
         return HttpResponseForbidden()
-    my_listings=Properties.objects.filter(seller=request.user)
-    incoming=PurchaseOffer.objects.filter(property__seller=request.user,status='pending').order_by('-created_at')
-    return render(request,'seller_listings.html',{'listings':my_listings,'incoming_offers':incoming,})
+    offers=PurchaseOffer.objects.filter(property__seller=request.user,status='pending').select_related('buyer','property')
+    return render(request,"seller_incoming_offers.html",{"offers":offers})
+
+
+
+
 
 
 @login_required
@@ -282,23 +358,61 @@ def respond_offer(request, offer_id):
             messages.success(request, f"Offer #{offer.id} accepted and ownership transferred.")
         else:
             offer.status = 'rejected'
-            offer.save()
             messages.info(request, f"Offer #{offer.id} rejected.")
+            offer.save()
+            
 
         # redirect back to _your_ profile dashboard
-        return redirect('profile_info')
+        return redirect('seller_listings')
 
     # GET: show the “accept / reject” form
     return render(request, 'respond_offer.html', {'offer': offer})
 
 
 
+
+
 @login_required
-def incoming_offers(request):
+def seller_dashboard(request):
+    incoming=PurchaseOffer.objects.filter(property__seller=request.user).order_by("-created_at")
+    return render(request,"seller_dashboard.html",{"incoming_offers":incoming,})
+
+
+def seller_listings(request):
     if request.user.profile.role !='seller':
         return HttpResponseForbidden()
-    offers=PurchaseOffer.objects.filter(property__seller=request.user,status='pending').select_related('buyer','property')
-    return render(request,"seller_incoming_offers.html",{"offers":offers})
+    my_listings=Properties.objects.filter(seller=request.user)
+    incoming=PurchaseOffer.objects.filter(property__seller=request.user,status='pending').order_by('-created_at')
+    return render(request,'seller_listings.html',{'listings':my_listings,'incoming_offers':incoming,})
+
+
+
+
+
+
+@login_required
+def add_property(request):
+    if request.user.profile.role !='seller':
+        return HttpResponseForbidden("Only sellers can list properties")
+    
+    if request.method=='POST':
+        prop_form=PropertyForm(request.POST,request.FILES)
+        img_formset=PropertyImageFormSet(request.POST,request.FILES,queryset=PropertyImage.objects.none())
+        #form=PropertyForm(request.POST,request.FILES)
+        
+        if prop_form.is_valid() and img_formset.is_valid():
+            prop=prop_form.save(commit=False)
+            prop.seller=request.user
+            prop.owner=request.user
+            prop.save()
+            for form in img_formset:
+                if form.cleaned_data.get('image'):
+                    PropertyImage.objects.create(property=prop,image=form.cleaned_data['image'])
+            return redirect('profile_info')
+    else:
+            prop_form=PropertyForm()
+            img_formset=PropertyImageFormSet(queryset=PropertyImage.objects.none())
+    return render(request, "add_property.html",{"form":prop_form,'formset':img_formset,})
 
 
 
@@ -307,18 +421,28 @@ def incoming_offers(request):
 
 
 
+#def add_property(request):
+    # only sellers may list
+    #if request.user.profile.role != "seller":
+        #return HttpResponseForbidden("Only sellers may list properties.")
 
+    # # handle form POST
+    # if request.method == "POST":
+    #     form = PropertyForm(request.POST, request.FILES)
+    #     if form.is_valid():
+    #         prop = form.save(commit=False)
+    #         prop.seller = request.user
+    #         prop.save()
+    #         return redirect("homepage")
+    #     # if form is invalid, we’ll fall through and re-render with errors
 
+    # else:
+    #     # GET: show empty form
+    #     form = PropertyForm()
 
-
-
-
-
-
-
-
-
-
+    # # GET _or_ invalid POST both end up here
+    
+    # return render(request, "add_property.html", {"form": form})
 
 
 

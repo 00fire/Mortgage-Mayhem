@@ -5,6 +5,15 @@ from django.conf import settings
 from .utils.uploads import upload_to_profile, upload_to_property
 
 
+PROPERTY_TYPE_CHOICES = [
+    ('villa',     'Villa'),
+    ('house',     'House'),
+    ('townhouse', 'Townhouse'),
+    ('apartment', 'Apartment'),
+    ('castle',    'Castle'),
+]
+
+
 
 class UserProfile(models.Model):
     ROLE_CHOICES=(('buyer','Buyer'),('seller','Seller'))
@@ -12,10 +21,7 @@ class UserProfile(models.Model):
     user= models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     role=models.CharField(max_length=10,choices=ROLE_CHOICES,default='buyer')
     bio=models.TextField(max_length=500, blank=True,null=True)
-    profile_picture = models.ImageField(
-        upload_to=upload_to_profile,
-        default="profile_pics/default.jpg",
-        blank=True,)
+    profile_picture = models.ImageField(upload_to=upload_to_profile,default="profile_pics/default.jpg",blank=True,)
 
     role = models.CharField(max_length=255) # e.g. Buyer/Seller
 
@@ -39,6 +45,7 @@ class Properties(models.Model):
     property_postal = models.CharField(max_length=255)
     property_price = models.DecimalField(max_digits=20,decimal_places=2)
     property_description = models.TextField()
+    property_type=models.CharField(max_length=20,choices=PROPERTY_TYPE_CHOICES,default='house',help_text="most fitting description.")
     property_rooms = models.IntegerField()
     property_bedrooms = models.IntegerField()
     property_bathrooms = models.IntegerField()
@@ -47,6 +54,7 @@ class Properties(models.Model):
     seller = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="listings")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="owned_properties",null=True,blank=True,)
     property_image=models.ImageField(upload_to='propert_images/',blank=True,null=True)
+    listed_at=models.DateField(auto_now_add=True)
     
     def __str__(self):
             return f"{self.property_street}, {self.property_city}, {self.property_country}"
@@ -54,11 +62,13 @@ class Properties(models.Model):
 
 class PropertyImage(models.Model):
     property = models.ForeignKey(Properties, related_name='images', on_delete=models.CASCADE)
-    image_url = models.TextField()
-    position = models.IntegerField()
+    image = models.ImageField(upload_to="property_images/")
+    position    = models.PositiveSmallIntegerField(default=0,help_text="Sort order: lower numbers come first.")
+    class Meta:
+        ordering = ["position", "pk"]
 
     def __str__(self):
-            return f"{self.property}, {self.image_url}"
+        return f"{self.property} — img#{self.pk}"
 
 
 
