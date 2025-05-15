@@ -85,6 +85,17 @@ body {
   color: #000;
   font-size: 0.9rem;
   margin-left: 1rem;
+  box-shadow: 0 5px #353535;
+}
+
+.btn-action:hover {
+  background: #bd8f05
+}
+
+.btn-action:active {
+  background: #bd8f05;
+  box-shadow: 0 2px #353535;
+  transform: translateY(3px);
 }
 
 section {

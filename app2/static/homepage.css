@@ -1,8 +1,9 @@
 .profile-icon {
-    width: 75px;          /* or whatever size you like */
-    height: 75px;
+    width: 100px;          /* or whatever size you like */
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;    /* crop so it stays square */
+    border: 2px solid #FF8C00;
 }
 
 /* keep your existing .fixed rule, or add it here: */
@@ -10,6 +11,7 @@
     position: fixed;
     top: 8px;
     right: 8px;
+    z-index: 100;
 }
 
 
