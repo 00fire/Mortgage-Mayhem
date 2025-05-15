@@ -4,8 +4,9 @@ from django.contrib.auth import login, authenticate
 
 from app2.models import Properties
 from django.db.models import Q
-
-
+from django.shortcuts import render
+from django.db.models import Q
+from .models import Properties
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 # Create your views here.
@@ -212,60 +213,123 @@ def profile_info(request):
 
 
 
-def search_properties(request):
-    """
-    View function to handle property search queries.
+# def search_properties(request):
+#     """
+#     View function to handle property search queries.
 
-    Allows users to search for properties based on partial matches in
-    the street, city, or country fields of the Properties model.
+#     Allows users to search for properties based on partial matches in
+#     the street, city, or country fields of the Properties model.
 
-    Accepts:
-        - GET parameter 'q': the search query string
+#     Accepts:
+#         - GET parameter 'q': the search query string
 
-    Returns:
-        - Rendered HTML page ('search_page.html') with a context variable
-          'properties' containing the filtered queryset.
-    """
+#     Returns:
+#         - Rendered HTML page ('search_page.html') with a context variable
+#           'properties' containing the filtered queryset.
+#     """
     
-    # Retrieve the value of the search query from the GET request
-    query = request.GET.get('q')
-    city = request.GET.getlist('city')  # multiple cities via checkbox
+#     # Retrieve the value of the search query from the GET request
+#     query = request.GET.get('q')
+#     city = request.GET.getlist('city')  # multiple cities via checkbox
+#     min_price = request.GET.get('min_price')
+#     max_price = request.GET.get('max_price')
+#     rooms = request.GET.getlist('rooms')  # filter by room count
+
+#     # Get all properties initially
+#     properties = Properties.objects.all()
+
+#     if query:
+#          # Q objects allow combining filters using | (OR), & (AND), and ~ (NOT)
+#         # __icontains performs a case-insensitive partial string match
+#         properties = properties.filter(
+#             Q(property_street__icontains=query) |
+#             Q(property_city__icontains=query) |
+#             Q(property_country__icontains=query)
+#         )
+
+#     if city:
+#         properties = properties.filter(property_city__in=city)
+
+#     if rooms:
+#         properties = properties.filter(property_rooms__in=rooms)
+
+#     if min_price:
+#         properties = properties.filter(property_price__gte=min_price)
+#     if max_price:
+#         properties = properties.filter(property_price__lte=max_price)
+
+#     all_cities = Properties.objects.values_list('property_city', flat=True).distinct()
+#     all_rooms = Properties.objects.values_list('property_rooms', flat=True).distinct()
+
+#     # Render the search results in the 'search_page.html' template
+#     return render(request, 'homepage.html', {
+#         'properties': properties,
+#         'all_cities': all_cities,
+#         'all_rooms': all_rooms,
+#         'current_query': query,
+#         'selected_cities': city,
+#         'selected_rooms': rooms,
+#         'min_price': min_price,
+#         'max_price': max_price,
+#     })
+
+
+
+def homepage(request):
+    query = request.GET.get('q', '')
+    postal_code = request.GET.get('postal_code', '')
+    property_type = request.GET.get('property_type', '')
+    street_name = request.GET.get('street_name', '')
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
-    rooms = request.GET.getlist('rooms')  # filter by room count
+    order_by = request.GET.get('order_by', '')
 
-    # Get all properties initially
     properties = Properties.objects.all()
 
     if query:
-         # Q objects allow combining filters using | (OR), & (AND), and ~ (NOT)
-        # __icontains performs a case-insensitive partial string match
         properties = properties.filter(
             Q(property_street__icontains=query) |
             Q(property_city__icontains=query) |
             Q(property_country__icontains=query)
         )
 
-    if city:
-        properties = properties.filter(property_city__in=city)
+    if postal_code:
+        properties = properties.filter(property_postal__iexact=postal_code)
 
-    if rooms:
-        properties = properties.filter(property_rooms__in=rooms)
+    if property_type:
+        properties = properties.filter(property_type__iexact=property_type)
+
+    if street_name:
+        properties = properties.filter(property_street__icontains=street_name)
 
     if min_price:
         properties = properties.filter(property_price__gte=min_price)
+
     if max_price:
         properties = properties.filter(property_price__lte=max_price)
 
-    all_cities = Properties.objects.values_list('property_city', flat=True).distinct()
-    all_rooms = Properties.objects.values_list('property_rooms', flat=True).distinct()
+    
+    if order_by == 'price':
+        properties = properties.order_by('property_price')
+    elif order_by == 'name':
+        properties = properties.order_by('property_street')
 
-    # Render the search results in the 'search_page.html' template
-    return render(request, 'search_page.html', {
+    context = {
         'properties': properties,
-        'all_cities': all_cities,
-        'all_rooms': all_rooms,
-    })
+        'current_query': query,
+        'postal_code': postal_code,
+        'property_type': property_type,
+        'street_name': street_name,
+        'min_price': min_price,
+        'max_price': max_price,
+        'order_by': order_by,
+    }
+
+    return render(request, 'homepage.html', context)
+
+
+
+
 
 ############### buyer related
 @buyer_required

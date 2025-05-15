@@ -10,12 +10,9 @@ urlpatterns = [
     path('login/',views.login_view, name='login'),
     path("signup/", views.signup_view, name="signup"),
     path('home/', views.homepage, name='homepage'), 
-    #path('property_detail/',views.property_detail,name='property_detail'),
-    #path('user-profile/', views.user_profile, name='user_profile'),
     path('property/<int:property_id>/offer/',views.make_offer,name='make_offer'),
     path('buyer_offer/', views.buyer_offer, name='buyer_offer'),
     path('profile_info/', views.profile_info, name='profile_info'),
-    #path("user-profile/", views.user_profile, name="user_profile"),  # Define your own app routes
     path('add_property/',views.add_property, name='add_property'),
     path("property/<int:property_id>/offer/",views.make_offer,name="make_offer",),
     path("property_detail/<int:pk>/", views.property_detail, name="property_detail"),
@@ -25,7 +22,7 @@ urlpatterns = [
     path("seller/offers/",views.incoming_offers,name="incoming_offers"),
     path('seller/<int:user_id>/', views.seller_profile, name='seller_profile'),
     path('success/', views.success, name='success'),
-    #path('register/', views.register, name='register'),
+    
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
