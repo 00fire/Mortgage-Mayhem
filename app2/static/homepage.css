@@ -1,24 +1,20 @@
-.profile-icon {
-    width: 100px;          /* or whatever size you like */
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;    /* crop so it stays square */
-    border: 2px solid #FF8C00;
+:root {
+    --bg-dark: #121212;
+    --bg-darker: #1c1c1c;
+    --accent-orange: #FF8C00;
+    --accent-glow: #ff6a00;
+    --primary-blue: #0077b6;
+    --primary-blue-dark: #005f99;
+    --input-bg: #e0e0e0;
+    --input-text: #000;
+    --text-light: #fff;
 }
 
-/* keep your existing .fixed rule, or add it here: */
-.fixed {
-    position: fixed;
-    top: 8px;
-    right: 8px;
-    z-index: 100;
-}
-
-
+/* Base */
 body {
     margin: 0;
-    background-color: #121212;  /* Dark background */
-    color: #fff;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
     font-family: Arial, sans-serif;
 }
 
@@ -30,125 +26,17 @@ body {
 }
 
 .logo img {
-    width: 120px;  /* Size of logo */
+    width: 120px;
     margin-top: 2rem;
     border-radius: 50%;
     display: flex;
     justify-content: center;
 }
 
-.property-container{
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 50px;
-            margin-left: 20px;
-            margin-right: 20px;
-            margin-top: 70px;
-        }
-
-.property-item{
-            padding: 20px;
-            background-color: rgb(255, 196, 0);
-            border-radius: 50px;
-            height: 250px;
-            border: 4px solid #FF8C00;
-        }
-
-.property-contents {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            gap: 20px;
-        }
-
-.property-image{
-            height: 200px;
-            width: 200px;
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-
-.property-text-box {
-            flex-grow: 1;
-            height: 150px;
-            width: 200px;
-            padding: 5px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-.property-text-box p,
-.property-text-box a {
-            margin: 10px 0;
-        }
-
-
-
-
-.property-card {
-  position: relative;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  overflow: hidden;
-  margin: 1rem;
-  width: 250px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.card-img {
-  display: block;
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-}
-
-.sold-ribbon {
-  position: absolute;
-  top: 8px;
-  left: -40px;
-  transform: rotate(-45deg);
-  background: rgba(220,53,69,0.9);
-  color: white;
-  padding: 4px 60px;
-  font-weight: bold;
-  font-size: 0.9rem;
-}
-
-.card-body {
-  padding: 0.5rem 1rem 1rem;
-}
-
-.listed-date {
-  font-size: 0.8rem;
-  color: #666;
-  margin: 0.3rem 0;
-}
-
-
-.property-item {
-  position: relative;              
-}
-
-.sold-ribbon {
-  position: absolute;
-  top: 8px;
-  left: -40px;
-  transform: rotate(-45deg);
-  background: rgba(220,53,69,0.9);
-  color: #fff;
-  padding: 4px 60px;
-  font-weight: bold;
-  font-size: 0.85rem;
-  pointer-events: none;
-}
-
-
+/* Header */
 .site-header {
     padding: 1rem 2rem;
-    background-color: #1c1c1c;
+    background-color: var(--bg-darker);
     border-bottom: 1px solid #333;
 }
 
@@ -161,8 +49,10 @@ body {
 }
 
 .header-left h1 {
-    color: white;
+    color: var(--accent-orange);
+    font-size: 1.5rem;
     margin: 0;
+    font-weight: bold;
 }
 
 .header-center {
@@ -175,47 +65,151 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 600px;
+    max-width: 1000px;
     width: 100%;
 }
 
 .filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: center;
-    margin-top: 0.5rem;
+    gap: 1rem;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 1rem;
 }
 
 .search-form input,
 .search-form select {
-    padding: 0.5rem;
+    flex: 1 1 220px;
+    padding: 0.75rem;
     font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #555;
+    background-color: var(--input-bg);
+    color: var(--input-text);
 }
 
 .btn {
-    margin-top: 0.5rem;
-    background-color: #0077b6;
-    color: white;
-    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+    background-color: var(--primary-blue);
+    color: var(--text-light);
+    padding: 0.6rem 1.2rem;
     border: none;
     border-radius: 6px;
     cursor: pointer;
 }
 
 .btn:hover {
-    background-color: #005f99;
+    background-color: var(--primary-blue-dark);
 }
 
 .header-right {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
+    min-width: 100px;
+    flex-shrink: 0;
 }
 
+/* Profile */
 .profile-icon {
-    width: 40px;
-    height: 40px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #ff6a00;
+    border: 2px solid var(--accent-orange);
+    transition: transform 0.3s ease;
+}
+
+.profile-icon:hover {
+    transform: scale(1.08);
+}
+
+.fixed {
+    position: fixed;
+    top: 8px;
+    right: 8px;
+    z-index: 100;
+}
+
+/* Property Grid */
+.property-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+    margin: 70px 20px 0;
+}
+
+.property-item {
+    position: relative;
+    padding: 20px;
+    background-color: var(--accent-orange);
+    border-radius: 50px;
+    height: 250px;
+    border: 4px solid var(--accent-orange);
+}
+
+.property-contents {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.property-image {
+    height: 200px;
+    width: 200px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Property Cards */
+.property-card {
+    position: relative;
+    border: 1px solid #333;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 1rem;
+    width: 250px;
+    box-shadow: 0 2px 4px rgba(255, 106, 0, 0.3);
+    background-color: var(--bg-darker);
+    color: var(--text-light);
+    transition: transform 0.3s ease;
+}
+
+.card-img {
+    display: block;
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.property-card:hover .card-img {
+    transform: scale(1.05);
+}
+
+.card-body {
+    padding: 0.5rem 1rem 1rem;
+}
+
+.listed-date {
+    font-size: 0.8rem;
+    color: #aaa;
+    margin: 0.3rem 0;
+}
+
+/* Sold Ribbon */
+.sold-ribbon {
+    position: absolute;
+    top: 8px;
+    left: -40px;
+    transform: rotate(-45deg);
+    background: rgba(220, 53, 69, 0.9);
+    color: var(--text-light);
+    padding: 4px 60px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    pointer-events: none;
 }
