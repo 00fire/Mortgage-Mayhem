@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="{% static 'homepage.css' %}">
 </head>
 <body>
-
+  {% include "header.html" %}
+<!--
   <h1>Homepage</h1>
 
   {% if request.user.is_authenticated %}
@@ -19,7 +20,7 @@
     </a>
   {% endif %}
 
-  <!-- Simplified Search and Filter Form -->
+  <-- Simplified Search and Filter Form --
   <form method="get" action="{% url 'homepage' %}" class="search-form">
     <input type="text" name="q" placeholder="Search city, country..." value="{{ current_query }}">
 
@@ -40,7 +41,7 @@
 
     <button type="submit" class="btn">Search</button>
   </form>
-
+-->
   <hr>
 
   <div class="property-container">
