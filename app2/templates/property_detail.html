@@ -35,7 +35,7 @@
       {% endif %}
     {% endwith %}
 
-    {# — Gallery of all extra images (thumbnails, lightbox, etc) — #}
+    
     {% if property.images.exists %}
       <div class="gallery">
         {% for img in property.images.all %}
@@ -54,6 +54,7 @@
       <p><strong>Rooms:</strong> {{ property.property_rooms }}</p>
       <p><strong>Bedrooms:</strong> {{ property.property_bedrooms }}</p>
       <p><strong>Bathrooms:</strong> {{ property.property_bathrooms }}</p>
+      <p><strong>Type:</strong> {{ property.property_type }}</p>
       <p><strong>Size:</strong> {{ property.property_square_meters_size }} m²</p>
       <p><strong>Listed on:</strong> {{ property.listed_at|date:"F j, Y" }}</p>
       {% if property.property_sold_status %}
