@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -9,39 +10,7 @@
 </head>
 <body>
   {% include "global_header.html" %}
-<!--
-  <h1>Homepage</h1>
 
-  {% if request.user.is_authenticated %}
-    <a href="{% url 'profile_info' %}" class="fixed">
-      <img class="profile-icon"
-           src="{{ request.user.profile.profile_picture.url }}"
-           alt="{{ request.user.username }}">
-    </a>
-  {% endif %}
-
-  <-- Simplified Search and Filter Form --
-  <form method="get" action="{% url 'homepage' %}" class="search-form">
-    <input type="text" name="q" placeholder="Search city, country..." value="{{ current_query }}">
-
-    <div class="filters">
-      <input type="text" name="street_name" placeholder="Street name" value="{{ street_name }}">
-      <input type="text" name="postal_code" placeholder="Postal code" value="{{ postal_code }}">
-      <input type="text" name="property_type" placeholder="Type" value="{{ property_type }}">
-
-      <input type="number" name="min_price" placeholder="Min price" value="{{ min_price }}">
-      <input type="number" name="max_price" placeholder="Max price" value="{{ max_price }}">
-
-      <select name="order_by">
-        <option value="">Order by</option>
-        <option value="price" {% if order_by == 'price' %}selected{% endif %}>Price</option>
-        <option value="name" {% if order_by == 'name' %}selected{% endif %}>Name</option>
-      </select>
-    </div>
-
-    <button type="submit" class="btn">Search</button>
-  </form>
--->
   <hr>
 
   <div class="property-container">
@@ -54,8 +23,7 @@
             <p class="listed-date">Listed: {{ property.listed_at|date:"M j, Y" }}</p>
           </div>
 
-          <div class="property-contents">
-
+          <div class="property-card">
             {% with thumb=property.images.first %}
               {% if thumb %}
                 <a href="{% url 'property_detail' property.id %}">

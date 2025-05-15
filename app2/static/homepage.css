@@ -18,49 +18,6 @@ body {
     font-family: Arial, sans-serif;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem;
-}
-
-.logo img {
-    width: 120px;
-    margin-top: 2rem;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-}
-
-/* Header */
-.site-header {
-    padding: 1rem 2rem;
-    background-color: var(--bg-darker);
-    border-bottom: 1px solid #333;
-}
-
-.header-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.header-left h1 {
-    color: var(--accent-orange);
-    font-size: 1.5rem;
-    margin: 0;
-    font-weight: bold;
-}
-
-.header-center {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-}
-
 .search-form {
     display: flex;
     flex-direction: column;
@@ -80,15 +37,16 @@ body {
 
 .search-form input,
 .search-form select {
-    flex: 1 1 220px;
-    padding: 0.75rem;
-    font-size: 1rem;
+    flex: 1 1 300px;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.95rem;
     border-radius: 6px;
     border: 1px solid #555;
     background-color: var(--input-bg);
     color: var(--input-text);
 }
 
+/* Buttons */
 .btn {
     margin-top: 1rem;
     background-color: var(--primary-blue);
@@ -103,15 +61,7 @@ body {
     background-color: var(--primary-blue-dark);
 }
 
-.header-right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    min-width: 100px;
-    flex-shrink: 0;
-}
-
-/* Profile */
+/* Profile Icon */
 .profile-icon {
     width: 100px;
     height: 100px;
@@ -125,14 +75,20 @@ body {
     transform: scale(1.08);
 }
 
-.fixed {
-    position: fixed;
-    top: 8px;
-    right: 8px;
-    z-index: 100;
+/* Property Card Hover Image Zoom */
+.card-img {
+    display: block;
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
 }
 
-/* Property Grid */
+.property-card:hover .card-img {
+    transform: scale(1.05);
+}
+
+/* Other existing layout components (keep unchanged) */
 .property-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -149,58 +105,17 @@ body {
     border: 4px solid var(--accent-orange);
 }
 
-.property-contents {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 20px;
-}
-
-.property-image {
-    height: 200px;
-    width: 200px;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-/* Property Cards */
-.property-card {
-    position: relative;
-    border: 1px solid #333;
-    border-radius: 4px;
-    overflow: hidden;
-    margin: 1rem;
-    width: 250px;
-    box-shadow: 0 2px 4px rgba(255, 106, 0, 0.3);
-    background-color: var(--bg-darker);
-    color: var(--text-light);
-    transition: transform 0.3s ease;
-}
-
-.card-img {
-    display: block;
-    width: 100%;
+.property-text-box {
+    flex-grow: 1;
     height: 150px;
-    object-fit: cover;
-    transition: transform 0.3s ease;
+    width: 200px;
+    padding: 5px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.property-card:hover .card-img {
-    transform: scale(1.05);
-}
-
-.card-body {
-    padding: 0.5rem 1rem 1rem;
-}
-
-.listed-date {
-    font-size: 0.8rem;
-    color: #aaa;
-    margin: 0.3rem 0;
-}
-
-/* Sold Ribbon */
 .sold-ribbon {
     position: absolute;
     top: 8px;
