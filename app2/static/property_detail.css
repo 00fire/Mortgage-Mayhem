@@ -37,6 +37,8 @@
   max-width: 100%;
   height: auto;
   margin-bottom: 1rem;
+  border: 7px solid #ffb20c;
+  border-radius: 6px;
 }
 
 .gallery {
