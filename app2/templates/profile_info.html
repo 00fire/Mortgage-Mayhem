@@ -4,14 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Your Profile</title>
+  <title>My Profile</title>
   <link rel="stylesheet" href="{% static 'profile_info.css' %}">
 </head>
 <body>
   <div class="profile-container">
 
     <header class="profile-header">
-      <h1>Your Profile</h1>
+      <h1>My Profile</h1>
       {% if form.instance.profile_picture %}
         <img class="avatar" src="{{ form.instance.profile_picture.url }}" 
              alt="{{ request.user.username }}">
@@ -33,7 +33,7 @@
 
           <p>
           <label for="id_bio">Bio:</label>
-          <textarea name="bio" id="id_bio">{{ form.instance.bio }}</textarea>
+          <textarea class="bio-class" id="id_bio" rows="5" cols="40">{{ form.instance.bio }}</textarea>
           </p>
 
           <p>
