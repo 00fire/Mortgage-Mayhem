@@ -4,14 +4,15 @@ from django.contrib.auth import login, authenticate
 
 from app2.models import Properties
 from django.db.models import Q
-
-
+from django.shortcuts import render
+from django.db.models import Q
+from .models import Properties
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 # Create your views here.
 from .forms import PropertyForm
 from app2.models import Properties
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden,HttpResponse
 from django.contrib import messages
 from .forms import SignUpForm, ProfileForm, ProfileEditForm
 
@@ -28,6 +29,15 @@ from django.utils import timezone
 
 from .forms import PropertyForm, PropertyImageFormSet
 from .models import Properties, PropertyImage
+
+
+from .forms import ContactInfoForm, PaymentForm
+from .models import Properties, FinalizedOffer
+
+
+
+
+
 def root_redirect(request):
     return redirect("login")
 
@@ -185,7 +195,8 @@ def profile_info(request):
 
     # — Buyer dashboard bits —
     my_offers = PurchaseOffer.objects.filter(buyer=request.user)
-
+    for offer in my_offers:
+        offer.finalized = FinalizedOffer.objects.filter(purchase_offer=offer).exists()
     # — Everything I own (regardless of role) —
     my_owned = Properties.objects.filter(owner=request.user)
 
@@ -212,60 +223,123 @@ def profile_info(request):
 
 
 
-def search_properties(request):
-    """
-    View function to handle property search queries.
+# def search_properties(request):
+#     """
+#     View function to handle property search queries.
 
-    Allows users to search for properties based on partial matches in
-    the street, city, or country fields of the Properties model.
+#     Allows users to search for properties based on partial matches in
+#     the street, city, or country fields of the Properties model.
 
-    Accepts:
-        - GET parameter 'q': the search query string
+#     Accepts:
+#         - GET parameter 'q': the search query string
 
-    Returns:
-        - Rendered HTML page ('search_page.html') with a context variable
-          'properties' containing the filtered queryset.
-    """
+#     Returns:
+#         - Rendered HTML page ('search_page.html') with a context variable
+#           'properties' containing the filtered queryset.
+#     """
     
-    # Retrieve the value of the search query from the GET request
-    query = request.GET.get('q')
-    city = request.GET.getlist('city')  # multiple cities via checkbox
+#     # Retrieve the value of the search query from the GET request
+#     query = request.GET.get('q')
+#     city = request.GET.getlist('city')  # multiple cities via checkbox
+#     min_price = request.GET.get('min_price')
+#     max_price = request.GET.get('max_price')
+#     rooms = request.GET.getlist('rooms')  # filter by room count
+
+#     # Get all properties initially
+#     properties = Properties.objects.all()
+
+#     if query:
+#          # Q objects allow combining filters using | (OR), & (AND), and ~ (NOT)
+#         # __icontains performs a case-insensitive partial string match
+#         properties = properties.filter(
+#             Q(property_street__icontains=query) |
+#             Q(property_city__icontains=query) |
+#             Q(property_country__icontains=query)
+#         )
+
+#     if city:
+#         properties = properties.filter(property_city__in=city)
+
+#     if rooms:
+#         properties = properties.filter(property_rooms__in=rooms)
+
+#     if min_price:
+#         properties = properties.filter(property_price__gte=min_price)
+#     if max_price:
+#         properties = properties.filter(property_price__lte=max_price)
+
+#     all_cities = Properties.objects.values_list('property_city', flat=True).distinct()
+#     all_rooms = Properties.objects.values_list('property_rooms', flat=True).distinct()
+
+#     # Render the search results in the 'search_page.html' template
+#     return render(request, 'homepage.html', {
+#         'properties': properties,
+#         'all_cities': all_cities,
+#         'all_rooms': all_rooms,
+#         'current_query': query,
+#         'selected_cities': city,
+#         'selected_rooms': rooms,
+#         'min_price': min_price,
+#         'max_price': max_price,
+#     })
+
+
+
+def homepage(request):
+    query = request.GET.get('q', '')
+    postal_code = request.GET.get('postal_code', '')
+    property_type = request.GET.get('property_type', '')
+    street_name = request.GET.get('street_name', '')
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
-    rooms = request.GET.getlist('rooms')  # filter by room count
+    order_by = request.GET.get('order_by', '')
 
-    # Get all properties initially
     properties = Properties.objects.all()
 
     if query:
-         # Q objects allow combining filters using | (OR), & (AND), and ~ (NOT)
-        # __icontains performs a case-insensitive partial string match
         properties = properties.filter(
             Q(property_street__icontains=query) |
             Q(property_city__icontains=query) |
             Q(property_country__icontains=query)
         )
 
-    if city:
-        properties = properties.filter(property_city__in=city)
+    if postal_code:
+        properties = properties.filter(property_postal__iexact=postal_code)
 
-    if rooms:
-        properties = properties.filter(property_rooms__in=rooms)
+    if property_type:
+        properties = properties.filter(property_type__iexact=property_type)
+
+    if street_name:
+        properties = properties.filter(property_street__icontains=street_name)
 
     if min_price:
         properties = properties.filter(property_price__gte=min_price)
+
     if max_price:
         properties = properties.filter(property_price__lte=max_price)
 
-    all_cities = Properties.objects.values_list('property_city', flat=True).distinct()
-    all_rooms = Properties.objects.values_list('property_rooms', flat=True).distinct()
+    
+    if order_by == 'price':
+        properties = properties.order_by('property_price')
+    elif order_by == 'name':
+        properties = properties.order_by('property_street')
 
-    # Render the search results in the 'search_page.html' template
-    return render(request, 'search_page.html', {
+    context = {
         'properties': properties,
-        'all_cities': all_cities,
-        'all_rooms': all_rooms,
-    })
+        'current_query': query,
+        'postal_code': postal_code,
+        'property_type': property_type,
+        'street_name': street_name,
+        'min_price': min_price,
+        'max_price': max_price,
+        'order_by': order_by,
+    }
+
+    return render(request, 'homepage.html', context)
+
+
+
+
 
 ############### buyer related
 @buyer_required
@@ -350,10 +424,10 @@ def respond_offer(request, offer_id):
             offer.save()
 
            #transfer ownership & mark sold
-            prop = offer.property
-            prop.property_sold_status = True
-            prop.owner = offer.buyer
-            prop.save()
+            # prop = offer.property
+            # prop.property_sold_status = True
+            # prop.owner = offer.buyer
+            # prop.save()
 
             messages.success(request, f"Offer #{offer.id} accepted and ownership transferred.")
         else:
@@ -415,212 +489,77 @@ def add_property(request):
     return render(request, "add_property.html",{"form":prop_form,'formset':img_formset,})
 
 
+def contact_info(request, property_id):
+    if request.method == 'POST':
+        form = ContactInfoForm(request.POST)
+        if form.is_valid():
+            print("POST received in contact_info")
+            request.session['contact_info'] = form.cleaned_data
+            return redirect('payment', property_id=property_id)
+    else:
+        form = ContactInfoForm(initial=request.session.get('contact_info', {}))
+
+    return render(request, 'contact_info.html', {'form': form})
 
 
 
-
-
-
-#def add_property(request):
-    # only sellers may list
-    #if request.user.profile.role != "seller":
-        #return HttpResponseForbidden("Only sellers may list properties.")
-
-    # # handle form POST
-    # if request.method == "POST":
-    #     form = PropertyForm(request.POST, request.FILES)
-    #     if form.is_valid():
-    #         prop = form.save(commit=False)
-    #         prop.seller = request.user
-    #         prop.save()
-    #         return redirect("homepage")
-    #     # if form is invalid, we’ll fall through and re-render with errors
-
-    # else:
-    #     # GET: show empty form
-    #     form = PropertyForm()
-
-    # # GET _or_ invalid POST both end up here
     
-    # return render(request, "add_property.html", {"form": form})
+def payment(request,property_id):
+    if request.method=='POST':
+        form=PaymentForm(request.POST)
+        if form.is_valid():
+            request.session['payment_info']=form.cleaned_data
+            return redirect('review',property_id=property_id)
+    else:
+        form=PaymentForm(initial=request.session.get('payment_info',{}))
+    return render(request,'payment.html',{'form':form})
+
+def review(request, property_id):
+    contact_info = request.session.get('contact_info', {}).copy()
+    payment_info = request.session.get('payment_info', {}).copy()
+    property = get_object_or_404(Properties, pk=property_id)
+
+    if 'payment_option' in payment_info:
+        payment_info['pay_method'] = payment_info.pop('payment_option')
+
+    if request.method == 'POST':
+        # Fetch the related offer first
+        offer = PurchaseOffer.objects.filter(
+            buyer=request.user,
+            property=property,
+            status__iexact='accepted'
+        ).first()
+
+        if not offer:
+            return HttpResponse("No matching accepted offer found", status=400)
+
+        # Create and save finalized offer all at once
+        finalized = FinalizedOffer.objects.create(
+            user=request.user,
+            property=property,
+            purchase_offer=offer,
+            **contact_info,
+            **payment_info
+        )
+
+        # Transfer ownership
+        property.owner = request.user
+        property.property_sold_status = True
+        property.save()
+
+        # Clean up
+        request.session.pop('contact_info', None)
+        request.session.pop('payment_info', None)
+
+        return redirect('confirmation')
+
+    return render(request, 'review.html', {
+        'contact_info': contact_info,
+        'payment_info': payment_info,
+        'property': property
+    })
 
 
-
-
-
-
-
-
-# def register(request):
-#     form = UserCreationForm()
-#     if request.method == 'POST':
-#         form = UserCreationForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('login')  # After registration, go to login page
-#     return render(request, "register/register.html", {"form": form})
-
-
-
-
-
-# The @login_required decorator ensures that the user must be logged in to access this view
-
-
-#@login_required
-# def user_profile(request):
-#     if request.method == 'POST':
-#         form = UserPForm(request.POST)  # Initialize form with POST data
-#         if form.is_valid():
-#             username=form.cleaned_data.get('username')
-
-#             if User.objects.filter(username=username).exists():
-#                 form.add_error('username','this username is already taken.')
-#             else:
-#                 form.save()  # Save the form data to the database
-#                 print("FORM IS VALID")
-#                 print("Request method: ", request.method)
-#                 print("Form data: ", request.POST)
-#             return redirect('success')  # Redirect after saving to a success page
-#         else:
-#             print(form.errors)  # Print form validation errors to the console
-#             print("Request method: ", request.method)
-#             print("Form data: ", request.POST)
-#     else:
-#         form = UserPForm()  # Initialize an empty form for GET request
-
-#     return render(request, 'home.html', {'form': form})  # Pass form to template
-
-
-
-
-
-
-
-
-
-
-
-
-#@login_required
-# def user_profile(request):
-#     if request.method == 'POST':
-#         form = UserPForm(request.POST)  # Initialize form with POST data
-#         if form.is_valid():
-#             form.save()  # Save the form data to the database
-#             print("FORM IS VALID")
-#             print("Request method: ", request.method)
-#             print("Form data: ", request.POST)
-#             return redirect('success')  # Redirect after saving to a success page
-#         else:
-#             print(form.errors)  # Print form validation errors to the console
-#             print("Request method: ", request.method)
-#             print("Form data: ", request.POST)
-#     else:
-#         form = UserPForm()  # Initialize an empty form for GET request
-
-#     return render(request, 'home.html', {'form': form})  # Pass form to template
-
-# Success page after creating a user profile
-
-
-
-# def login_view(request):
-#     if request.method=='POST':
-#         form= AuthenticationForm(request, data=request.POST)
-#         if form.is_valid():
-#             username=form.cleanedÖdate.get('username')
-#             password=form.cleanedÖdate.get('password')
-#             user=authenticate(username=username,password=password)
-#             if user is not None:
-#                 login(request,user)
-#                 return redirect('user_profile')
-#             else:
-#                 form.add_error(None,'Invalid username or password')
-#     else:
-#         form=AuthenticationForm()
-
-#     return render(request,'login.html',{'form':form})
-# def index_(request):
-#     return render(request,'home.html')
-
-# def register(response):
-#     form= UserCreationForm()
-#     return render(response, "register/register.html",{"form":form})
-# @login_required
-# def user_profile(request):
-#     if request.method == 'POST':
-#         form = UserPForm(request.POST)  # Initialize form with POST data
-#         if form.is_valid():
-#             form.save()  # Save the form data to the database
-#             print("FROM IS VALID")
-#             print("Request method: ", request.method)
-#             print("form data: ", request.POST)
-#             return redirect('login')  # Redirect after saving
-#         else:
-#             print(form.errors)  # Print form validation errors to the console
-#             print("Request method: ", request.method)
-#             print("form data: ", request.POST)
-#     else:
-#         form = UserPForm()  # Initialize an empty form for GET request
-
-#     return render(request, 'home.html', {'form': form})  # Pass form to template
-
-
-
-
-
-
-
-
-
-# def index(request):
-#     template= loader.get_template('home.html')
-#     return HttpResponse(template.render())
-
-# def user_profile(request):
-#     if request.method == 'POST':
-#         form=UserPForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             #ok
-#             #i've cum
-#             return redirect('app2:success')
-#     form = UserPForm()
-#     return render(request, 'home.html', {'message': 'Profile created successfully!'})
-
-# def user_profile(request):
-#     if request.method == 'POST':
-#         # Get the form data
-#         username = request.POST.get("username")
-#         password = request.POST.get("password")
-#         print("Post was a successssss!")
-
-#         # Create an instance of the form with the POST data
-#         user_form = UserPForm(request.POST)
-
-#         # Validate the form
-#         if user_form.is_valid():
-#             # Save the form data to the database
-#             user_form.save()
-#             print(f'User {username} saved successfully!')
-
-#             print("Data saved successfully!")
-
-#             # Optionally, redirect to a success page or render a success template
-#             return render(request, 'home.html', {'message': 'Profile created successfully!'})
-
-#         else:
-#             # If the form is invalid, print errors
-#             print("Form errors:", user_form.errors)
-#             return render(request, 'home.html', {'form': user_form})
-
-#     # If the request is not POST, render the form as usual
-#     else:
-#         user_form = UserPForm()
-
-#     return render(request, 'home.html', {'form': user_form})
-
-# # 
-# def success(request):
-#     return render(request,'success.html')
+    
+def confirmation(request):
+    return render(request,'confirmation.html')

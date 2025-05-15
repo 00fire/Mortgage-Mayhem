@@ -97,20 +97,24 @@ class PurchaseOffer(models.Model):
 
 
 class FinalizedOffer(models.Model):
-    purchase_offer = models.ForeignKey(PurchaseOffer, on_delete=models.CASCADE)
-    street = models.CharField(max_length=255)
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    property=models.ForeignKey(Properties,on_delete=models.CASCADE)
+    street_name = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
-    postal = models.CharField(max_length=255)
+    purchase_offer = models.ForeignKey(PurchaseOffer, on_delete=models.CASCADE)
+    
+    
+    postal_code = models.CharField(max_length=255)
     country = models.CharField(max_length=255)
     national_pid = models.CharField(max_length=255)
-    pay_method = models.TextField()  # credit/banktransfer/mortgage
-    card_name = models.TextField()
-    card_num = models.IntegerField()
-    expiration_date_card = models.TextField()
-    cvc = models.IntegerField()
-    bank_acc = models.TextField()
-    mortgage_prov = models.TextField()
-    confirm_time = models.DateTimeField()
+    pay_method = models.CharField(max_length=255)  # credit/banktransfer/mortgage
+    cardholder_name = models.CharField()
+    card_num = models.CharField(max_length=16, blank=True, null=True)
+    expiration_date_card = models.CharField(max_length=5, blank=True, null=True)
+    cvc = models.CharField(max_length=3, blank=True, null=True)
+    bank_acc = models.CharField(max_length=255, blank=True, null=True)
+    mortgage_prov = models.CharField(max_length=255, blank=True, null=True)
+    confirm_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.purchase_offer}, {self.card_name}, {self.national_pid}, {self.street}"
+        return f"{self.purchase_offer}, {self.cardholder_name}, {self.national_pid}, {self.street_name}"
