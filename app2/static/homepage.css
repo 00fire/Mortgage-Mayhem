@@ -130,8 +130,8 @@ body {
 
 /* Property Card Hover Image Zoom */
 .img-wrapper {
-    width: 100px;
-    height: 100px;
+    max-width: 80px;
+    max-height: 80px;
     overflow: hidden;
     border-radius: 6px;
     flex-shrink: 0;
