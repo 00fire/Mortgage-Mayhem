@@ -83,6 +83,8 @@
 
             <div class="property-text-box">
               <p class="property-text">${{ property.property_price }}</p>
+              <p><strong>Seller:</strong> {{ property.seller.username }}</p>
+              <p class="property-bio">{{ property.property_bio }}</p>
               <a href="{% url 'property_detail' property.id %}" class="btn">
                 View Details
               </a>
