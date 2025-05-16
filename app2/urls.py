@@ -5,6 +5,7 @@ from django.contrib.auth.views import LoginView
 #from django.contrib import admins?????????????????
 from django.conf import settings
 from django.conf.urls.static import static
+from .views import delete_property
 urlpatterns = [
     path("", views.root_redirect, name="root"),
     path('login/',views.login_view, name='login'),
@@ -27,6 +28,7 @@ urlpatterns = [
     path('property/finalize/confirmation/', views.confirmation, name='confirmation'),
     path('property/<int:property_id>/finalize/contact/', views.contact_info, name='contact_info'),
     path('property/<int:property_id>/finalize/review/', views.review, name='review'),
+    path('property/<int:property_id>/delete/', delete_property, name='delete_property'),
 
     
 

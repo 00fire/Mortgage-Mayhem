@@ -85,6 +85,13 @@
 
     <hr>
 
+    {% if request.user.is_authenticated and request.user.profile.role == 'admin' and not property.property_sold_status %}
+      <form action="{% url 'delete_property' property.id %}" method="post" onsubmit="return confirm('Are you sure you want to delete this property?');">
+        {% csrf_token %}
+        <button class="delete-property-btn" type="submit">🗑 Delete Property</button>
+      </form>
+    {% endif %}
+
     {# — Offer form only if unsold and user ≠ seller — #}
     {% if offer_form %}
       <div class="offer-form-wrapper">

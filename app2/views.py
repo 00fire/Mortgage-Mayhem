@@ -563,3 +563,20 @@ def review(request, property_id):
     
 def confirmation(request):
     return render(request,'confirmation.html')
+
+
+# ADMIN FEATURES
+
+@login_required
+def delete_property(request, property_id):
+    prop = get_object_or_404(Properties, id=property_id)
+
+    if request.user.profile.role != 'admin':
+        messages.error(request, "You do not have permission to delete this property.")
+    elif prop.property_sold_status:
+        messages.warning(request, "This property has already been sold and cannot be deleted.")
+    else:
+        prop.delete()
+        messages.success(request, "Property listing successfully deleted.")
+
+    return redirect('property_detail', property_id=property_id)
