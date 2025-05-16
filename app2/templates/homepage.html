@@ -19,16 +19,16 @@
         {% for property in properties %}
           <div class="property-item">
 
-            <!-- Header Info -->
+            
             <div class="property-header">
               <h2>{{ property.property_city }}</h2>
               <p class="listed-date">Listed: {{ property.listed_at|date:"M j, Y" }}</p>
             </div>
 
-            <!-- Property Card -->
+            
             <div class="property-card">
 
-              <!-- Image Preview in wrapper -->
+              
               <div class="img-wrapper">
                 {% with thumb=property.images.first %}
                   {% if thumb %}
@@ -57,7 +57,7 @@
                 <div class="sold-ribbon">Sold</div>
               {% endif %}
 
-              <!-- Description -->
+              
               <div class="property-text-box">
                 <p class="property-text"><strong>${{ property.property_price }}</strong></p>
                 <p class="property-text">Rooms: {{ property.property_rooms }}</p>

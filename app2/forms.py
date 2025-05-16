@@ -9,7 +9,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 
-from .models import UserProfile, Properties     # import any other models you need
+from .models import UserProfile, Properties     
 from django import forms
 from django.forms import modelformset_factory
 from django.forms import CharField
@@ -57,12 +57,12 @@ class PurchaseOfferForm(forms.ModelForm):
 
 PropertyImageFormSet = modelformset_factory(
     PropertyImage,
-    fields=('image',),     # your ImageField on PropertyImage
-    extra=6,                # how many empty “upload” slots to show
-    max_num=10,             # limit total images
-    can_delete=True,        # allow deleting existing ones
+    fields=('image',),     
+    extra=6,                
+    max_num=10,             
+    can_delete=True,        
 )
-# If you still reference "ProfileEditForm" in views:
+
 ProfileEditForm = ProfileForm     
 
 
@@ -99,21 +99,21 @@ class PaymentForm(forms.Form):
         method = cleaned.get('payment_option')
 
         if method == 'credit_card':
-            # Card number
+            
             card_num = cleaned.get('card_num')
             if not card_num:
                 self.add_error('card_num', 'Card number is required.')
             elif not card_num.isdigit() or not (13 <= len(card_num) <= 16):
                 self.add_error('card_num', 'Card number must be 13–16 digits.')
 
-            # Expiration date
+            
             expiry = cleaned.get('expiration_date_card')
             if not expiry:
                 self.add_error('expiration_date_card', 'Expiry date is required.')
             elif not re.match(r'^(0[1-9]|1[0-2])/\d{2}$', expiry):
                 self.add_error('expiration_date_card', 'Expiry must be in MM/YY format (e.g. 09/25).')
 
-            # CVC
+            
             cvc = cleaned.get('cvc')
             if not cvc:
                 self.add_error('cvc', 'CVC is required.')

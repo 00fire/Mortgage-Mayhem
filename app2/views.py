@@ -1,46 +1,17 @@
-from django.shortcuts import render, redirect,get_object_or_404
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+# Django Core Imports
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseForbidden, HttpResponse
+from django.contrib import messages
 from django.contrib.auth import login, authenticate
-
-from app2.models import Properties
-from django.db.models import Q
-from django.shortcuts import render
-from django.db.models import Q
-from .models import Properties
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-# Create your views here.
-from .forms import PropertyForm
-from app2.models import Properties
-from django.http import HttpResponseForbidden,HttpResponse
-from django.contrib import messages
-from .forms import SignUpForm, ProfileForm, ProfileEditForm
-
-
-from .forms import PurchaseOfferForm
-from app2.models import UserProfile,PurchaseOffer
-from app2.forms import UserProfileForm
-from .decorators import seller_required
-from .decorators import buyer_required
-from django.contrib import messages
-
 from django.utils import timezone
+from django.db.models import Q
+from .models import Properties, PropertyImage, FinalizedOffer, UserProfile, PurchaseOffer
+from .forms import (PropertyForm, PropertyImageFormSet, SignUpForm, ProfileForm, ProfileEditForm,PurchaseOfferForm, UserProfileForm, ContactInfoForm, PaymentForm)
+from .decorators import seller_required, buyer_required
 
-
-from .forms import PropertyForm, PropertyImageFormSet
-from .models import Properties, PropertyImage
-
-
-from .forms import ContactInfoForm, PaymentForm
-from .models import Properties, FinalizedOffer
-
-
-
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
-from django.shortcuts import render, redirect
-from .forms import PropertyForm, PropertyImageFormSet
-from .models import PropertyImage
 
 
 def root_redirect(request):
@@ -49,8 +20,8 @@ def root_redirect(request):
 
 @login_required#this renders the homepage
 def homepage(request):
-    properties=Properties.objects.all()
-    return render(request, 'homepage.html',{'properties': properties})
+    properties=Properties.objects.all()#this fetches all of the property listings
+    return render(request, 'homepage.html',{'properties': properties})#adn here we pass them to the homepage
 
 #this renders the profile info html
 def profile_info(request):
@@ -67,13 +38,13 @@ def login_view(request):
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
+            password = form.cleaned_data.get('password')#this is all to handle logging in and to validate if the form is okay
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('homepage')
+                return redirect('homepage')#if everything works then we get routed to the homepage
             else:
-                form.add_error(None, 'Invalid username or password')
+                form.add_error(None, 'Invalid username or password')#else we get an error
     else:
         form = AuthenticationForm()
 
@@ -81,40 +52,40 @@ def login_view(request):
 
 def index_(request):
     if not request.user.is_authenticated:
-        return redirect('login')  # Redirect to login if not authenticated
+        return redirect('login')  #redirect to login if the user is not authenticated
     return render(request, 'login.html')
 
 
 
 @login_required
-def edit_profile(request):
+def edit_profile(request):#here i initialize the form with post data nad files and bind them to the users current profile
     form = ProfileEditForm(request.POST or None,
                            request.FILES or None,
                            instance=request.user.profile)
     if request.method == "POST" and form.is_valid():
         form.save()
-        return redirect("profile_info")
+        return redirect("profile_info")#if the form is valid and submittted we get redirected to the users profile
+    
 
     return render(request, "profile/edit_profile.html", {"form": form})
 
 def success(request):
     return render(request, 'success.html')  # Display success message
-from django.shortcuts import render, redirect
-from django.http import HttpResponseForbidden
+
 @login_required
 
 def property_detail(request, pk):
-    prop = get_object_or_404(Properties, pk=pk)
+    prop = get_object_or_404(Properties, pk=pk)#we look up the property by primary key, return a 404 if it ain't there
     existing = None
     offer_form = None
 
-    # only for buyers who can make an offer
+    #only for buyers who can make an offer so that sellers can't
     if request.user.is_authenticated \
        and request.user.profile.role == "buyer" \
        and prop.seller != request.user \
        and not prop.property_sold_status:
-
-        existing = prop.offers.filter(buyer=request.user).first()
+        
+        existing = prop.offers.filter(buyer=request.user).first()#here we check if there is already a buyer
         offer_form = PurchaseOfferForm(request.POST or None, instance=existing)
 
         if request.method=="POST" and offer_form.is_valid():
@@ -124,7 +95,7 @@ def property_detail(request, pk):
             off.status = "pending"
             off.save()
             messages.success(request, "Your offer has been submitted.")
-            return redirect("property_detail", pk=prop.pk)
+            return redirect("property_detail", pk=prop.pk)#if everything is valid then the offer is saved and the buyer is redirected to the prop details page
 
     return render(request, "property_detail.html", {
         "property": prop,
@@ -148,22 +119,22 @@ def signup_view(request):
         user_form    = SignUpForm(request.POST)
         profile_form = ProfileForm(request.POST, request.FILES)
 
-        if user_form.is_valid() and profile_form.is_valid():
+        if user_form.is_valid() and profile_form.is_valid():#this is gonna ensure that of both forms are valid then a new user is activated and saved to the system
             
             user = user_form.save(commit=False)
-            user.is_active = True
+            user.is_active = True#the user is activated
             user.save()
             profile = profile_form.save(commit=False)
             profile.user = user
             profile.role = user_form.cleaned_data["role"]
             profile.save()
-            login(request, user)
+            login(request, user)#we do an auto login after the sign up, very cool i know :3
             messages.success(request, "Welcome, your account was created.")
             return redirect("homepage")
 
     else:
         user_form    = SignUpForm()
-        profile_form = ProfileForm()
+        profile_form = ProfileForm()#we also makel it so that they get a dedicated userprofile
 
     return render(request, "signup.html", {
         "user_form":    user_form,
@@ -172,17 +143,18 @@ def signup_view(request):
 
 @login_required
 def profile_info(request):
-    # — Profile form handling (unchanged) —
+    # profile form handling 
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    #if the user submitted any changes then they are saved
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            form.save()
+            form.save()#we save them here
             return redirect('profile_info')
     else:
         form = UserProfileForm(instance=profile)
 
-    # — Seller dashboard bits (only if role == 'seller') —
+    #this is is just what we show on the seller side of things, invisible to the buyer
     if request.user.profile.role == 'seller':
         my_listings = Properties.objects.filter(
             seller=request.user,
@@ -198,11 +170,11 @@ def profile_info(request):
         incoming_offers = Properties.objects.none()
         incoming_count = 0
 
-    # — Buyer dashboard bits —
+    #the buyer only sees this part, this is their dashboard
     my_offers = PurchaseOffer.objects.filter(buyer=request.user)
     for offer in my_offers:
         offer.finalized = FinalizedOffer.objects.filter(purchase_offer=offer).exists()
-    # — Everything I own (regardless of role) —
+    #this is shown regardless of the role, just all the properties they own
     my_owned = Properties.objects.filter(owner=request.user)
 
     return render(request, 'profile_info.html', {
@@ -228,69 +200,25 @@ def profile_info(request):
 
 
 
-# def search_properties(request):
-#     """
-#     View function to handle property search queries.
-
-#     Allows users to search for properties based on partial matches in
-#     the street, city, or country fields of the Properties model.
-
-#     Accepts:
-#         - GET parameter 'q': the search query string
-
-#     Returns:
-#         - Rendered HTML page ('search_page.html') with a context variable
-#           'properties' containing the filtered queryset.
-#     """
-    
-#     # Retrieve the value of the search query from the GET request
-#     query = request.GET.get('q')
-#     city = request.GET.getlist('city')  # multiple cities via checkbox
-#     min_price = request.GET.get('min_price')
-#     max_price = request.GET.get('max_price')
-#     rooms = request.GET.getlist('rooms')  # filter by room count
-
-#     # Get all properties initially
-#     properties = Properties.objects.all()
-
-#     if query:
-#          # Q objects allow combining filters using | (OR), & (AND), and ~ (NOT)
-#         # __icontains performs a case-insensitive partial string match
-#         properties = properties.filter(
-#             Q(property_street__icontains=query) |
-#             Q(property_city__icontains=query) |
-#             Q(property_country__icontains=query)
-#         )
-
-#     if city:
-#         properties = properties.filter(property_city__in=city)
-
-#     if rooms:
-#         properties = properties.filter(property_rooms__in=rooms)
-
-#     if min_price:
-#         properties = properties.filter(property_price__gte=min_price)
-#     if max_price:
-#         properties = properties.filter(property_price__lte=max_price)
-
-#     all_cities = Properties.objects.values_list('property_city', flat=True).distinct()
-#     all_rooms = Properties.objects.values_list('property_rooms', flat=True).distinct()
-
-#     # Render the search results in the 'search_page.html' template
-#     return render(request, 'homepage.html', {
-#         'properties': properties,
-#         'all_cities': all_cities,
-#         'all_rooms': all_rooms,
-#         'current_query': query,
-#         'selected_cities': city,
-#         'selected_rooms': rooms,
-#         'min_price': min_price,
-#         'max_price': max_price,
-#     })
 
 
 
 def homepage(request):
+    """
+    View function to handle property search queries.
+
+    Allows users to search for properties based on partial matches in
+    the street, city, or country fields of the Properties model.
+
+    Accepts:
+        - GET parameter 'q': the search query string
+
+    Returns:
+        - Rendered HTML page ('search_page.html') with a context variable
+          'properties' containing the filtered queryset.
+    """
+
+    #here we retreive filter inputs from the get parameters
     query = request.GET.get('q', '')
     postal_code = request.GET.get('postal_code', '')
     property_type = request.GET.get('property_type', '')
@@ -298,7 +226,7 @@ def homepage(request):
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
     order_by = request.GET.get('order_by', '')
-
+    #we start with all properties
     properties = Properties.objects.all()
 
     if query:
@@ -307,28 +235,29 @@ def homepage(request):
             Q(property_city__icontains=query) |
             Q(property_country__icontains=query)
         )
-
+    #this is to search by postal code
     if postal_code:
         properties = properties.filter(property_postal__iexact=postal_code)
-
+    #this is to search by property type
     if property_type:
         properties = properties.filter(property_type__iexact=property_type)
-
+    #this is to search by street name
     if street_name:
         properties = properties.filter(property_street__icontains=street_name)
-
+    #this is to search by min price
     if min_price:
         properties = properties.filter(property_price__gte=min_price)
-
+    #this is to search by max price
     if max_price:
         properties = properties.filter(property_price__lte=max_price)
 
-    
+    #by price
     if order_by == 'price':
         properties = properties.order_by('property_price')
+    #by name
     elif order_by == 'name':
         properties = properties.order_by('property_street')
-
+    #all possible quires
     context = {
         'properties': properties,
         'current_query': query,
@@ -365,7 +294,7 @@ def make_offer(request, property_id):
             messages.success(request, "Your offer has been submitted.")
             return redirect("property_detail", id=property_id)
     else:
-        # 3b) just display the empty (or pre-filled) form
+        
         form = PurchaseOfferForm(instance=existing)
 
     return render(request, "offer_form.html", {
@@ -441,10 +370,10 @@ def respond_offer(request, offer_id):
             offer.save()
             
 
-        # redirect back to _your_ profile dashboard
+        
         return redirect('seller_listings')
 
-    # GET: show the “accept / reject” form
+    
     return render(request, 'respond_offer.html', {'offer': offer})
 
 
@@ -538,7 +467,7 @@ def review(request, property_id):
         payment_info['pay_method'] = payment_info.pop('payment_option')
 
     if request.method == 'POST':
-        # Fetch the related offer first
+        
         offer = PurchaseOffer.objects.filter(
             buyer=request.user,
             property=property,
@@ -548,7 +477,7 @@ def review(request, property_id):
         if not offer:
             return HttpResponse("No matching accepted offer found", status=400)
 
-        # Create and save finalized offer all at once
+        
         finalized = FinalizedOffer.objects.create(
             user=request.user,
             property=property,
@@ -557,12 +486,12 @@ def review(request, property_id):
             **payment_info
         )
 
-        # Transfer ownership
+        # The actual transfer ownership
         property.owner = request.user
         property.property_sold_status = True
         property.save()
 
-        # Clean up
+        # clean up
         request.session.pop('contact_info', None)
         request.session.pop('payment_info', None)
 
