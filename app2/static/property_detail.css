@@ -15,7 +15,7 @@ body {
   margin: 2rem auto;
   color: rgb(255, 255, 255);
   background-color: #3d3d3d;
-  border: 7px solid #FF8C00;
+  border: 7px solid #ffb20c;
   border-radius: 6px;
 }
 
@@ -50,7 +50,7 @@ body {
   max-width: 100%;
   height: auto;
   margin-bottom: 1rem;
-  border: 7px solid #FF8C00;
+  border: 7px solid #ffb20c;
   border-radius: 6px;
 }
 
@@ -67,7 +67,7 @@ body {
   object-fit: cover;
   border-radius: 4px;
   cursor: pointer;
-  border: 3px solid #FF8C00;
+  border: 3px solid #0077b6;
   /* optionally add a lightbox onclick behavior later */
 }
 
