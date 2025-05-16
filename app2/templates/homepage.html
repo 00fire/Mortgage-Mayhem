@@ -63,8 +63,11 @@
                 <p class="property-text">Rooms: {{ property.property_rooms }}</p>
                 <p class="property-text">Square meters: {{ property.property_square_meters_size}}m</p>
                 <p><strong>Seller:</strong> {{ property.seller.username }}</p>
-                <p class="property-bio">{{ property.property_bio }}</p>
+                {% if property.property_description %}
+                  <p class="property-description">{{ property.property_description|truncatechars:100 }}</p>
+                {% endif %}
                 <a href="{% url 'property_detail' property.id %}" class="btn">View Details</a>
+                <p>{{ property.property_bio }}</p>
               </div>
 
             </div>

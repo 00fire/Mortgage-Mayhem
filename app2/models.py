@@ -93,7 +93,7 @@ class PurchaseOffer(models.Model):
         unique_together = (('property', 'buyer'),)
         ordering = ['-created_at']
     def __str__(self):
-        return f"{self.buyer.username} → {self.property.title} @ {self.offer_price}"
+        return f"{self.buyer.username} → {self.property} @ {self.offer_price}"
 
 
 class FinalizedOffer(models.Model):
