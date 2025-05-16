@@ -24,7 +24,7 @@ User = get_user_model()
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['role','bio', 'profile_picture']
+        fields = ['role','bio', 'profile_picture', 'seller_type', 'street', 'city', 'postal']
 
 
 class PropertyForm(forms.ModelForm):
