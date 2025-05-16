@@ -192,3 +192,22 @@ h2 small {
   margin: 0.2rem 0 1rem 0;
   text-align: center;
 }
+
+/* profile_info.css */
+
+.username-display {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent-orange, #FF8C00);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.error-box {
+  background-color: #ff4d4f;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+}

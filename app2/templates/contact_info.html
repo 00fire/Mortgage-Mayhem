@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <h2 class="text-align: center;">Contact Information</h2>
+    <h2 style="text-align: center;">Contact Information</h2>
 
     <form method="post">
         {% csrf_token %}
@@ -34,7 +34,13 @@
 
         <div>
             <label for="id_country">Country:</label>
-            {{ form.country }}
+            <select name="country" id="id_country">
+                {% for code, name in form.fields.country.choices %}
+                    <option value="{{ code }}" {% if form.country.value == code %}selected{% endif %}>
+                        {{ name }}
+                    </option>
+                {% endfor %}
+            </select>
             {{ form.country.errors }}
         </div>
 
