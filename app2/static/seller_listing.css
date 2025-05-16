@@ -1,0 +1,67 @@
+/* seller_listing.css */
+
+:root {
+  --bg-dark: #121212;
+  --bg-darker: #1c1c1c;
+  --accent-orange: #FF8C00;
+  --accent-glow: #ff6a00;
+  --primary-blue: #0077b6;
+  --primary-blue-dark: #005f99;
+  --success-green: #28a745;
+  --danger-red: #dc3545;
+  --warning-yellow: #ffc107;
+  --text-light: #ffffff;
+  --text-muted: #cccccc;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-light);
+  margin: 0;
+  padding: 0;
+}
+
+.listings-wrapper {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: var(--bg-darker);
+    color: var(--text-light);
+    border: 2px solid var(--accent-orange);
+    border-radius: 10px;
+}
+
+.listings-wrapper h1,
+.listings-wrapper h2 {
+    color: var(--accent-orange);
+    margin-bottom: 1rem;
+}
+
+.listings-wrapper ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+.listings-wrapper li {
+    background-color: #464646;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.listings-wrapper a {
+    color: (--primary-blue);
+    text-decoration: none;
+}
+
+.listings-wrapper a:hover {
+    text-decoration: underline;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 2rem;
+    color: (--primary-blue);
+}

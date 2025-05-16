@@ -1,5 +1,14 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Listings</title>
+  <link rel="stylesheet" href="{% static 'seller_listing.css' %}">
+</head>
+<body>
 
-{% block content %}
+<div class="listings-wrapper">
   <h1>My Listings</h1>
   {% if listings %}
     <ul>
@@ -20,16 +29,18 @@
     <ul>
       {% for offer in incoming_offers %}
         <li>
-          #{{ offer.id }} —
-          {{ offer.buyer.username }} offered ${{ offer.offer_price }}
+          #{{ offer.id }} — {{ offer.buyer.username }} offered ${{ offer.offer_price }}
           on <a href="{% url 'property_detail' offer.property.id %}">{{ offer.property.property_city }}</a>
           [<a href="{% url 'respond_offer' offer.id %}">Respond</a>]
         </li>
       {% endfor %}
-      <p><a href="{% url 'profile_info' %}">← Back to My Profile</a></p>
     </ul>
   {% else %}
     <p>No pending offers.</p>
   {% endif %}
-  <p><a href="{% url 'profile_info' %}">← Back to My Profile</a></p>
-{% endblock %}
+
+  <a class="back-link" href="{% url 'profile_info' %}">← Back to My Profile</a>
+</div>
+
+</body>
+</html>
