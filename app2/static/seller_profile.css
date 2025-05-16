@@ -71,6 +71,10 @@ body {
   color: var(--primary-blue);
 }
 
+.seller-type-section h2{
+  color: var(--primary-blue);
+}
+
 .agency-address {
   margin-bottom: 2rem;
 }

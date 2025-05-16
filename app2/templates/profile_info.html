@@ -43,12 +43,10 @@
             <option value="seller" {% if form.instance.role == "seller" %}selected{% endif %}>Seller</option>
           </select>
         </p>
-
-        <p>
-          {{ form.bio.label_tag }}
-          {{ form.bio }}
-          {{ form.bio.errors }}
-        </p>
+          <p class="bio-class">
+            {{ form.bio }}
+            {{ form.bio.errors }}
+          </p>
 
         <p>
           <label for="id_profile_picture">Profile picture:</label>

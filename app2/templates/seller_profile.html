@@ -30,6 +30,12 @@
       </section>
     {% endif %}
 
+    {% if profile.seller_type %}
+      <section class="seller-type-section h2">
+        <h2>Seller Type: {{ profile.seller_type }}</h2>
+      </section>
+    {% endif %}
+
     {% if profile.role == 'seller' and profile.seller_type == 'agency' and profile.street and profile.city and profile.postal %}
       <section class="agency-address">
         <h3>Office Address</h3>

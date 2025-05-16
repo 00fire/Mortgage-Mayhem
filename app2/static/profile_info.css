@@ -167,3 +167,21 @@ h2 small {
   background-color: var(--bg-darker);
   color: var(--text-light);
 }
+
+.edit-form p {
+  margin-bottom: 1rem;
+}
+
+.edit-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.edit-form input[type="text"],
+.edit-form textarea,
+.edit-form select {
+  width: 400px;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
