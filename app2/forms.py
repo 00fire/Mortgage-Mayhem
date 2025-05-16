@@ -32,7 +32,7 @@ class PropertyForm(forms.ModelForm):
         model=Properties
         fields=['property_country', 'property_street', 'property_city', 'property_postal', 
                   'property_price', 'property_description', 'property_rooms', 'property_bedrooms', 
-                  'property_bathrooms', 'property_square_meters_size', 'property_sold_status', 'property_image','property_type']
+                  'property_bathrooms', 'property_square_meters_size', 'property_image','property_type']
 
 
 class SignUpForm(UserCreationForm):
@@ -58,7 +58,7 @@ class PurchaseOfferForm(forms.ModelForm):
 PropertyImageFormSet = modelformset_factory(
     PropertyImage,
     fields=('image',),     # your ImageField on PropertyImage
-    extra=3,                # how many empty “upload” slots to show
+    extra=6,                # how many empty “upload” slots to show
     max_num=10,             # limit total images
     can_delete=True,        # allow deleting existing ones
 )
