@@ -36,6 +36,11 @@ from .models import Properties, FinalizedOffer
 
 
 
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from django.shortcuts import render, redirect
+from .forms import PropertyForm, PropertyImageFormSet
+from .models import PropertyImage
 
 
 def root_redirect(request):
@@ -464,30 +469,37 @@ def seller_listings(request):
 
 
 
+
+
 @login_required
 def add_property(request):
-    if request.user.profile.role !='seller':
+    if request.user.profile.role != 'seller':
         return HttpResponseForbidden("Only sellers can list properties")
-    
-    if request.method=='POST':
-        prop_form=PropertyForm(request.POST,request.FILES)
-        img_formset=PropertyImageFormSet(request.POST,request.FILES,queryset=PropertyImage.objects.none())
-        #form=PropertyForm(request.POST,request.FILES)
-        
+
+    if request.method == 'POST':
+        prop_form = PropertyForm(request.POST, request.FILES)
+        img_formset = PropertyImageFormSet(request.POST, request.FILES, queryset=PropertyImage.objects.none())
+
         if prop_form.is_valid() and img_formset.is_valid():
-            prop=prop_form.save(commit=False)
-            prop.seller=request.user
-            prop.owner=request.user
+            prop = prop_form.save(commit=False)
+            prop.seller = request.user
+            prop.owner = request.user
             prop.save()
             images = img_formset.save(commit=False)
             for image in images:
                 image.property = prop
                 image.save()
             return redirect('profile_info')
+
     else:
-            prop_form=PropertyForm()
-            img_formset=PropertyImageFormSet(queryset=PropertyImage.objects.none())
-    return render(request, "add_property.html",{"form":prop_form,'formset':img_formset,})
+        prop_form = PropertyForm()
+        img_formset = PropertyImageFormSet(queryset=PropertyImage.objects.none())
+
+    return render(request, "add_property.html", {
+        "form": prop_form,
+        "formset": img_formset,
+    })
+
 
 
 def contact_info(request, property_id):
