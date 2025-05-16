@@ -279,7 +279,7 @@ def homepage(request):
 @buyer_required
 def make_offer(request, property_id):
     
-    prop = get_object_or_404(Properties,pk=property_id,property_sold_status=False)
+    prop = get_object_or_404(Properties,pk=property_id,property_sold_status=False)#here we fetch the property id but only if its available
     existing = PurchaseOffer.objects.filter(property=prop,buyer=request.user).first()
 
     if request.method == "POST":
@@ -292,7 +292,7 @@ def make_offer(request, property_id):
             offer.status  = "pending"
             offer.save()
             messages.success(request, "Your offer has been submitted.")
-            return redirect("property_detail", id=property_id)
+            return redirect("property_detail", id=property_id)#just a standard saving form
     else:
         
         form = PurchaseOfferForm(instance=existing)
@@ -320,8 +320,8 @@ def make_offer(request, property_id):
 
 
 def seller_profile(request,user_id):
-    seller=get_object_or_404(User,pk=user_id)
-    profile=seller.profile
+    seller=get_object_or_404(User,pk=user_id)#fetch the seller by their userid
+    profile=seller.profile#get their profile
     listings=Properties.objects.filter(seller=seller,property_sold_status=False)
 
     return render(request,'seller_profile.html',{'seller':seller,'profile':profile,'listings':listings,})
@@ -336,7 +336,7 @@ def seller_profile(request,user_id):
 def incoming_offers(request):
     if request.user.profile.role !='seller':
         return HttpResponseForbidden()
-    offers=PurchaseOffer.objects.filter(property__seller=request.user,status='pending').select_related('buyer','property')
+    offers=PurchaseOffer.objects.filter(property__seller=request.user,status='pending').select_related('buyer','property')#this shows every pending offer
     return render(request,"seller_incoming_offers.html",{"offers":offers})
 
 
@@ -346,7 +346,7 @@ def incoming_offers(request):
 
 @login_required
 def respond_offer(request, offer_id):
-    offer = get_object_or_404(PurchaseOffer, pk=offer_id)
+    offer = get_object_or_404(PurchaseOffer, pk=offer_id)#this gets the offer
     if request.user != offer.property.seller:
         return HttpResponseForbidden()
 
@@ -355,7 +355,7 @@ def respond_offer(request, offer_id):
         if action == 'accept':
             #  mark the offer accepted
             offer.status = 'accepted'
-            offer.save()
+            offer.save()#this makes sure the offer is saved if accepted
 
            #transfer ownership & mark sold
             # prop = offer.property
@@ -367,7 +367,7 @@ def respond_offer(request, offer_id):
         else:
             offer.status = 'rejected'
             messages.info(request, f"Offer #{offer.id} rejected.")
-            offer.save()
+            offer.save()#saved if rejected
             
 
         
@@ -383,14 +383,14 @@ def respond_offer(request, offer_id):
 @login_required
 def seller_dashboard(request):
     incoming=PurchaseOffer.objects.filter(property__seller=request.user).order_by("-created_at")
-    return render(request,"seller_dashboard.html",{"incoming_offers":incoming,})
+    return render(request,"seller_dashboard.html",{"incoming_offers":incoming,})#this renders the seller dashboard
 
 
 def seller_listings(request):
     if request.user.profile.role !='seller':
         return HttpResponseForbidden()
-    my_listings=Properties.objects.filter(seller=request.user)
-    incoming=PurchaseOffer.objects.filter(property__seller=request.user,status='pending').order_by('-created_at')
+    my_listings=Properties.objects.filter(seller=request.user)#this is so taht only the sellers can access
+    incoming=PurchaseOffer.objects.filter(property__seller=request.user,status='pending').order_by('-created_at')#this makes it so we see the pending offers
     return render(request,'seller_listings.html',{'listings':my_listings,'incoming_offers':incoming,})
 
 
@@ -400,7 +400,7 @@ def seller_listings(request):
 
 
 
-@login_required
+@login_required#this is a standard adding form just shanghaied into working for adding property
 def add_property(request):
     if request.user.profile.role != 'seller':
         return HttpResponseForbidden("Only sellers can list properties")
@@ -437,10 +437,10 @@ def add_property(request):
 
 
 
-def contact_info(request, property_id):
+def contact_info(request, property_id):#this is for the first step of finalizing a purchase
     if request.method == 'POST':
         form = ContactInfoForm(request.POST)
-        if form.is_valid():
+        if form.is_valid():#standard if the form is valid
             print("POST received in contact_info")
             request.session['contact_info'] = form.cleaned_data
             return redirect('payment', property_id=property_id)
@@ -452,16 +452,18 @@ def contact_info(request, property_id):
 
 
     
-def payment(request,property_id):
+def payment(request,property_id):#this is the chose payment method and where we enter the card credentials
     if request.method=='POST':
         form=PaymentForm(request.POST)
         if form.is_valid():
+            #here we save the payment info in the current session
             request.session['payment_info']=form.cleaned_data
             return redirect('review',property_id=property_id)
     else:
+        #and here we can reload said info if we are returning
         form=PaymentForm(initial=request.session.get('payment_info',{}))
     return render(request,'payment.html',{'form':form})
-
+#this is the final step in finalization
 def review(request, property_id):
     contact_info = request.session.get('contact_info', {}).copy()
     payment_info = request.session.get('payment_info', {}).copy()
@@ -476,7 +478,7 @@ def review(request, property_id):
             buyer=request.user,
             property=property,
             status__iexact='accepted'
-        ).first()
+        ).first()#here we can validate taht an accepted offer exists before we finalize it
 
         if not offer:
             return HttpResponse("No matching accepted offer found", status=400)
@@ -488,14 +490,14 @@ def review(request, property_id):
             purchase_offer=offer,
             **contact_info,
             **payment_info
-        )
+        )#here we save all the info to finalizedoffer table
 
-        # The actual transfer ownership
+        #the actual transfer ownership
         property.owner = request.user
         property.property_sold_status = True
         property.save()
 
-        # clean up
+        #clean up so that the info is correct
         request.session.pop('contact_info', None)
         request.session.pop('payment_info', None)
 
@@ -508,7 +510,7 @@ def review(request, property_id):
     })
 
 
-    
+#this is just a render to show a little confirmation message after a successful pruchase    
 def confirmation(request):
     return render(request,'confirmation.html')
 
