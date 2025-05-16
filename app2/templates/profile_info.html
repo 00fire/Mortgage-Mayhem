@@ -12,6 +12,7 @@
 
     <header class="profile-header">
       <h1>My Profile</h1>
+      <p class="username-display">{{ request.user.username }}</p>
       {% if form.instance.profile_picture %}
         <img class="avatar" src="{{ form.instance.profile_picture.url }}" 
              alt="{{ request.user.username }}">
