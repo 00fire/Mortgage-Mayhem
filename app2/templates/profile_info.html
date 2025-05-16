@@ -22,27 +22,28 @@
       <h2>Edit your info</h2>
       <form method="post" enctype="multipart/form-data" class="edit-form">
         {% csrf_token %}
-          <p>
+        <p>
           <label for="id_role">Role:</label>
           <select name="role" id="id_role">
             <option value="buyer" {% if form.instance.role == "buyer" %}selected{% endif %}>Buyer</option>
             <option value="seller" {% if form.instance.role == "seller" %}selected{% endif %}>Seller</option>
           </select>
-          </p>
+        </p>
 
-          <p>
-          <label for="id_bio">Bio:</label>
-          <textarea class="bio-class" id="id_bio" rows="5" cols="40">{{ form.instance.bio }}</textarea>
-          </p>
+        <p>
+          {{ form.bio.label_tag }}
+          {{ form.bio }}
+          {{ form.bio.errors }}
+        </p>
 
-          <p>
+        <p>
           <label for="id_profile_picture">Profile picture:</label>
           {% if form.instance.profile_picture %}
             <span>Currently: <a href="{{ form.instance.profile_picture.url }}">{{ form.instance.profile_picture.name }}</a></span>
             <input type="checkbox" name="profile_picture-clear" id="id_profile_picture-clear"> Clear<br>
           {% endif %}
           <input type="file" name="profile_picture" id="id_profile_picture">
-          </p>
+        </p>
         <button type="submit" class="btn-primary">Update Profile</button>
       </form>
     </section>
