@@ -30,13 +30,12 @@
       </section>
     {% endif %}
 
-    {% if profile.role == 'seller' and profile.street %}
+    {% if profile.role == 'seller' and profile.seller_type == 'agency' and profile.street and profile.city and profile.postal %}
       <section class="agency-address">
         <h3>Office Address</h3>
-        <p>
-          {{ profile.street }}<br>
-          {{ profile.city }}, {{ profile.postal }}
-        </p>
+        <p>street: {{ profile.street }}</p>
+          <p>city: {{ profile.city }}</p>
+          <p>postal: {{ profile.postal }}</p>
       </section>
     {% endif %}
 

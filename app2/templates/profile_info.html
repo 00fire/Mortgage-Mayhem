@@ -21,7 +21,21 @@
     <section class="profile-edit">
       <h2>Edit your info</h2>
       <form method="post" enctype="multipart/form-data" class="edit-form">
-        {% csrf_token %}
+        <form method="post" enctype="multipart/form-data" class="edit-form">
+          {% csrf_token %}
+
+          <p>
+            <label for="id_city">City:</label>
+            <input type="text" name="city" id="id_city" value="{{ form.instance.city }}">
+          </p>
+          <p>
+            <label for="id_street">Street:</label>
+            <input type="text" name="street" id="id_street" value="{{ form.instance.street }}">
+          </p>
+          <p>
+            <label for="id_postal">Postal Code:</label>
+            <input type="text" name="postal" id="id_postal" value="{{ form.instance.postal }}">
+          </p>
           <p>
           <label for="id_role">Role:</label>
           <select name="role" id="id_role">

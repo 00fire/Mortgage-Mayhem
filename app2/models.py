@@ -19,6 +19,7 @@ class UserProfile(models.Model):
     ROLE_CHOICES=(('buyer','Buyer'),('seller','Seller'))
 
     SELLER_TYPE_CHOICES = (
+        ('none', 'none'),
         ('individual', 'Individual'),
         ('agency', 'Real Estate Agency'),
     )

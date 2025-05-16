@@ -26,49 +26,71 @@
       {% endif %}
 
       <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+  {% csrf_token %}
+  {{ user_form.non_field_errors }}
+  
+  <p class="floating-group">
+    {{ user_form.username.label_tag }}
+    {{ user_form.username }}
+    {{ user_form.username.errors }}
+  </p>
+  <p class="floating-group">
+    {{ user_form.password1.label_tag }}
+    {{ user_form.password1 }}
+    {{ user_form.password1.errors }}
+  </p>
+  <p class="floating-group">
+    {{ user_form.password2.label_tag }}
+    {{ user_form.password2 }}
+    {{ user_form.password2.errors }}
+  </p>
 
-        {{ user_form.non_field_errors }}
-        <p class="floating-group">
-          {{ user_form.username.label_tag }}
-          {{ user_form.username }}
-          {{ user_form.username.errors }}
-        </p>
-        <p class="floating-group">
-          {{ user_form.password1.label_tag }}
-          {{ user_form.password1 }}
-          {{ user_form.password1.errors }}
-        </p>
-        <p class="floating-group">
-          {{ user_form.password2.label_tag }}
-          {{ user_form.password2 }}
-          {{ user_form.password2.errors }}
-        </p>
+  <fieldset>
+    <legend>{{ user_form.role.label }}</legend>
+    {% for radio in user_form.role %}
+      <label>
+        {{ radio.tag }} {{ radio.choice_label }}
+      </label><br>
+    {% endfor %}
+    {{ user_form.role.errors }}
+  </fieldset>
 
-        <fieldset>
-          <legend>{{ user_form.role.label }}</legend>
-          {% for radio in user_form.role %}
-            <label>{{ radio.tag }} {{ radio.choice_label }}</label><br>
-          {% endfor %}
-          {{ user_form.role.errors }}
-        </fieldset>
+  <div>
+    <p class="floating-group">
+      {{ profile_form.seller_type.label_tag }}
+      {{ profile_form.seller_type }}
+    </p>
 
-        <hr>
+    <p class="floating-group">
+      {{ profile_form.street.label_tag }}
+      {{ profile_form.street }}
+    </p>
+    <p class="floating-group">
+      {{ profile_form.city.label_tag }}
+      {{ profile_form.city }}
+    </p>
+    <p class="floating-group">
+      {{ profile_form.postal.label_tag }}
+      {{ profile_form.postal }}
+    </p>
+  </div>
 
-        {{ profile_form.non_field_errors }}
-        <p class="floating-group">
-          {{ profile_form.bio.label_tag }}
-          {{ profile_form.bio }}
-          {{ profile_form.bio.errors }}
-        </p>
-        <p>
-          {{ profile_form.profile_picture.label_tag }}<br>
-          {{ profile_form.profile_picture }}
-          {{ profile_form.profile_picture.errors }}
-        </p>
+  <hr>
 
-        <button type="submit" class="btn-glow">Sign Up</button> 
-      </form>
+  <p class="floating-group">
+    {{ profile_form.bio.label_tag }}
+    {{ profile_form.bio }}
+    {{ profile_form.bio.errors }}
+  </p>
+
+  <p>
+    {{ profile_form.profile_picture.label_tag }}<br>
+    {{ profile_form.profile_picture }}
+    {{ profile_form.profile_picture.errors }}
+  </p>
+
+  <button type="submit" class="btn-glow">Sign Up</button> 
+</form>
 
       <p style="text-align: center; margin-top: 1rem;">
         Already have an account?
