@@ -94,7 +94,7 @@ def property_detail(request, pk):
             off.buyer = request.user
             off.status = "pending"
             off.save()
-            messages.success(request, "Your offer has been submitted.")
+            messages.success(request, "Your offer has been submitted.")###################CHECK THISS
             return redirect("property_detail", pk=prop.pk)#if everything is valid then the offer is saved and the buyer is redirected to the prop details page
 
     return render(request, "property_detail.html", {

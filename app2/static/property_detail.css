@@ -9,7 +9,7 @@ body {
 
 
 .property-detail-wrapper {
-  position: relative;  /* so absolute children are positioned inside this */
+  position: relative;  
   padding: 2rem;
   max-width: 800px;
   margin: 2rem auto;
@@ -21,14 +21,14 @@ body {
 
 
 
-/* Container that holds the offer button */
+
 .offer-btn-container {
   position: absolute;
-  bottom: 2rem;    /* distance from bottom of wrapper */
-  right: 2rem;     /* distance from right edge */
+  bottom: 2rem;    
+  right: 2rem;     
 }
 
-/* Style your button */
+
 .make-offer-btn {
   display: inline-block;
   padding: 0.75rem 1.5rem;
@@ -83,7 +83,7 @@ body {
   border-radius: 4px;
   cursor: pointer;
   border: 3px solid #0077b6;
-  /* optionally add a lightbox onclick behavior later */
+  
 }
 
 .sold-flag{
@@ -95,7 +95,7 @@ body {
 }
 
 
- /* for opening and closing images in the gallery*/
+ 
 .modal {
   display: none;
   position: fixed;
@@ -128,7 +128,7 @@ body {
   cursor: pointer;
 }
 
- /* animation */
+ 
 .modal-content {
   -webkit-animation-name: zoom;
   -webkit-animation-duration: 0.6s;
@@ -144,4 +144,14 @@ body {
 @keyframes zoom {
   from { transform: scale(0); } 
   to { transform: scale(1); }
+}
+
+.success-box {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 15px;
+  margin: 10px 0;
+  border-radius: 6px;
+  font-weight: bold;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
 }
