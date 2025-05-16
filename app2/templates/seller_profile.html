@@ -59,7 +59,8 @@
                 {% endif %}
                 <div class="listing-info">
                   <strong>{{ prop.property_city }}</strong><br>
-                  ${{ prop.property_price|floatformat:2 }}
+                  {{prop.property_street}}<br>
+                  {{prop.property_price}}
                 </div>
               </a>
             </li>
