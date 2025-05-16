@@ -82,12 +82,30 @@ PropertyImageFormSet = modelformset_factory(
 ProfileEditForm = ProfileForm     
 
 
+COUNTRY_CHOICES = [
+    ('', 'Select a country'),  
+    ('IS', 'Iceland'),
+    ('US', 'United States'),
+    ('DE', 'Germany'),
+    ('FR', 'France'),
+    ('SE', 'Sweden'),
+    ('NO', 'Norway'),
+    ('UK', 'United Kingdom'),
+    ('CA', 'Canada'),
+    ('JP', 'Japan'),
+    ('CN', 'China'),
+    ('IN', 'India'),
+    ('BR', 'Brazil'),
+    ('AU', 'Australia'),
+]
+
 class ContactInfoForm(forms.Form):
     street_name = forms.CharField()
     city = forms.CharField()
     postal_code = forms.CharField()
-    country = forms.ChoiceField(choices=[('Iceland', 'Iceland'), ('USA', 'USA')])
+    country = forms.ChoiceField(choices=COUNTRY_CHOICES, label="Country")
     national_pid = forms.CharField(label="National ID (Kennitala)")
+
 
 
 

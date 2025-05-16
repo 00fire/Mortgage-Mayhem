@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>My Profile</title>
   <link rel="stylesheet" href="{% static 'profile_info.css' %}">
+ 
 </head>
 <body>
   <div class="profile-container">
@@ -22,37 +23,37 @@
     <section class="profile-edit">
       <h2>Edit your info</h2>
       <form method="post" enctype="multipart/form-data" class="edit-form">
-        <form method="post" enctype="multipart/form-data" class="edit-form">
-          {% csrf_token %}
+      <form method="post" enctype="multipart/form-data" class="edit-form">
+        {% csrf_token %}
 
-          <p>
+        <p>
             <label for="id_username">Username:</label>
             <input type="text" name="username" id="id_username" value="{{ user_form.instance.username }}">
-          </p>
+        </p>
 
-          <p>
-            <label for="id_city">City:</label>
-            <input type="text" name="city" id="id_city" value="{{ form.instance.city }}">
-          </p>
-          <p>
-            <label for="id_street">Street:</label>
-            <input type="text" name="street" id="id_street" value="{{ form.instance.street }}">
-          </p>
-          <p>
-            <label for="id_postal">Postal Code:</label>
-            <input type="text" name="postal" id="id_postal" value="{{ form.instance.postal }}">
-          </p>
-          <p>
+        <p>
+          <label for="id_city">City:</label>
+          <input type="text" name="city" id="id_city" value="{{ form.instance.city }}">
+        </p>
+        <p>
+          <label for="id_street">Street:</label>
+          <input type="text" name="street" id="id_street" value="{{ form.instance.street }}">
+        </p>
+        <p>
+          <label for="id_postal">Postal Code:</label>
+          <input type="text" name="postal" id="id_postal" value="{{ form.instance.postal }}">
+        </p>
+        <p>
           <label for="id_role">Role:</label>
           <select name="role" id="id_role">
             <option value="buyer" {% if form.instance.role == "buyer" %}selected{% endif %}>Buyer</option>
             <option value="seller" {% if form.instance.role == "seller" %}selected{% endif %}>Seller</option>
           </select>
         </p>
-          <p class="bio-class">
-            {{ form.bio }}
+        <p class="bio-class">
+          {{ form.bio }}
             {{ form.bio.errors }}
-          </p>
+        </p>
 
         <p>
           <label for="id_profile_picture">Profile picture:</label>
