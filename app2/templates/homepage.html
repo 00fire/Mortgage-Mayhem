@@ -8,7 +8,9 @@
   <link rel="stylesheet" href="{% static 'homepage.css' %}">
 </head>
 <body>
+  <h2 class="property-counter">{{ properties.count }} properties total</h2>
 
+  
   {% include "global_header.html" %}
 
   <hr>
@@ -74,7 +76,10 @@
       {% else %}
         <p class="no-results">No properties found matching your criteria.</p>
       {% endif %}
+      <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="back-to-top">↑ Back to Top</button>
     </div>
+    
+
   </main>
   <footer>
       <div class="footer-columns">
@@ -99,6 +104,7 @@
           HavenWatch Financial™ and the HavenWatch logo are trademarks of HavenWatch Financial, Inc.<br>
           Unauthorized use or reproduction of any content, images, or branding is strictly prohibited.
         </p>
+        
       </div>
     </footer>
 
