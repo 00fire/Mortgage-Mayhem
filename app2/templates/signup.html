@@ -3,56 +3,79 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <link rel="stylesheet" href="{% static 'main.css' %}">
+  <link rel="stylesheet" href="{% static 'signup.css' %}">
   <title>Sign Up</title>
 </head>
-<body>
-  <h1>Create an account</h1>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+<body class="animated-bg"> <!-- 🔥 Background animation effect -->
 
-    {{ user_form.non_field_errors }}
-    <p>
-      {{ user_form.username.label_tag }}<br>
-      {{ user_form.username }}<br>
-      {{ user_form.username.errors }}
-    </p>
-    <p>
-      {{ user_form.password1.label_tag }}<br>
-      {{ user_form.password1 }}<br>
-      {{ user_form.password1.errors }}
-    </p>
-    <p>
-      {{ user_form.password2.label_tag }}<br>
-      {{ user_form.password2 }}<br>
-      {{ user_form.password2.errors }}
-    </p>
+  <div class="signup-page">
+    
+    <!-- Optional Image Panel -->
+    <div class="signup-left">
+      <img src="{% static 'havenwatch_logo_shield.png' %}" alt="Welcome" class="signup-image">
+    </div>
 
-    <fieldset>
-      <legend>{{ user_form.role.label }}</legend>
-      {{ user_form.role }}<br>
-      {{ user_form.role.errors }}
-    </fieldset>
+    <!-- Signup Form -->
+    <main class="signup-wrapper">
+      <h1>Create an account</h1>
 
-    <hr>
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
 
-    {{ profile_form.non_field_errors }}
-    <p>
-      {{ profile_form.bio.label_tag }}<br>
-      {{ profile_form.bio }}<br>
-      {{ profile_form.bio.errors }}
-    </p>
-    <p>
-      {{ profile_form.profile_picture.label_tag }}<br>
-      {{ profile_form.profile_picture }}<br>
-      {{ profile_form.profile_picture.errors }}
-    </p>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-    <button type="submit">Sign Up</button>
-  </form>
-  <p>
-    Already have an account?
-    <a href="{% url 'login' %}">Log in here</a>.
-  </p>
+        {{ user_form.non_field_errors }}
+        <p class="floating-group">
+          {{ user_form.username.label_tag }}
+          {{ user_form.username }}
+          {{ user_form.username.errors }}
+        </p>
+        <p class="floating-group">
+          {{ user_form.password1.label_tag }}
+          {{ user_form.password1 }}
+          {{ user_form.password1.errors }}
+        </p>
+        <p class="floating-group">
+          {{ user_form.password2.label_tag }}
+          {{ user_form.password2 }}
+          {{ user_form.password2.errors }}
+        </p>
+
+        <fieldset>
+          <legend>{{ user_form.role.label }}</legend>
+          {% for radio in user_form.role %}
+            <label>{{ radio.tag }} {{ radio.choice_label }}</label><br>
+          {% endfor %}
+          {{ user_form.role.errors }}
+        </fieldset>
+
+        <hr>
+
+        {{ profile_form.non_field_errors }}
+        <p class="floating-group">
+          {{ profile_form.bio.label_tag }}
+          {{ profile_form.bio }}
+          {{ profile_form.bio.errors }}
+        </p>
+        <p>
+          {{ profile_form.profile_picture.label_tag }}<br>
+          {{ profile_form.profile_picture }}
+          {{ profile_form.profile_picture.errors }}
+        </p>
+
+        <button type="submit" class="btn-glow">Sign Up</button> <!-- 💡 Pulsing glow effect -->
+      </form>
+
+      <p style="text-align: center; margin-top: 1rem;">
+        Already have an account?
+        <a href="{% url 'login' %}">Log in here</a>.
+      </p>
+    </main>
+  </div>
+
 </body>
 </html>

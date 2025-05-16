@@ -1,155 +1,205 @@
-/* General styling */
+:root {
+  --bg-dark: #121212;
+  --bg-darker: #1c1c1c;
+  --accent-orange: #FF8C00;
+  --accent-glow: #ff6a00;
+  --primary-blue: #0077b6;
+  --primary-blue-dark: #005f99;
+  --input-bg: #333;
+  --input-text: #ffffff;
+  --text-light: #ffffff;
+  --text-muted: #cccccc;
+}
+
+/* Animated background effect */
 body {
-    margin: 0;
-    background-color: #121212; /* Dark background */
-    color: #fff;
-    font-family: Arial, sans-serif;
+  margin: 0;
+  background: radial-gradient(circle at 30% 30%, #1c1c1c 0%, #121212 100%);
+  background-size: 200% 200%;
+  animation: bgShift 20s ease-in-out infinite;
+  color: var(--text-light);
+  font-family: Arial, sans-serif;
 }
 
-/* Main container */
+/* Background animation keyframes */
+@keyframes bgShift {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; /* Vertically center */
-    height: 100vh; /* Full viewport height */
-    padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  justify-content: space-between;
+  padding: 2rem;
+  text-align: center;
 }
 
-/* Logo section */
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
 .logo img {
-    width: 120px; /* Logo size */
-    margin-top: 1rem;
-    border-radius: 50%;
-    display: block; /* Centering */
-    margin-bottom: 2rem;
+  width: 120px;
+  border-radius: 50%;
 }
 
-/* Login box container */
 .login-box {
-    background-color: #1f1f1f; /* Dark background for the form */
-    border: 1px solid #ffb20c; /* Goldish border */
-    border-radius: 8px;
-    padding: 2rem;
-    width: 100%;
-    max-width: 380px; /* Set max width for form */
-    margin: 2rem auto;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Add subtle shadow */
+  background-color: var(--bg-darker);
+  border: 1px solid var(--accent-orange);
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 0 10px rgba(255, 106, 0, 0.3);
+  animation: fadeIn 0.6s ease;
 }
 
-/* Heading */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .login-box h2 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    text-align: center;
-    font-size: 24px;
-    color: #fff;
+  margin-top: 0;
+  margin-bottom: 1.2rem;
+  font-size: 1.8rem;
+  color: var(--text-light);
 }
 
-/* Input fields */
+.subtext {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
 .login-box input[type="email"],
 .login-box input[type="password"] {
-    width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-    border: none;
-    border-radius: 5px;
-    background: #333; /* Dark background for inputs */
-    color: white;
-    font-size: 1rem;
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--input-text);
+  font-size: 1rem;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-/* Options for remember me and forgot password */
+/* Glowing focus effect */
+.login-box input:focus {
+  outline: none;
+  border-color: var(--accent-glow);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
 .options {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
 }
 
-/* Button styling */
+.options a {
+  color: #6366f1;
+  text-decoration: none;
+}
+.options a:hover {
+  text-decoration: underline;
+}
+
+/* Submit Button + Pulse */
 button {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #ffb20c; /* Gold button color */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--primary-blue);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 119, 182, 0.3);
+  transition: background-color 0.3s ease;
+  animation: pulseGlow 2.5s infinite ease-in-out;
 }
 
-/* Hover effect on buttons */
 button:hover {
-    background-color: #d99700; /* Darker gold for hover */
+  background-color: var(--primary-blue-dark);
 }
 
-/* Sign up text and link */
+@keyframes pulseGlow {
+  0%   { box-shadow: 0 0 8px var(--primary-blue); }
+  50%  { box-shadow: 0 0 16px var(--primary-blue-dark); }
+  100% { box-shadow: 0 0 8px var(--primary-blue); }
+}
+
 .signup-text {
-    text-align: center;
-    margin-top: 1rem;
-    font-size: 0.9rem;
+  margin-top: 1rem;
+  font-size: 0.9rem;
 }
-
 .signup-text a {
-    color: #ffb20c;
-    text-decoration: none;
-    font-weight: bold;
+  color: var(--accent-glow);
+  font-weight: bold;
+  text-decoration: none;
 }
-
 .signup-text a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
-/* Footer styling */
 footer {
-    background-color: #1f1f1f; /* Footer background */
-    color: #ccc; /* Light grey text */
-    padding: 2rem 1rem;
-    font-size: 0.8rem;
-    width: 100%;
-    margin-top: 3rem;
-    text-align: center;
+  background-color: var(--bg-darker);
+  color: var(--text-muted);
+  padding: 2rem 1rem;
+  font-size: 0.8rem;
+  width: 100%;
+  text-align: center;
+  margin-top: 3rem;
+  border-top: 1px solid #333;
 }
 
-/* Footer columns */
 .footer-columns {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  text-align: left;
 }
 
-/* Footer logo */
 .footer-logo {
-    text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
 .footer-logo img {
-    width: 60px;
-    margin: auto;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    max-width: 100px;
-    height: auto;
+  width: 70px;
+  border-radius: 50%;
+  max-width: 100px;
+  height: auto;
 }
 
-/* Footer information section */
 .footer-info {
-    text-align: center;
-    line-height: 1.5;
+  text-align: center;
+  line-height: 1.5;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
-    .login-box {
-        max-width: 100%;
-        padding: 1rem;
-    }
-    .footer-columns {
-        flex-direction: column;
-        align-items: center;
-    }
+  .login-box {
+    max-width: 90%;
+    padding: 1.5rem;
+  }
+
+  .footer-columns {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 }
