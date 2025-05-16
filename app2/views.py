@@ -597,5 +597,6 @@ def delete_property(request, property_id):
     else:
         prop.delete()
         messages.success(request, "Property listing successfully deleted.")
+        return redirect('homepage')
 
-    return redirect('property_detail', property_id=property_id)
+    return redirect('property_detail', pk=property_id)

@@ -78,6 +78,7 @@ body {
   margin-bottom: 1rem;
 }
 
+.login-box input[type="text"],
 .login-box input[type="email"],
 .login-box input[type="password"] {
   width: 100%;
