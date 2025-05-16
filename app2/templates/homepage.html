@@ -30,27 +30,25 @@
 
               <!-- Image Preview in wrapper -->
               <div class="img-wrapper">
-                {% with thumb=property.images.first %}
-                  {% if thumb %}
-                    <a href="{% url 'property_detail' property.id %}">
-                      <img src="{{ thumb.image.url }}"
-                           alt="{{ property.property_city }}"
-                           class="card-img">
-                    </a>
-                  {% elif property.property_image %}
-                    <a href="{% url 'property_detail' property.id %}">
-                      <img src="{{ property.property_image.url }}"
-                           alt="{{ property.property_city }}"
-                           class="card-img">
-                    </a>
-                  {% else %}
-                    <a href="{% url 'property_detail' property.id %}">
-                      <img src="{% static 'images/default-thumb.png' %}"
-                           alt="No image available"
-                           class="card-img">
-                    </a>
-                  {% endif %}
-                {% endwith %}
+                {% if property.property_image %}
+                  <a href="{% url 'property_detail' property.id %}">
+                    <img src="{{ property.property_image.url }}"
+                        alt="{{ property.property_city }}"
+                        class="card-img">
+                  </a>
+                {% elif property.images.first %}
+                  <a href="{% url 'property_detail' property.id %}">
+                    <img src="{{ property.images.first.image.url }}"
+                        alt="{{ property.property_city }}"
+                        class="card-img">
+                  </a>
+                {% else %}
+                  <a href="{% url 'property_detail' property.id %}">
+                    <img src="{% static 'images/default-thumb.png' %}"
+                        alt="No image available"
+                        class="card-img">
+                  </a>
+                {% endif %}
               </div>
 
               {% if property.property_sold_status %}

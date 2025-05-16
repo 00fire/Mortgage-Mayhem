@@ -16,21 +16,13 @@
     <h1>{{ property.property_city }} – Property Details</h1>
 
     {# — Cover image — #}
-    {% with cover=property.images.first %}
-      {% if cover %}
-        <img src="{{ cover.image.url }}"
-             alt="{{ property.property_city }} cover"
-             class="cover-image">
-      {% elif property.property_image %}
-        <img src="{{ property.property_image.url }}"
-             alt="{{ property.property_city }} cover"
-             class="cover-image">
-      {% else %}
-        <img src="{% static 'images/default-thumb.png' %}"
-             alt="No image"
-             class="cover-image">
-      {% endif %}
-    {% endwith %}
+    {% if property.property_image %}
+      <img src="{{ property.property_image.url }}" alt="{{ property.property_city }} cover" class="cover-image">
+    {% elif property.images.first %}
+      <img src="{{ property.images.first.image.url }}" alt="{{ property.property_city }} cover" class="cover-image">
+    {% else %}
+      <img src="{% static 'images/default-thumb.png' %}" alt="No image" class="cover-image">
+    {% endif %}
 
     {# — Gallery — #}
     {% if property.images.exists %}

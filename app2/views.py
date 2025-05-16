@@ -475,7 +475,7 @@ def seller_listings(request):
 def add_property(request):
     if request.user.profile.role != 'seller':
         return HttpResponseForbidden("Only sellers can list properties")
-
+    
     if request.method == 'POST':
         prop_form = PropertyForm(request.POST, request.FILES)
         img_formset = PropertyImageFormSet(request.POST, request.FILES, queryset=PropertyImage.objects.none())
@@ -485,12 +485,18 @@ def add_property(request):
             prop.seller = request.user
             prop.owner = request.user
             prop.save()
+
             images = img_formset.save(commit=False)
             for image in images:
                 image.property = prop
                 image.save()
-            return redirect('profile_info')
 
+            # Auto-set the first uploaded image as main if none was uploaded
+            if not prop.property_image and images:
+                prop.property_image = images[0].image
+                prop.save()
+
+            return redirect('profile_info')
     else:
         prop_form = PropertyForm()
         img_formset = PropertyImageFormSet(queryset=PropertyImage.objects.none())
