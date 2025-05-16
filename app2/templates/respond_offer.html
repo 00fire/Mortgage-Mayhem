@@ -1,0 +1,37 @@
+{# app2/templates/respond_offer.html #}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Respond to Offer #{{ offer.id }}</title>
+  <link rel="stylesheet" href="{% static 'respond_offer.css' %}">
+</head>
+<body>
+
+  {% include "_messages.html" %}
+
+  <div class="respond-wrapper">
+    <h1>Respond to Offer #{{ offer.id }}</h1>
+
+    <p>
+      <strong>Buyer:</strong> {{ offer.buyer.username }}<br>
+      <strong>Property:</strong>
+      <a href="{% url 'property_detail' offer.property.id %}">
+        {{ offer.property.property_city }}
+      </a><br>
+      <strong>Offered:</strong> ${{ offer.offer_price }}<br>
+      <strong>Expires:</strong> {{ offer.expiration_date }}
+    </p>
+
+    <form method="post">
+      {% csrf_token %}
+      <button name="action" value="accept">Accept</button>
+      <button name="action" value="reject">Reject</button>
+    </form>
+
+    <a class="back-link" href="{% url 'seller_listings' %}">&larr; Back to Listings</a>
+  </div>
+
+</body>
+</html>

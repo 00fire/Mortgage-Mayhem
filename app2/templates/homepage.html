@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage</title>
+  <link rel="stylesheet" href="{% static 'homepage.css' %}">
+</head>
+<body>
+  <h2 class="property-counter">{{ properties.count }} properties total</h2>
+
+  
+  {% include "global_header.html" %}
+
+  <hr>
+
+  <main class="page-content">
+    <div class="property-container">
+      {% if properties.exists %}
+        {% for property in properties %}
+          <div class="property-item">
+
+            
+            <div class="property-header">
+              <h2>{{ property.property_city }}</h2>
+              <p class="listed-date">Listed: {{ property.listed_at|date:"M j, Y" }}</p>
+            </div>
+
+            
+            <div class="property-card">
+
+              
+              <div class="img-wrapper">
+                {% if property.property_image %}
+                  <a href="{% url 'property_detail' property.id %}">
+                    <img src="{{ property.property_image.url }}"
+                        alt="{{ property.property_city }}"
+                        class="card-img">
+                  </a>
+                {% elif property.images.first %}
+                  <a href="{% url 'property_detail' property.id %}">
+                    <img src="{{ property.images.first.image.url }}"
+                        alt="{{ property.property_city }}"
+                        class="card-img">
+                  </a>
+                {% else %}
+                  <a href="{% url 'property_detail' property.id %}">
+                    <img src="{% static 'images/default-thumb.png' %}"
+                        alt="No image available"
+                        class="card-img">
+                  </a>
+                {% endif %}
+              </div>
+
+              {% if property.property_sold_status %}
+                <div class="sold-ribbon">Sold</div>
+              {% endif %}
+
+              
+              <div class="property-text-box">
+                <p class="property-text"><strong>${{ property.property_price }}</strong></p>
+                <p class="property-text">Rooms: {{ property.property_rooms }}</p>
+                <p class="property-text">Square meters: {{ property.property_square_meters_size}}m</p>
+                <p><strong>Seller:</strong> {{ property.seller.username }}</p>
+                {% if property.property_description %}
+                  <p class="property-description">{{ property.property_description|truncatechars:100 }}</p>
+                {% endif %}
+                <a href="{% url 'property_detail' property.id %}" class="btn">View Details</a>
+                <p>{{ property.property_bio }}</p>
+              </div>
+
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="no-results">No properties found matching your criteria.</p>
+      {% endif %}
+      <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="back-to-top">↑ Back to Top</button>
+    </div>
+    
+
+  </main>
+  <footer>
+      <div class="footer-columns">
+        <div>
+          <p>About Us<br>Contact Us<br>FAQ / Help Center<br>Careers</p>
+        </div>
+        <div class="footer-logo">
+          <img src="{% static 'havenwatch_logo.png' %}" alt="HavenWatch Logo Small">
+        </div>
+        <div>
+          <p>Facebook<br>Twitter (X)<br>Instagram<br>LinkedIn</p>
+        </div>
+      </div>
+
+      <div class="footer-info">
+        <p>HavenWatch Financial<br>260445‑1239</p>
+        <p>&copy;&nbsp;2025 HavenWatch Financial. All rights reserved. +354 511 1234</p>
+        <p>contact@havenwatchfinancial.com</p>
+        <p>Borgartún&nbsp;25, 105 Reykjavík, Iceland</p>
+        <p>
+          Privacy Policy · Terms of Service · Cookie Policy · Accessibility Statement<br>
+          HavenWatch Financial™ and the HavenWatch logo are trademarks of HavenWatch Financial, Inc.<br>
+          Unauthorized use or reproduction of any content, images, or branding is strictly prohibited.
+        </p>
+        
+      </div>
+    </footer>
+
+</body>
+</html>

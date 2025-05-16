@@ -1,0 +1,165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>My Profile</title>
+  <link rel="stylesheet" href="{% static 'profile_info.css' %}">
+ 
+</head>
+<body>
+  <div class="profile-container">
+
+    <header class="profile-header">
+      <h1>My Profile</h1>
+      <p class="username-display">{{ request.user.username }}</p>
+      {% if form.instance.profile_picture %}
+        <img class="avatar" src="{{ form.instance.profile_picture.url }}" 
+             alt="{{ request.user.username }}">
+      {% endif %}
+    </header>
+
+    <section class="profile-edit">
+      <h2>Edit your info</h2>
+      <form method="post" enctype="multipart/form-data" class="edit-form">
+      <form method="post" enctype="multipart/form-data" class="edit-form">
+        {% csrf_token %}
+
+        <p>
+            <label for="id_username">Username:</label>
+            <input type="text" name="username" id="id_username" value="{{ user_form.instance.username }}">
+        </p>
+
+        <p>
+          <label for="id_city">City:</label>
+          <input type="text" name="city" id="id_city" value="{{ form.instance.city }}">
+        </p>
+        <p>
+          <label for="id_street">Street:</label>
+          <input type="text" name="street" id="id_street" value="{{ form.instance.street }}">
+        </p>
+        <p>
+          <label for="id_postal">Postal Code:</label>
+          <input type="text" name="postal" id="id_postal" value="{{ form.instance.postal }}">
+        </p>
+        <p>
+          <label for="id_role">Role:</label>
+          <select name="role" id="id_role">
+            <option value="buyer" {% if form.instance.role == "buyer" %}selected{% endif %}>Buyer</option>
+            <option value="seller" {% if form.instance.role == "seller" %}selected{% endif %}>Seller</option>
+          </select>
+        </p>
+        <p class="bio-class">
+          {{ form.bio }}
+            {{ form.bio.errors }}
+        </p>
+
+        <p>
+          <label for="id_profile_picture">Profile picture:</label>
+          {% if form.instance.profile_picture %}
+            <span>Currently: <a href="{{ form.instance.profile_picture.url }}">{{ form.instance.profile_picture.name }}</a></span>
+            <input type="checkbox" name="profile_picture-clear" id="id_profile_picture-clear"> Clear<br>
+          {% endif %}
+          <input type="file" name="profile_picture" id="id_profile_picture">
+        </p>
+        <button type="submit" class="btn-primary">Update Profile</button>
+      </form>
+    </section>
+
+    {% if request.user.profile.role == "seller" %}
+    <section class="seller-panel">
+      <h2>Properties I’m Selling</h2>
+      {% if my_listings %}
+        <ul class="listing-list">
+          {% for prop in my_listings %}
+          <li>
+            <a href="{% url 'property_detail' prop.id %}">
+              {{ prop.property_city }} — ${{ prop.property_price }}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+        <p><a class="btn-secondary" href="{% url 'add_property' %}">+ Add another listing</a></p>
+      {% else %}
+        <p>You don’t have any active listings. <a href="{% url 'add_property' %}">Create one now</a>.</p>
+      {% endif %}
+
+      <h2>Incoming Offers <small>{% if incoming_count %}<span class="badge">{{ incoming_count }}</span>{% endif %}</small></h2>
+      {% if incoming_offers %}
+        <ul class="offer-list">
+          {% for offer in incoming_offers %}
+          <li>
+            <strong>{{ offer.buyer.username }}</strong> offered 
+            <em>${{ offer.offer_price }}</em> on 
+            <a href="{% url 'property_detail' offer.property.id %}">
+              {{ offer.property.property_city }}
+            </a>
+            <a class="btn-action" href="{% url 'respond_offer' offer.id %}">Respond</a>
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No pending offers on your listings.</p>
+      {% endif %}
+    </section>
+    {% endif %}
+
+    {% if request.user.profile.role == "buyer" %}
+    <section class="buyer-panel">
+      <h2>My Offers</h2>
+      {% if my_offers %}
+        <ul class="offer-list">
+          {% for offer in my_offers %}
+          <li>
+            On 
+            <a href="{% url 'property_detail' offer.property.id %}">
+              {{ offer.property.property_city }}
+            </a> you offered 
+            <em>${{ offer.offer_price }}</em> — 
+            {{ offer.status|capfirst }}
+            {% if offer.status|lower == "accepted" or offer.status|lower == "contingent" %}
+              {% if offer.finalized %}
+                <span class="badge done">✔ Finalized</span>
+              {% else %}
+                <a class="btn-action" href="{% url 'contact_info' offer.property.id %}">Finalize Purchase</a>
+              {% endif %}
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>You haven’t made any offers yet.</p>
+      {% endif %}
+    </section>
+    {% endif %}
+
+    <section class="owned-panel">
+      <h2>Properties I Own</h2>
+      {% if my_owned %}
+        <ul class="listing-list">
+          {% for prop in my_owned %}
+          <li>
+            <a href="{% url 'property_detail' prop.id %}">
+              {{ prop.property_city }}
+            </a>
+            {% if prop.property_sold_status %}
+              <span class="badge sold">Sold</span>
+            {% else %}
+              <span class="badge for-sale">For Sale</span>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>You don’t own any properties yet.</p>
+      {% endif %}
+    </section>
+
+    <footer class="profile-footer">
+      <a href="{% url 'homepage' %}">&larr; Back to Homepage</a>
+      <a class="btn-secondary" href="{% url 'login' %}">Log out</a>
+    </footer>
+  </div>
+</body>
+</html>

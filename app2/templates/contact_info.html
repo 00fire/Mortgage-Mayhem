@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Information</title>
+    <link rel="stylesheet" href="{% static 'paymentsteps.css' %}">
+</head>
+<body>
+
+    <h2 style="text-align: center;">Contact Information</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div>
+            <label for="id_street_name">Street Name:</label>
+            {{ form.street_name }}
+            {{ form.street_name.errors }}
+        </div>
+
+        <div>
+            <label for="id_city">City:</label>
+            {{ form.city }}
+            {{ form.city.errors }}
+        </div>
+
+        <div>
+            <label for="id_postal_code">Postal Code:</label>
+            {{ form.postal_code }}
+            {{ form.postal_code.errors }}
+        </div>
+
+        <div>
+            <label for="id_country">Country:</label>
+            <select name="country" id="id_country">
+                {% for code, name in form.fields.country.choices %}
+                    <option value="{{ code }}" {% if form.country.value == code %}selected{% endif %}>
+                        {{ name }}
+                    </option>
+                {% endfor %}
+            </select>
+            {{ form.country.errors }}
+        </div>
+
+        <div>
+            <label for="id_national_pid">National ID (Kennitala):</label>
+            {{ form.national_pid }}
+            {{ form.national_pid.errors }}
+        </div>
+
+        <button type="submit">Next: Payment Details</button>
+
+        {% if form.non_field_errors %}
+            <ul style="color: red;">
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </form>
+
+</body>
+</html>

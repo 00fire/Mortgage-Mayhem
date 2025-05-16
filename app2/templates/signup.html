@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="{% static 'signup.css' %}">
+  <title>Sign Up</title>
+</head>
+<body class="animated-bg"> 
+
+  <div class="signup-page">
+    
+    
+    <div class="signup-left">
+      <img src="{% static 'havenwatch_logo_shield.png' %}" alt="Welcome" class="signup-image">
+    </div>
+
+    
+    <main class="signup-wrapper">
+      <h1>Create an account</h1>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ user_form.non_field_errors }}
+  
+  <p class="floating-group">
+    {{ user_form.username.label_tag }}
+    {{ user_form.username }}
+    {{ user_form.username.errors }}
+  </p>
+  <p class="floating-group">
+    {{ user_form.password1.label_tag }}
+    {{ user_form.password1 }}
+    {{ user_form.password1.errors }}
+  </p>
+  <p class="floating-group">
+    {{ user_form.password2.label_tag }}
+    {{ user_form.password2 }}
+    {{ user_form.password2.errors }}
+  </p>
+
+  <fieldset>
+    <legend>{{ user_form.role.label }}</legend>
+    {% for radio in user_form.role %}
+      <label>
+        {{ radio.tag }} {{ radio.choice_label }}
+      </label><br>
+    {% endfor %}
+    {{ user_form.role.errors }}
+  </fieldset>
+
+  <div>
+    <p class="floating-group">
+      {{ profile_form.seller_type.label_tag }}
+      {{ profile_form.seller_type }}
+    </p>
+
+    <p class="floating-group">
+      {{ profile_form.street.label_tag }}
+      {{ profile_form.street }}
+    </p>
+    <p class="floating-group">
+      {{ profile_form.city.label_tag }}
+      {{ profile_form.city }}
+    </p>
+    <p class="floating-group">
+      {{ profile_form.postal.label_tag }}
+      {{ profile_form.postal }}
+    </p>
+  </div>
+
+  <hr>
+
+  <p class="floating-group">
+    {{ profile_form.bio.label_tag }}
+    {{ profile_form.bio }}
+    {{ profile_form.bio.errors }}
+  </p>
+
+  <p>
+    {{ profile_form.profile_picture.label_tag }}<br>
+    {{ profile_form.profile_picture }}
+    {{ profile_form.profile_picture.errors }}
+  </p>
+
+  <button type="submit" class="btn-glow">Sign Up</button> 
+</form>
+
+      <p style="text-align: center; margin-top: 1rem;">
+        Already have an account?
+        <a href="{% url 'login' %}">Log in here</a>.
+      </p>
+    </main>
+  </div>
+
+</body>
+</html>

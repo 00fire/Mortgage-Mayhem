@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Listings</title>
+  <link rel="stylesheet" href="{% static 'seller_listing.css' %}">
+</head>
+<body>
+
+<div class="listings-wrapper">
+  <h1>My Listings</h1>
+  {% if listings %}
+    <ul>
+      {% for prop in listings %}
+        <li>
+          <a href="{% url 'property_detail' prop.id %}">
+            {{ prop.property_city }} – ${{ prop.property_price }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No listings yet. <a href="{% url 'add_property' %}">Add one now</a>.</p>
+  {% endif %}
+
+  <h2>Incoming Offers</h2>
+  {% if incoming_offers %}
+    <ul>
+      {% for offer in incoming_offers %}
+        <li>
+          #{{ offer.id }} — {{ offer.buyer.username }} offered ${{ offer.offer_price }}
+          on <a href="{% url 'property_detail' offer.property.id %}">{{ offer.property.property_city }}</a>
+          [<a href="{% url 'respond_offer' offer.id %}">Respond</a>]
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No pending offers.</p>
+  {% endif %}
+
+  <a class="back-link" href="{% url 'profile_info' %}">← Back to My Profile</a>
+</div>
+
+</body>
+</html>

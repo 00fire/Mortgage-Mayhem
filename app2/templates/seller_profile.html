@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ seller.username }} – Seller Profile</title>
+  <link rel="stylesheet" href="{% static 'seller_profile.css' %}">
+</head>
+<body>
+  <div class="seller-container">
+    <h1 class="seller-title">{{ seller.username }}</h1>
+
+    <div class="seller-header">
+      {% if profile.profile_picture %}
+        <img src="{{ profile.profile_picture.url }}"
+             alt="{{ seller.username }}’s picture"
+             class="profile-pic">
+      {% endif %}
+      {% if profile.logo %}
+        <img src="{{ profile.logo.url }}"
+             alt="{{ seller.username }}’s logo"
+             class="seller-logo">
+      {% endif %}
+    </div>
+
+    {% if profile.bio %}
+      <section class="bio-section">
+        <h2>About {{ seller.username }}</h2>
+        <p>{{ profile.bio }}</p>
+      </section>
+    {% endif %}
+
+    {% if profile.seller_type %}
+      <section class="seller-type-section h2">
+        <h2>Seller Type: {{ profile.seller_type }}</h2>
+      </section>
+    {% endif %}
+
+    {% if profile.role == 'seller' and profile.seller_type == 'agency' and profile.street and profile.city and profile.postal %}
+      <section class="agency-address">
+        <h3>Office Address</h3>
+        <p>street: {{ profile.street }}</p>
+          <p>city: {{ profile.city }}</p>
+          <p>postal: {{ profile.postal }}</p>
+      </section>
+    {% endif %}
+
+    <section class="seller-listings">
+      <h2>Properties for Sale by {{ seller.username }}</h2>
+      {% if listings %}
+        <ul class="listings-grid">
+          {% for prop in listings %}
+            <li class="listing-card">
+              <a href="{% url 'property_detail' prop.id %}">
+                {% if prop.property_image %}
+                  <img src="{{ prop.property_image.url }}"
+                       alt="{{ prop.property_city }} thumbnail"
+                       class="property-thumb">
+                {% endif %}
+                <div class="listing-info">
+                  <strong>{{ prop.property_city }}</strong><br>
+                  {{prop.property_street}}<br>
+                  {{prop.property_price}}
+                </div>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="no-listings"><em>No active listings.</em></p>
+      {% endif %}
+    </section>
+
+    <p><a href="{% url 'homepage' %}" class="btn-secondary">← Back to homepage</a></p>
+  </div>
+</body>
+</html>

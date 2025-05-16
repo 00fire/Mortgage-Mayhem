@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Review and Confirm</title>
+  <link rel="stylesheet" href="{% static 'paymentsteps.css' %}">
+</head>
+<body>
+
+  <h1 style="text-align: center;">Review Your Information</h1>
+
+  <div class="section-wrapper">
+    <h2>Contact Information</h2>
+    <ul class="centered-box">
+      <li>Street: {{ contact_info.street_name }}</li>
+      <li>City: {{ contact_info.city }}</li>
+      <li>Postal Code: {{ contact_info.postal_code }}</li>
+      <li>Country: {{ contact_info.country }}</li>
+      <li>National ID: {{ contact_info.national_pid }}</li>
+    </ul>
+
+    <h2>Payment Information</h2>
+    <ul class="centered-box">
+      <li>
+        Method:
+        {% if payment_info.pay_method %}
+          {{ payment_info.pay_method }}
+        {% elif payment_info.payment_option %}
+          {{ payment_info.payment_option }}
+        {% else %}
+          Unknown
+        {% endif %}
+      </li>
+
+      {% if payment_info.pay_method %}
+        {% with method=payment_info.pay_method %}
+          {% include "_render_payment_method.html" %}
+        {% endwith %}
+      {% elif payment_info.payment_option %}
+        {% with method=payment_info.payment_option %}
+          {% include "_render_payment_method.html" %}
+        {% endwith %}
+      {% else %}
+        <li>No payment method data available.</li>
+      {% endif %}
+    </ul>
+
+    <form method="post" class="centered-box">
+      {% csrf_token %}
+      <button type="submit">Confirm and Finalize</button>
+    </form>
+
+    <p><a href="{% url 'payment' property.id %}">&larr; Back to Payment</a></p>
+  </div>
+
+</body>
+</html>

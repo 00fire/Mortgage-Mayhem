@@ -1,0 +1,97 @@
+:root {
+    --bg-dark: #121212;
+    --bg-darker: #1c1c1c;
+    --accent-orange: #FF8C00;
+    --accent-glow: #ff6a00;
+    --primary-blue: #0077b6;
+    --primary-blue-dark: #005f99;
+    --input-bg: #1c1c1c;
+    --input-text: #fff;
+    --text-light: #fff;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background: var(--bg-dark);
+  color: var(--text-light);
+  font-size: 25px;
+}
+
+.respond-wrapper {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #1e1e1e;
+    border: 2px solid var(--accent-orange);
+    border-radius: 10px;
+}
+
+.respond-wrapper h1 {
+    color: var(--accent-orange);
+    margin-bottom: 1rem;
+}
+
+.respond-wrapper p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.respond-wrapper a {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+.respond-wrapper form {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.respond-wrapper button {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    font-size: 20px;
+    box-shadow: 0 6px #353535;
+}
+
+.respond-wrapper button[value="accept"] {
+    background-color: #22c55e;
+}
+
+.respond-wrapper button[value="accept"]:hover {
+    background-color: #178640;
+}
+
+.respond-wrapper button[value="accept"]:active {
+    background-color: #178640;
+    box-shadow: 0 2px #353535;
+    transform: translateY(4px);
+}
+
+.respond-wrapper button[value="reject"] {
+    background-color: #ef4444;
+}
+
+.respond-wrapper button[value="reject"]:hover {
+    background-color: #b33232;
+}
+
+.respond-wrapper button[value="reject"]:active {
+    background-color: #b33232;
+    box-shadow: 0 2px #353535;
+    transform: translateY(4px);
+}
+
+
+.back-link {
+    display: inline-block;
+    margin-top: 2rem;
+    color: var(--primary-blue);
+}

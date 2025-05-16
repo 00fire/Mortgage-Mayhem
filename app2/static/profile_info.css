@@ -1,0 +1,213 @@
+/* profile_info.css */
+
+:root {
+  --bg-dark: #121212;
+  --bg-darker: #1c1c1c;
+  --accent-orange: #FF8C00;
+  --accent-glow: #ff6a00;
+  --primary-blue: #0077b6;
+  --primary-blue-dark: #005f99;
+  --success-green: #28a745;
+  --danger-red: #dc3545;
+  --warning-yellow: #ffc107;
+  --text-light: #ffffff;
+  --text-muted: #cccccc;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background: var(--bg-dark);
+  color: var(--text-light);
+}
+
+.profile-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  background: var(--bg-darker);
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  border: 4px solid var(--accent-orange);
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.profile-header h1 {
+  margin: 0;
+  flex: 1;
+  color: var(--accent-orange);
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--accent-orange);
+}
+
+.edit-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.edit-form p {
+  margin: 0 0 1rem 0;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-action {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  text-decoration: none;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background: var(--success-green);
+  color: var(--text-light);
+  box-shadow: 0 7px #353535;
+}
+
+.btn-primary:hover {
+  background: #1e8035;
+}
+
+.btn-primary:active {
+  background-color: #1e8035;
+  box-shadow: 0 5px #353535;
+  transform: translateY(4px);
+}
+
+.btn-secondary {
+  background: var(--primary-blue);
+  color: var(--text-light);
+}
+
+.btn-action {
+  background: var(--warning-yellow);
+  color: #000;
+  font-size: 0.9rem;
+  margin-left: 1rem;
+  box-shadow: 0 5px #353535;
+}
+
+.btn-action:hover {
+  background: #bd8f05;
+}
+
+.btn-action:active {
+  background: #bd8f05;
+  box-shadow: 0 2px #353535;
+  transform: translateY(3px);
+}
+
+section {
+  margin-bottom: 2rem;
+}
+
+h2 small {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.listing-list,
+.offer-list {
+  list-style: none;
+  padding: 0;
+}
+
+.listing-list li,
+.offer-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #333;
+}
+
+.badge {
+  background: var(--danger-red);
+  color: var(--text-light);
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  vertical-align: middle;
+}
+
+.badge.sold {
+  background: #6c757d;
+}
+
+.badge.for-sale {
+  background: var(--success-green);
+}
+
+.profile-footer {
+  text-align: right;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.bio-class {
+  border: 3px solid var(--accent-orange);
+  border-radius: 5px;
+  padding: 0.5rem;
+  background-color: var(--bg-darker);
+  color: var(--text-light);
+}
+
+.edit-form p {
+  margin-bottom: 1rem;
+}
+
+.edit-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.edit-form input[type="text"],
+.edit-form textarea,
+.edit-form select {
+  width: 400px;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.username-display {
+  font-size: 2.2rem;
+  color: #ff6a00;
+  margin: 0.2rem 0 1rem 0;
+  text-align: center;
+}
+
+/* profile_info.css */
+
+.username-display {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent-orange, #FF8C00);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.error-box {
+  background-color: #ff4d4f;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+}

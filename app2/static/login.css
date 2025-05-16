@@ -1,0 +1,214 @@
+:root {
+  --bg-dark: #121212;
+  --bg-darker: #1c1c1c;
+  --accent-orange: #FF8C00;
+  --accent-glow: #ff6a00;
+  --primary-blue: #0077b6;
+  --primary-blue-dark: #005f99;
+  --input-bg: #333;
+  --input-text: #ffffff;
+  --text-light: #ffffff;
+  --text-muted: #cccccc;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at 30% 30%, #1c1c1c 0%, #121212 100%);
+  background-size: 200% 200%;
+  animation: bgShift 20s ease-in-out infinite;
+  color: var(--text-light);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Background animation */
+@keyframes bgShift {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+/* Center everything in view */
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  gap: 2rem;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logo img {
+  width: 120px;
+  border-radius: 50%;
+}
+
+/* Login Box */
+.login-box {
+  background-color: var(--bg-darker);
+  border: 1px solid var(--accent-orange);
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 0 10px rgba(255, 106, 0, 0.3);
+  animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-box h2 {
+  margin: 0 0 1.2rem 0;
+  font-size: 1.8rem;
+  color: var(--text-light);
+}
+
+.subtext {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+/* Inputs */
+.login-box input[type="text"],
+.login-box input[type="email"],
+.login-box input[type="password"] {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--input-text);
+  font-size: 1rem;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: var(--accent-glow);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Remember + Forgot */
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.options a {
+  color: #6366f1;
+  text-decoration: none;
+}
+.options a:hover {
+  text-decoration: underline;
+}
+
+/* Button */
+button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--primary-blue);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 119, 182, 0.3);
+  transition: background-color 0.3s ease;
+  animation: pulseGlow 2.5s infinite ease-in-out;
+}
+
+button:hover {
+  background-color: var(--primary-blue-dark);
+}
+
+@keyframes pulseGlow {
+  0%   { box-shadow: 0 0 8px var(--primary-blue); }
+  50%  { box-shadow: 0 0 16px var(--primary-blue-dark); }
+  100% { box-shadow: 0 0 8px var(--primary-blue); }
+}
+
+/* Sign-up text */
+.signup-text {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+.signup-text a {
+  color: var(--accent-glow);
+  font-weight: bold;
+  text-decoration: none;
+}
+.signup-text a:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+footer {
+  background-color: var(--bg-darker);
+  color: var(--text-muted);
+  padding: 2rem 1rem;
+  font-size: 0.8rem;
+  text-align: center;
+  border-top: 1px solid #333;
+  width: 100%;
+}
+
+/* Footer Columns */
+.footer-columns {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.footer-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.footer-logo img {
+  width: 70px;
+  border-radius: 50%;
+  max-width: 100px;
+  height: auto;
+}
+
+.footer-info {
+  text-align: center;
+  line-height: 1.5;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .login-box {
+    max-width: 90%;
+    padding: 1.5rem;
+  }
+
+  .footer-columns {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}

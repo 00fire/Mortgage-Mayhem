@@ -1,0 +1,16 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation</title>
+    <link rel="stylesheet" href="{% static 'paymentsteps.css' %}">
+</head>
+<body>
+    <div class="confirmation">
+        <h1>Success!</h1>
+        <p>Your submission has been received and confirmed.</p>
+        <a href="{% url 'homepage' %}">Go back to home</a>
+    </div>
+</body>
+</html>
