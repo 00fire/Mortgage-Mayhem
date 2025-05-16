@@ -1,22 +1,22 @@
-<!-- templates/components/header.html -->
+
 <header class="site-header">
   <div class="header-bar">
 
-    <!-- Left: Page Title -->
+    
     <div class="header-left">
       <h1 class="home-title">Homepage</h1>
     </div>
 
-    <!-- Center: Search Form -->
+    
     <div class="header-center">
       <form method="get" action="{% url 'homepage' %}" class="search-form">
 
-        <!-- Standalone Wide Search Bar -->
+        
         <div class="search-main">
           <input type="text" name="q" placeholder="Search city, country..." value="{{ current_query }}" class="search-field">
         </div>
 
-        <!-- Filters Row -->
+        
         <div class="filters">
           <input type="text" name="street_name" placeholder="Street name" value="{{ street_name }}">
           <input type="text" name="postal_code" placeholder="Postal code" value="{{ postal_code }}">
@@ -31,14 +31,14 @@
             <option value="name" {% if order_by == 'name' %}selected{% endif %}>Name</option>
           </select>
 
-          <!-- Submit Button -->
+          
           <button type="submit" class="btn">Search</button>
         </div>
 
       </form>
     </div>
 
-    <!-- Right: Profile Icon -->
+    
     <div class="header-right">
       {% if request.user.is_authenticated %}
         <a href="{% url 'profile_info' %}" class="profile-link">
