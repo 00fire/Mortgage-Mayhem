@@ -479,9 +479,10 @@ def add_property(request):
             prop.seller=request.user
             prop.owner=request.user
             prop.save()
-            for form in img_formset:
-                if form.cleaned_data.get('image'):
-                    PropertyImage.objects.create(property=prop,image=form.cleaned_data['image'])
+            images = img_formset.save(commit=False)
+            for image in images:
+                image.property = prop
+                image.save()
             return redirect('profile_info')
     else:
             prop_form=PropertyForm()
