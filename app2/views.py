@@ -36,6 +36,11 @@ from .models import Properties, FinalizedOffer
 
 
 
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from django.shortcuts import render, redirect
+from .forms import PropertyForm, PropertyImageFormSet
+from .models import PropertyImage
 
 
 def root_redirect(request):
@@ -464,11 +469,7 @@ def seller_listings(request):
 
 
 
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
-from django.shortcuts import render, redirect
-from .forms import PropertyForm, PropertyImageFormSet
-from .models import PropertyImage
+
 
 @login_required
 def add_property(request):
