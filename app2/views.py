@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db.models import Q
 from .models import Properties, PropertyImage, FinalizedOffer, UserProfile, PurchaseOffer
-from .forms import (PropertyForm, PropertyImageFormSet, SignUpForm, ProfileForm, ProfileEditForm,PurchaseOfferForm, UserProfileForm, ContactInfoForm, PaymentForm)
+from .forms import (PropertyForm, PropertyImageFormSet, SignUpForm, ProfileForm, ProfileEditForm,PurchaseOfferForm, UserProfileForm, ContactInfoForm, PaymentForm, UsernameForm)
 from .decorators import seller_required, buyer_required
 
 
@@ -145,10 +145,13 @@ def signup_view(request):
 def profile_info(request):
     # profile form handling 
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    user_form = UsernameForm(instance=request.user)
     #if the user submitted any changes then they are saved
     if request.method == 'POST':
+        user_form = UsernameForm(request.POST, instance=request.user)
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
+        if form.is_valid() and user_form.is_valid():
+            user_form.save()
             form.save()#we save them here
             return redirect('profile_info')
     else:

@@ -25,6 +25,11 @@
           {% csrf_token %}
 
           <p>
+            <label for="id_username">Username:</label>
+            <input type="text" name="username" id="id_username" value="{{ user_form.instance.username }}">
+          </p>
+
+          <p>
             <label for="id_city">City:</label>
             <input type="text" name="city" id="id_city" value="{{ form.instance.city }}">
           </p>
