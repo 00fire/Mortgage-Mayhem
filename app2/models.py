@@ -29,7 +29,7 @@ class UserProfile(models.Model):
     bio=models.TextField(max_length=500, blank=True,null=True)
     profile_picture = models.ImageField(upload_to=upload_to_profile,default="profile_pics/default.jpg",blank=True,)
 
-    role = models.CharField(max_length=255) # e.g. Buyer/Seller
+
 
     acc_made_time = models.DateTimeField(auto_now_add=True)
     street = models.CharField(max_length=255, null=True, blank=True)

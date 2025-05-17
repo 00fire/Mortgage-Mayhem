@@ -182,6 +182,7 @@ def profile_info(request):
 
     return render(request, 'profile_info.html', {
         'form':             form,
+        'user_form':        user_form,
         'incoming_offers':  incoming_offers,
         'incoming_count':   incoming_count,
         'my_listings':      my_listings,
